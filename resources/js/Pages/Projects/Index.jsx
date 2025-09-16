@@ -11,16 +11,16 @@ const ProjectsIndex = () => {
     const [currentProjectId, setCurrentProjectId] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
     const [sortConfig, setSortConfig] = useState({ key: null, direction: 'ascending' });
-
+    const { errors } = usePage().props;
     const [formData, setFormData] = useState({
         name: '',
         slug: '',
-        reel: null,
-        brochure: null,
-        logo_image_id: null,
+        reel: '',
+        brochure: '',
+        logo_image_id: '',
         type: '',
-        status: 'active', // Default status
-        visual_image_id: null,
+        status: 'active',
+        visual_image_id: '',
         location: {
             address: '',
             city: '',
@@ -28,6 +28,7 @@ const ProjectsIndex = () => {
             map_description: '',
         }
     });
+
 
     const [formErrors, setFormErrors] = useState({});
 
@@ -85,16 +86,11 @@ const ProjectsIndex = () => {
     };
 
     const handleChange = (e) => {
-        const { name, value, files, type, checked } = e.target;
+        const { name, value, type, checked } = e.target;
         setFormErrors(prev => ({ ...prev, [name]: '' }));
 
         if (type === 'checkbox') {
             setFormData(prev => ({ ...prev, [name]: checked }));
-        } else if (files && files.length > 0) {
-            setFormData(prev => ({
-                ...prev,
-                [name]: files[0]
-            }));
         } else if (name.startsWith('location.')) {
             const locKey = name.split('.')[1];
             setFormData(prev => ({
@@ -106,16 +102,17 @@ const ProjectsIndex = () => {
         }
     };
 
+
     const openEditModal = (project) => {
         setFormData({
             name: project.project.name,
             slug: project.project.slug,
-            reel: null,
-            brochure: null,
-            logo_image_id: null,
+            reel: project.project.reel || '',
+            brochure: project.project.brochure || '',
+            logo_image_id: project.project.logo_image_id || '',
             type: project.project.type || '',
             status: project.project.status || 'active',
-            visual_image_id: project.project.visual_image_id || null,
+            visual_image_id: project.project.visual_image_id || '',
             location: {
                 address: project.project.location?.address || '',
                 city: project.project.location?.city || '',
@@ -123,6 +120,7 @@ const ProjectsIndex = () => {
                 map_description: project.project.location?.map_description || '',
             }
         });
+
 
         const id = project._id || project.id || (project.project && project.project.id);
         if (!id) {
@@ -159,10 +157,9 @@ const ProjectsIndex = () => {
         data.append('project[location][city]', formData.location.city);
         data.append('project[location][area]', formData.location.area);
         data.append('project[location][map_description]', formData.location.map_description);
-
-        if (formData.reel) data.append('project[reel]', formData.reel);
-        if (formData.brochure) data.append('project[brochure]', formData.brochure);
-        if (formData.logo_image_id) data.append('project[logo_image_id]', formData.logo_image_id);
+        data.append('project[reel]', formData.reel || '');
+        data.append('project[brochure]', formData.brochure || '');
+        data.append('project[logo_image_id]', formData.logo_image_id || '');
 
         if (isEdit) {
             const url = route('projects.update', { id: currentProjectId });
@@ -218,7 +215,7 @@ const ProjectsIndex = () => {
         }
 
         const newStatus = project.project.status === 'active' ? 'inactive' : 'active';
-        
+
         if (confirm(`Are you sure you want to ${newStatus === 'active' ? 'activate' : 'deactivate'} this project?`)) {
             Inertia.patch(route('projects.update-status', { id }), {
                 status: newStatus
@@ -275,7 +272,7 @@ const ProjectsIndex = () => {
         };
 
         const config = statusConfig[status] || statusConfig.inactive;
-        
+
         return (
             <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${config.color}`}>
                 {config.text}
@@ -343,7 +340,7 @@ const ProjectsIndex = () => {
                                                 Name {getSortIndicator('name')}
                                             </div>
                                         </th>
-                                       
+
                                         <th
                                             className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
                                             onClick={() => requestSort('type')}
@@ -352,7 +349,7 @@ const ProjectsIndex = () => {
                                                 Type {getSortIndicator('type')}
                                             </div>
                                         </th>
-                                      
+
                                         <th
                                             className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
                                             onClick={() => requestSort('location.city')}
@@ -361,7 +358,7 @@ const ProjectsIndex = () => {
                                                 Location {getSortIndicator('location.city')}
                                             </div>
                                         </th>
-                                          <th
+                                        <th
                                             className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
                                             onClick={() => requestSort('status')}
                                         >
@@ -381,7 +378,7 @@ const ProjectsIndex = () => {
                                                 <td className="px-6 py-4 whitespace-nowrap">
                                                     <div className="text-sm font-medium text-gray-900">{project.project.name}</div>
                                                 </td>
-                                               
+
                                                 <td className="px-6 py-4 whitespace-nowrap">
                                                     <div className="text-sm text-gray-600">
                                                         {project.project.type || (
@@ -389,29 +386,28 @@ const ProjectsIndex = () => {
                                                         )}
                                                     </div>
                                                 </td>
-                                              
+
                                                 <td className="px-6 py-4 whitespace-nowrap">
                                                     <div className="text-sm text-gray-600">
                                                         {project.project.location?.city && project.project.location?.area ?
                                                             `${project.project.location.area}, ${project.project.location.city}` :
-                                                            (project.project.location?.area ||project.project.location?.city || (
+                                                            (project.project.location?.area || project.project.location?.city || (
                                                                 <span className="text-gray-400 italic">Not set</span>
                                                             ))
                                                         }
                                                     </div>
                                                 </td>
-                                                  <td className="px-6 py-4 whitespace-nowrap">
+                                                <td className="px-6 py-4 whitespace-nowrap">
                                                     {getStatusBadge(project.project.status || 'active')}
                                                 </td>
                                                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                                     <div className="flex items-center justify-end space-x-2">
                                                         <button
                                                             onClick={() => toggleStatus(project)}
-                                                            className={`p-2 rounded-lg transition-colors ${
-                                                                project.project.status === 'active' 
-                                                                    ? 'text-yellow-600 hover:text-yellow-900 bg-yellow-50 hover:bg-yellow-100' 
-                                                                    : 'text-green-600 hover:text-green-900 bg-green-50 hover:bg-green-100'
-                                                            }`}
+                                                            className={`p-2 rounded-lg transition-colors ${project.project.status === 'active'
+                                                                ? 'text-yellow-600 hover:text-yellow-900 bg-yellow-50 hover:bg-yellow-100'
+                                                                : 'text-green-600 hover:text-green-900 bg-green-50 hover:bg-green-100'
+                                                                }`}
                                                             title={project.project.status === 'active' ? 'Deactivate project' : 'Activate project'}
                                                         >
                                                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -516,7 +512,7 @@ const ProjectsIndex = () => {
                                         value={formData.name}
                                         onChange={handleChange}
                                         className={`block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 ${formErrors.name ? 'border-red-500' : ''}`}
-                                        required
+                                        
                                     />
                                     {formErrors.name && <p className="mt-1 text-sm text-red-600">{formErrors.name}</p>}
                                 </div>
@@ -533,7 +529,7 @@ const ProjectsIndex = () => {
                                         value={formData.slug}
                                         onChange={handleChange}
                                         className={`block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 ${formErrors.slug ? 'border-red-500' : ''}`}
-                                        required
+                                        
                                     />
                                     {formErrors.slug && <p className="mt-1 text-sm text-red-600">{formErrors.slug}</p>}
                                     <p className="mt-1 text-xs text-gray-500">Use lowercase letters, numbers, and hyphens only</p>
@@ -554,6 +550,7 @@ const ProjectsIndex = () => {
                                         onChange={handleChange}
                                         className="block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                                     />
+                                      {formErrors.type && <p className="mt-1 text-sm text-red-600">{formErrors.type}</p>}
                                 </div>
 
                                 <div>
@@ -571,79 +568,54 @@ const ProjectsIndex = () => {
                                         <option value="inactive">Inactive</option>
                                         <option value="draft">Draft</option>
                                     </select>
+                                     {formErrors.status && <p className="mt-1 text-sm text-red-600">{formErrors.status}</p>}
                                 </div>
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                                        Project Reel (Video)
+                                        Project Reel (Video URL)
                                     </label>
-                                    <div className="flex items-center justify-center w-full">
-                                        <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-gray-400 hover:bg-gray-50 transition-colors">
-                                            <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                                                <svg className="w-8 h-8 mb-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
-                                                </svg>
-                                                <p className="mb-2 text-sm text-gray-500">Upload video</p>
-                                            </div>
-                                            <input
-                                                type="file"
-                                                name="reel"
-                                                onChange={handleChange}
-                                                accept="video/*"
-                                                className="hidden"
-                                            />
-                                        </label>
-                                    </div>
+                                    <input
+                                        type="text"
+                                        name="reel"
+                                        onChange={handleChange}
+                                        placeholder="https://example.com/video.mp4"
+                                        className="w-full border border-gray-300 rounded-lg p-2"
+                                    />
+                                    {formErrors.reel && <p className="mt-1 text-sm text-red-600">{formErrors.reel}</p>}
                                 </div>
 
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                                        Brochure (PDF)
+                                        Brochure (PDF URL)
                                     </label>
-                                    <div className="flex items-center justify-center w-full">
-                                        <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-gray-400 hover:bg-gray-50 transition-colors">
-                                            <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                                                <svg className="w-8 h-8 mb-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
-                                                </svg>
-                                                <p className="mb-2 text-sm text-gray-500">Upload PDF</p>
-                                            </div>
-                                            <input
-                                                type="file"
-                                                name="brochure"
-                                                onChange={handleChange}
-                                                accept="application/pdf"
-                                                className="hidden"
-                                            />
-                                        </label>
-                                    </div>
+                                    <input
+                                        type="text"
+                                        name="brochure"
+                                        onChange={handleChange}
+                                        placeholder="https://example.com/brochure.pdf"
+                                        className="w-full border border-gray-300 rounded-lg p-2"
+                                    />
+                                      {formErrors.brochure && <p className="mt-1 text-sm text-red-600">{formErrors.brochure}</p>}
                                 </div>
 
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                                        Logo Image
+                                        Logo Image (Image URL)
                                     </label>
-                                    <div className="flex items-center justify-center w-full">
-                                        <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-gray-400 hover:bg-gray-50 transition-colors">
-                                            <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                                                <svg className="w-8 h-8 mb-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                                                </svg>
-                                                <p className="mb-2 text-sm text-gray-500">Upload image</p>
-                                            </div>
-                                            <input
-                                                type="file"
-                                                name="logo_image_id"
-                                                onChange={handleChange}
-                                                accept="image/*"
-                                                className="hidden"
-                                            />
-                                        </label>
-                                    </div>
+                                    <input
+                                        type="text"
+                                        name="logo_image_id"
+                                        onChange={handleChange}
+                                        placeholder="https://example.com/logo.png"
+                                        className="w-full border border-gray-300 rounded-lg p-2"
+                                    />
+                                      {formErrors.logo_image_id && <p className="mt-1 text-sm text-red-600">{formErrors.logo_image_id}</p>}
                                 </div>
                             </div>
+
 
                             <div className="border-t border-gray-200 pt-6">
                                 <h3 className="text-lg font-medium text-gray-900 mb-4">Location Details</h3>

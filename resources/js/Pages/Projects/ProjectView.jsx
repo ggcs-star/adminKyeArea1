@@ -34,12 +34,13 @@ const ProjectViewPage = ({ project }) => {
                             {projectData.logo_image_id && (
                                 <div className="mt-4 md:mt-0 bg-white p-2 rounded-lg shadow-md">
                                     <img
-                                        src={`/storage/${projectData.logo_image_id}`}
+                                        src={projectData.logo_image_id}  // Remove /storage/, use direct URL
                                         alt={`${projectData.name} logo`}
                                         className="h-16 w-auto object-contain"
                                     />
                                 </div>
                             )}
+
                         </div>
                     </div>
 
@@ -77,18 +78,14 @@ const ProjectViewPage = ({ project }) => {
                             {projectData.reel && (
                                 <div className="bg-gray-50 rounded-lg p-4 shadow-sm">
                                     <h2 className="text-lg font-semibold text-gray-900 mb-3 flex items-center">
-                                        <svg className="w-5 h-5 mr-2 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                        <svg className="w-5 h-5 mr-2 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="..."></path>
                                         </svg>
                                         Project Reel
                                     </h2>
                                     <div className="bg-black rounded-md overflow-hidden mx-auto" style={{ maxWidth: '500px' }}>
-                                        <video
-                                            controls
-                                            className="w-full h-full object-contain"
-                                            style={{ maxHeight: '280px' }}
-                                        >
-                                            <source src={`/storage/${projectData.reel}`} type="video/mp4" />
+                                        <video controls className="w-full h-full object-contain" style={{ maxHeight: '280px' }}>
+                                            <source src={projectData.reel} type="video/mp4" />
                                             Your browser does not support the video tag.
                                         </video>
                                     </div>
@@ -97,6 +94,7 @@ const ProjectViewPage = ({ project }) => {
                                     </div>
                                 </div>
                             )}
+
 
                             {/* Location Details */}
                             {projectData.location && (
@@ -178,8 +176,8 @@ const ProjectViewPage = ({ project }) => {
                                         <h3 className="text-sm font-medium text-gray-500">Status</h3>
                                         <div className="mt-2">
                                             <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${projectData.status === 'active'
-                                                    ? 'bg-green-100 text-green-800'
-                                                    : 'bg-gray-100 text-gray-800'
+                                                ? 'bg-green-100 text-green-800'
+                                                : 'bg-gray-100 text-gray-800'
                                                 }`}>
                                                 <span className={`w-2 h-2 rounded-full mr-2 ${projectData.status === 'active' ? 'bg-green-500' : 'bg-gray-500'
                                                     }`}></span>
@@ -212,7 +210,7 @@ const ProjectViewPage = ({ project }) => {
                                         </div>
 
                                         <a
-                                            href={`/storage/${projectData.brochure}`}
+                                            href={projectData.brochure}  // Direct URL from DB
                                             target="_blank"
                                             rel="noopener noreferrer"
                                             className="inline-flex items-center px-3 py-1 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
@@ -222,6 +220,9 @@ const ProjectViewPage = ({ project }) => {
                                     </div>
                                 </div>
                             )}
+
+
+
 
                             {/* Actions Card */}
                             <div className="bg-white border border-gray-200 rounded-lg p-5 shadow-sm">
