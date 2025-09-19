@@ -3,7 +3,7 @@ import { Inertia } from '@inertiajs/inertia';
 import { usePage } from '@inertiajs/react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { route } from 'ziggy-js';
-
+import ProjectModal from '@/Components/ProjectModal';
 const ProjectsIndex = () => {
     const { projects } = usePage().props;
     const [showModal, setShowModal] = useState(false);
@@ -11,7 +11,7 @@ const ProjectsIndex = () => {
     const [currentProjectId, setCurrentProjectId] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
     const [sortConfig, setSortConfig] = useState({ key: null, direction: 'ascending' });
-    const { errors } = usePage().props;
+
     const [formData, setFormData] = useState({
         name: '',
         slug: '',
@@ -33,7 +33,7 @@ const ProjectsIndex = () => {
     const [formErrors, setFormErrors] = useState({});
 
     // Filter projects based on search term
-    const filteredProjects = projects.filter(project => {
+    const filteredProjects = projects?.data?.filter(project => {
         const searchLower = searchTerm.toLowerCase();
         return (
             project.project.name.toLowerCase().includes(searchLower) ||
@@ -42,7 +42,9 @@ const ProjectsIndex = () => {
             (project.project.location?.city && project.project.location.city.toLowerCase().includes(searchLower)) ||
             (project.project.location?.area && project.project.location.area.toLowerCase().includes(searchLower))
         );
-    });
+    }) || [];
+
+
 
     // Sort projects
     const sortedProjects = React.useMemo(() => {
@@ -51,7 +53,6 @@ const ProjectsIndex = () => {
             sortableItems.sort((a, b) => {
                 let aValue, bValue;
 
-                // Handle nested properties
                 if (sortConfig.key.includes('.')) {
                     const keys = sortConfig.key.split('.');
                     aValue = keys.reduce((obj, key) => obj && obj[key], a.project);
@@ -61,7 +62,6 @@ const ProjectsIndex = () => {
                     bValue = b.project[sortConfig.key];
                 }
 
-                // Handle null/undefined values
                 if (aValue == null) aValue = '';
                 if (bValue == null) bValue = '';
 
@@ -76,6 +76,7 @@ const ProjectsIndex = () => {
         }
         return sortableItems;
     }, [filteredProjects, sortConfig]);
+
 
     const requestSort = (key) => {
         let direction = 'ascending';
@@ -282,9 +283,18 @@ const ProjectsIndex = () => {
 
     return (
         <AuthenticatedLayout title="Projects Management">
+            <ProjectModal
+                showModal={showModal}
+                closeModal={closeModal}
+                handleChange={handleChange}
+                handleSubmit={handleSubmit}
+                formData={formData}
+                formErrors={formErrors}
+                isEdit={isEdit}
+            />
             <div className="min-h-screen bg-gray-50 py-8">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+                    <div className="bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl">
                         <div className="px-6 py-5 border-b border-gray-200 flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
                             <div>
                                 <h1 className="text-2xl font-bold text-gray-900">Projects Management</h1>
@@ -297,7 +307,7 @@ const ProjectsIndex = () => {
                                     resetForm();
                                     setShowModal(true);
                                 }}
-                                className="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2.5 px-5 rounded-lg flex items-center transition-colors shadow-md hover:shadow-lg"
+                                className="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2.5 px-5 rounded-lg flex items-center transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
                             >
                                 <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
@@ -316,24 +326,35 @@ const ProjectsIndex = () => {
                                     </div>
                                     <input
                                         type="text"
-                                        placeholder="Search projects..."
-                                        className="block w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white"
+                                        placeholder="Search projects by name, type, or location..."
+                                        className="block w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white transition-all duration-300"
                                         value={searchTerm}
                                         onChange={(e) => setSearchTerm(e.target.value)}
                                     />
                                 </div>
-                                <div className="text-sm text-gray-600">
-                                    {filteredProjects.length} {filteredProjects.length === 1 ? 'project' : 'projects'} found
+                                <div className="flex items-center space-x-4">
+                                    <div className="text-sm text-gray-600 bg-gray-100 px-3 py-1 rounded-full">
+                                        {filteredProjects.length} {filteredProjects.length === 1 ? 'project' : 'projects'} found
+                                    </div>
+                                    <button
+                                        className="text-gray-500 hover:text-gray-700 transition-colors duration-300"
+                                        title="Refresh projects"
+                                        onClick={() => window.location.reload()}
+                                    >
+                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                                        </svg>
+                                    </button>
                                 </div>
                             </div>
                         </div>
 
-                        <div className="overflow-x-auto">
+                        <div className="overflow-x-auto transition-opacity duration-300">
                             <table className="min-w-full divide-y divide-gray-200">
                                 <thead className="bg-gray-50">
                                     <tr>
                                         <th
-                                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors duration-300"
                                             onClick={() => requestSort('name')}
                                         >
                                             <div className="flex items-center">
@@ -342,7 +363,7 @@ const ProjectsIndex = () => {
                                         </th>
 
                                         <th
-                                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors duration-300"
                                             onClick={() => requestSort('type')}
                                         >
                                             <div className="flex items-center">
@@ -351,7 +372,7 @@ const ProjectsIndex = () => {
                                         </th>
 
                                         <th
-                                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors duration-300"
                                             onClick={() => requestSort('location.city')}
                                         >
                                             <div className="flex items-center">
@@ -359,7 +380,7 @@ const ProjectsIndex = () => {
                                             </div>
                                         </th>
                                         <th
-                                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors duration-300"
                                             onClick={() => requestSort('status')}
                                         >
                                             <div className="flex items-center">
@@ -374,13 +395,25 @@ const ProjectsIndex = () => {
                                 <tbody className="bg-white divide-y divide-gray-200">
                                     {sortedProjects.length > 0 ? (
                                         sortedProjects.map((project) => (
-                                            <tr key={project._id} className="hover:bg-gray-50 transition-colors">
+                                            <tr key={project._id} className="hover:bg-gray-50 transition-all duration-300 group">
                                                 <td className="px-6 py-4 whitespace-nowrap">
-                                                    <div className="text-sm font-medium text-gray-900">{project.project.name}</div>
+                                                    <div className="flex items-center">
+                                                        <div className="flex-shrink-0 h-10 w-10 bg-indigo-100 rounded-lg flex items-center justify-center mr-3 group-hover:bg-indigo-200 transition-colors duration-300">
+                                                            <svg className="h-6 w-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                                                            </svg>
+                                                        </div>
+                                                        <div>
+                                                            <div className="text-sm font-medium text-gray-900">{project.project.name}</div>
+                                                            <div className="text-xs text-gray-500">
+                                                                Created {new Date(project.createdAt).toLocaleDateString()}
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </td>
 
                                                 <td className="px-6 py-4 whitespace-nowrap">
-                                                    <div className="text-sm text-gray-600">
+                                                    <div className="text-sm text-gray-600 bg-gray-100 px-2 py-1 rounded-md inline-block">
                                                         {project.project.type || (
                                                             <span className="text-gray-400 italic">Not set</span>
                                                         )}
@@ -388,39 +421,30 @@ const ProjectsIndex = () => {
                                                 </td>
 
                                                 <td className="px-6 py-4 whitespace-nowrap">
-                                                    <div className="text-sm text-gray-600">
-                                                        {project.project.location?.city && project.project.location?.area ?
-                                                            `${project.project.location.area}, ${project.project.location.city}` :
-                                                            (project.project.location?.area || project.project.location?.city || (
-                                                                <span className="text-gray-400 italic">Not set</span>
-                                                            ))
-                                                        }
+                                                    <div className="flex items-center">
+                                                        <svg className="h-4 w-4 text-gray-400 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                                        </svg>
+                                                        <div className="text-sm text-gray-600">
+                                                            {project.project.location?.city && project.project.location?.area ?
+                                                                `${project.project.location.area}, ${project.project.location.city}` :
+                                                                (project.project.location?.area || project.project.location?.city || (
+                                                                    <span className="text-gray-400 italic">Not set</span>
+                                                                ))
+                                                            }
+                                                        </div>
                                                     </div>
                                                 </td>
                                                 <td className="px-6 py-4 whitespace-nowrap">
                                                     {getStatusBadge(project.project.status || 'active')}
                                                 </td>
                                                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                                    <div className="flex items-center justify-end space-x-2">
-                                                        <button
-                                                            onClick={() => toggleStatus(project)}
-                                                            className={`p-2 rounded-lg transition-colors ${project.project.status === 'active'
-                                                                ? 'text-yellow-600 hover:text-yellow-900 bg-yellow-50 hover:bg-yellow-100'
-                                                                : 'text-green-600 hover:text-green-900 bg-green-50 hover:bg-green-100'
-                                                                }`}
-                                                            title={project.project.status === 'active' ? 'Deactivate project' : 'Activate project'}
-                                                        >
-                                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                                                {project.project.status === 'active' ? (
-                                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                                                ) : (
-                                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905a3.61 3.61 0 01-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" />
-                                                                )}
-                                                            </svg>
-                                                        </button>
+                                                    <div className="flex items-center justify-end space-x-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+
                                                         <button
                                                             onClick={() => openEditModal(project)}
-                                                            className="text-indigo-600 hover:text-indigo-900 bg-indigo-50 hover:bg-indigo-100 p-2 rounded-lg transition-colors"
+                                                            className="text-indigo-600 hover:text-indigo-900 bg-indigo-50 hover:bg-indigo-100 p-2 rounded-lg transition-all duration-300 transform hover:scale-110"
                                                             title="Edit project"
                                                         >
                                                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -429,7 +453,7 @@ const ProjectsIndex = () => {
                                                         </button>
                                                         <button
                                                             onClick={() => View(project)}
-                                                            className="text-blue-600 hover:text-blue-900 bg-blue-50 hover:bg-blue-100 p-2 rounded-lg transition-colors"
+                                                            className="text-blue-600 hover:text-blue-900 bg-blue-50 hover:bg-blue-100 p-2 rounded-lg transition-all duration-300 transform hover:scale-110"
                                                             title="View project"
                                                         >
                                                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -439,7 +463,7 @@ const ProjectsIndex = () => {
                                                         </button>
                                                         <button
                                                             onClick={() => handleDelete(project)}
-                                                            className="text-red-600 hover:text-red-900 bg-red-50 hover:bg-red-100 p-2 rounded-lg transition-colors"
+                                                            className="text-red-600 hover:text-red-900 bg-red-50 hover:bg-red-100 p-2 rounded-lg transition-all duration-300 transform hover:scale-110"
                                                             title="Delete project"
                                                         >
                                                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -453,19 +477,22 @@ const ProjectsIndex = () => {
                                     ) : (
                                         <tr>
                                             <td colSpan="6" className="px-6 py-12 text-center">
-                                                <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                                <svg className="mx-auto h-16 w-16 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                                 </svg>
-                                                <h3 className="mt-2 text-sm font-medium text-gray-900">No projects found</h3>
-                                                <p className="mt-1 text-sm text-gray-500">
-                                                    {searchTerm ? 'Try adjusting your search term' : 'Get started by creating a new project'}
+                                                <h3 className="mt-4 text-lg font-medium text-gray-700">No projects found</h3>
+                                                <p className="mt-2 text-sm text-gray-500 max-w-md mx-auto">
+                                                    {searchTerm ? `No results found for "${searchTerm}". Try adjusting your search term` : 'Get started by creating your first project'}
                                                 </p>
                                                 {!searchTerm && (
                                                     <div className="mt-6">
                                                         <button
                                                             onClick={() => setShowModal(true)}
-                                                            className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                                                            className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-300 transform hover:-translate-y-0.5"
                                                         >
+                                                            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                                            </svg>
                                                             Add New Project
                                                         </button>
                                                     </div>
@@ -475,232 +502,30 @@ const ProjectsIndex = () => {
                                     )}
                                 </tbody>
                             </table>
+                            <div className="px-6 py-4 bg-gray-50 border-t border-gray-200 flex items-center justify-between">
+                                <div className="text-sm text-gray-600">
+                                    Showing <span className="font-medium">{(projects.current_page - 1) * projects.per_page + 1}</span> to <span className="font-medium">
+                                        {Math.min(projects.current_page * projects.per_page, projects.total)}
+                                    </span> of <span className="font-medium">{projects.total}</span> results
+                                </div>
+                                <div className="flex space-x-2">
+                                    {(projects.links || []).map((link, index) => (
+                                        <button
+                                            key={index}
+                                            className={`px-3 py-1.5 border rounded-md text-sm font-medium transition-all duration-300 ${link.active
+                                                ? 'bg-indigo-600 border-indigo-600 text-white shadow-md'
+                                                : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-50'}`}
+                                            disabled={!link.url}
+                                            onClick={() => link.url && Inertia.get(link.url)}
+                                            dangerouslySetInnerHTML={{ __html: link.label }}
+                                        />
+                                    ))}
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-
-            {/* Modal */}
-            {showModal && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-                    <div className="bg-white rounded-2xl shadow-xl w-full max-w-3xl max-h-[90vh] overflow-y-auto">
-                        <div className="p-6 border-b border-gray-200 flex items-center justify-between">
-                            <h2 className="text-xl font-semibold text-gray-900">
-                                {isEdit ? 'Edit Project' : 'Add New Project'}
-                            </h2>
-                            <button
-                                onClick={closeModal}
-                                className="text-gray-400 hover:text-gray-600 transition-colors"
-                            >
-                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
-                                </svg>
-                            </button>
-                        </div>
-
-                        <form onSubmit={handleSubmit} className="p-6 space-y-6">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div>
-                                    <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
-                                        Project Name *
-                                    </label>
-                                    <input
-                                        type="text"
-                                        id="name"
-                                        name="name"
-                                        placeholder="e.g., Sunset Residences"
-                                        value={formData.name}
-                                        onChange={handleChange}
-                                        className={`block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 ${formErrors.name ? 'border-red-500' : ''}`}
-                                        
-                                    />
-                                    {formErrors.name && <p className="mt-1 text-sm text-red-600">{formErrors.name}</p>}
-                                </div>
-
-                                <div>
-                                    <label htmlFor="slug" className="block text-sm font-medium text-gray-700 mb-1">
-                                        Project Slug *
-                                    </label>
-                                    <input
-                                        type="text"
-                                        id="slug"
-                                        name="slug"
-                                        placeholder="e.g., sunset-residences"
-                                        value={formData.slug}
-                                        onChange={handleChange}
-                                        className={`block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 ${formErrors.slug ? 'border-red-500' : ''}`}
-                                        
-                                    />
-                                    {formErrors.slug && <p className="mt-1 text-sm text-red-600">{formErrors.slug}</p>}
-                                    <p className="mt-1 text-xs text-gray-500">Use lowercase letters, numbers, and hyphens only</p>
-                                </div>
-                            </div>
-
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div>
-                                    <label htmlFor="type" className="block text-sm font-medium text-gray-700 mb-1">
-                                        Project Type
-                                    </label>
-                                    <input
-                                        type="text"
-                                        id="type"
-                                        name="type"
-                                        placeholder="e.g., Residential, Commercial"
-                                        value={formData.type}
-                                        onChange={handleChange}
-                                        className="block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                                    />
-                                      {formErrors.type && <p className="mt-1 text-sm text-red-600">{formErrors.type}</p>}
-                                </div>
-
-                                <div>
-                                    <label htmlFor="status" className="block text-sm font-medium text-gray-700 mb-1">
-                                        Status
-                                    </label>
-                                    <select
-                                        id="status"
-                                        name="status"
-                                        value={formData.status}
-                                        onChange={handleChange}
-                                        className="block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                                    >
-                                        <option value="active">Active</option>
-                                        <option value="inactive">Inactive</option>
-                                        <option value="draft">Draft</option>
-                                    </select>
-                                     {formErrors.status && <p className="mt-1 text-sm text-red-600">{formErrors.status}</p>}
-                                </div>
-                            </div>
-
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                                        Project Reel (Video URL)
-                                    </label>
-                                    <input
-                                        type="text"
-                                        name="reel"
-                                        onChange={handleChange}
-                                        placeholder="https://example.com/video.mp4"
-                                        className="w-full border border-gray-300 rounded-lg p-2"
-                                    />
-                                    {formErrors.reel && <p className="mt-1 text-sm text-red-600">{formErrors.reel}</p>}
-                                </div>
-
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                                        Brochure (PDF URL)
-                                    </label>
-                                    <input
-                                        type="text"
-                                        name="brochure"
-                                        onChange={handleChange}
-                                        placeholder="https://example.com/brochure.pdf"
-                                        className="w-full border border-gray-300 rounded-lg p-2"
-                                    />
-                                      {formErrors.brochure && <p className="mt-1 text-sm text-red-600">{formErrors.brochure}</p>}
-                                </div>
-
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                                        Logo Image (Image URL)
-                                    </label>
-                                    <input
-                                        type="text"
-                                        name="logo_image_id"
-                                        onChange={handleChange}
-                                        placeholder="https://example.com/logo.png"
-                                        className="w-full border border-gray-300 rounded-lg p-2"
-                                    />
-                                      {formErrors.logo_image_id && <p className="mt-1 text-sm text-red-600">{formErrors.logo_image_id}</p>}
-                                </div>
-                            </div>
-
-
-                            <div className="border-t border-gray-200 pt-6">
-                                <h3 className="text-lg font-medium text-gray-900 mb-4">Location Details</h3>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    <div>
-                                        <label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-1">
-                                            Street Address
-                                        </label>
-                                        <input
-                                            type="text"
-                                            id="address"
-                                            name="location.address"
-                                            placeholder="e.g., 123 Main Street"
-                                            value={formData.location.address}
-                                            onChange={handleChange}
-                                            className="block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                                        />
-                                    </div>
-
-                                    <div>
-                                        <label htmlFor="city" className="block text-sm font-medium text-gray-700 mb-1">
-                                            City
-                                        </label>
-                                        <input
-                                            type="text"
-                                            id="city"
-                                            name="location.city"
-                                            placeholder="e.g., New York"
-                                            value={formData.location.city}
-                                            onChange={handleChange}
-                                            className="block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                                        />
-                                    </div>
-
-                                    <div>
-                                        <label htmlFor="area" className="block text-sm font-medium text-gray-700 mb-1">
-                                            Area/Region
-                                        </label>
-                                        <input
-                                            type="text"
-                                            id="area"
-                                            name="location.area"
-                                            placeholder="e.g., Manhattan"
-                                            value={formData.location.area}
-                                            onChange={handleChange}
-                                            className="block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                                        />
-                                    </div>
-
-                                    <div>
-                                        <label htmlFor="map_description" className="block text-sm font-medium text-gray-700 mb-1">
-                                            Map Description
-                                        </label>
-                                        <textarea
-                                            id="map_description"
-                                            name="location.map_description"
-                                            placeholder="Description for map integration"
-                                            value={formData.location.map_description}
-                                            onChange={handleChange}
-                                            rows={3}
-                                            className="block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="flex justify-end space-x-3 pt-4 border-t border-gray-200">
-                                <button
-                                    type="button"
-                                    onClick={closeModal}
-                                    className="px-4 py-2.5 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors"
-                                >
-                                    Cancel
-                                </button>
-                                <button
-                                    type="submit"
-                                    className="px-4 py-2.5 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors"
-                                >
-                                    {isEdit ? 'Update Project' : 'Create Project'}
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            )}
         </AuthenticatedLayout>
     );
 };

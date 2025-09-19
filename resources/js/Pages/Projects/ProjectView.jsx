@@ -210,7 +210,7 @@ const ProjectViewPage = ({ project }) => {
                                         </div>
 
                                         <a
-                                            href={projectData.brochure}  // Direct URL from DB
+                                            href={projectData.brochure}  
                                             target="_blank"
                                             rel="noopener noreferrer"
                                             className="inline-flex items-center px-3 py-1 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"

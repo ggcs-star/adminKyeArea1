@@ -67,32 +67,32 @@ export default function AuthenticatedLayout({ header, children }) {
                         <Users className="w-5 h-5" />
                         {sidebarOpen && <span className="font-medium">projects</span>}
                     </Link>
-         {/*
+         
                     <Link
-                        href={route('departments.index')}
-                        className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${route().current('departments.index') ? 'bg-indigo-700 shadow-md' : 'hover:bg-indigo-700'}`}
+                        href={route('builder.create')}
+                        className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${route().current('builder.create') ? 'bg-indigo-700 shadow-md' : 'hover:bg-indigo-700'}`}
                     >
                         <Building2 className="w-5 h-5" />
-                        {sidebarOpen && <span className="font-medium">Departments</span>}
+                        {sidebarOpen && <span className="font-medium">Builder</span>}
                     </Link>
 
                     <Link
-                        href={route('clients.index')}
-                        className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${route().current('clients.index') ? 'bg-indigo-700 shadow-md' : 'hover:bg-indigo-700'}`}
+                        href={route('configurations.index')}
+                        className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${route().current('configurations.index') ? 'bg-indigo-700 shadow-md' : 'hover:bg-indigo-700'}`}
                     >
                         <Users className="w-5 h-5" />
-                        {sidebarOpen && <span className="font-medium">Clients</span>}
+                        {sidebarOpen && <span className="font-medium">Configurations</span>}
                     </Link>
 
                     <Link
-                        href={route('invoices.index')}
-                        className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${route().current('invoices.index') ? 'bg-indigo-700 shadow-md' : 'hover:bg-indigo-700'}`}
+                        href={route('leads.index')}
+                        className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${route().current('leads.index') ? 'bg-indigo-700 shadow-md' : 'hover:bg-indigo-700'}`}
                     >
                         <FileText className="w-5 h-5" />
-                        {sidebarOpen && <span className="font-medium">Invoices</span>}
+                        {sidebarOpen && <span className="font-medium">Leads</span>}
                     </Link>
 
-                    <Link
+                    {/* <Link
                         href={route('payments.index')}
                         className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${route().current('payments.index') ? 'bg-indigo-700 shadow-md' : 'hover:bg-indigo-700'}`}
                     >

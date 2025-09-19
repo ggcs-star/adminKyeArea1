@@ -27,7 +27,8 @@ class ProjectSeeder extends Seeder
                     "city" => "Ahmedabad",
                     "area" => "Gota",
                     "map_description" => "Key landmarks near Devkunj 80 include SG Highway, SP Ring Road, Bopal, Ghuma, ISKCON Temple, educational institutions, healthcare facilities, and major connecting roads indicated on the provided map"
-                ]
+                ],
+                "status"=> "active",
             ],
             "builder" => [
                 "name" => "Devkunj Corporation",

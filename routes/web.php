@@ -1,12 +1,13 @@
 <?php
-
+use App\Http\Controllers\BuilderController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Models\User;
-
+use App\Http\Controllers\ConfigurationController;
+use App\Http\Controllers\LeadController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -57,8 +58,20 @@ Route::put('/projects/{id}', [ProjectController::class, 'update'])->name('projec
 Route::get('/projects/{id}/view', [ProjectController::class, 'view'])->name('projects.view');
 Route::delete('/projects/{id}', [ProjectController::class, 'destroy'])->name('projects.destroy');
 
+Route::get('/builder/create', [BuilderController::class, 'index'])->name('builder.create');
+Route::post('/builder/store', [BuilderController::class, 'store'])->name('builder.store');
+Route::get('/builder/{id}', [BuilderController::class, 'show'])->name('builder.show');
 
 
+
+Route::get('/configurations', [ConfigurationController::class, 'index'])->name('configurations.index');
+Route::post('/configurations', [ConfigurationController::class, 'store'])->name('configurations.store');
+Route::put('/configurations/{project}', [ConfigurationController::class, 'update'])->name('configurations.update');
+Route::delete('/configurations/{project}/{type}', [ConfigurationController::class, 'destroy'])->name('configurations.destroy');
+
+ Route::get('/leads', [LeadController::class, 'index'])->name('leads.index');
+ Route::get('/leads/{id}', [LeadController::class, 'show'])->name('leads.show');
+Route::delete('/leads/{id}', [LeadController::class, 'destroy'])->name('leads.destroy');
 });
 
 

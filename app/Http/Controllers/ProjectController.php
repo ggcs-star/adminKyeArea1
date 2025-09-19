@@ -9,11 +9,12 @@ class ProjectController extends Controller
 {
     public function index()
     {
-        $projects = Project::all();
+        $projects = Project::paginate(5);
         return Inertia::render('Projects/Index', [
             'projects' => $projects
         ]);
     }
+
 
     public function store(Request $request)
     {
@@ -33,9 +34,7 @@ class ProjectController extends Controller
 
         $projectData = $validated['project'];
 
-        // No need to store files; URLs are already provided by user
-
-        // Create project in DB
+        
         Project::create([
             'project' => $projectData
         ]);
@@ -73,7 +72,7 @@ class ProjectController extends Controller
         $projectData['type'] = $validated['project']['type'];
         $projectData['location'] = $validated['project']['location'];
 
-        // Since now we have URLs, assign them directly
+        
         $projectData['reel'] = $validated['project']['reel'] ?? $projectData['reel'];
         $projectData['brochure'] = $validated['project']['brochure'] ?? $projectData['brochure'];
         $projectData['logo_image_id'] = $validated['project']['logo_image_id'] ?? $projectData['logo_image_id'];
@@ -102,25 +101,22 @@ class ProjectController extends Controller
 
         $projectData = $project->project;
 
-        // Delete reel file
         if (!empty($projectData['reel']) && \Storage::disk('public')->exists($projectData['reel'])) {
             \Storage::disk('public')->delete($projectData['reel']);
         }
 
-        // Delete brochure file
         if (!empty($projectData['brochure']) && \Storage::disk('public')->exists($projectData['brochure'])) {
             \Storage::disk('public')->delete($projectData['brochure']);
         }
 
-        // Delete logo image file
         if (!empty($projectData['logo_image_id']) && \Storage::disk('public')->exists($projectData['logo_image_id'])) {
             \Storage::disk('public')->delete($projectData['logo_image_id']);
         }
 
-        // Finally, delete the project record
         $project->delete();
 
         return redirect()->route('projects.index')->with('success', 'Project deleted successfully along with its files.');
     }
+
 
 }
