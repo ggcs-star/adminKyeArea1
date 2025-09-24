@@ -1,7 +1,7 @@
 import React from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link } from '@inertiajs/react';
-
+import { Inertia } from '@inertiajs/inertia';
 const ProjectViewPage = ({ project }) => {
     const projectData = project.project || project;
 
@@ -34,7 +34,7 @@ const ProjectViewPage = ({ project }) => {
                             {projectData.logo_image_id && (
                                 <div className="mt-4 md:mt-0 bg-white p-2 rounded-lg shadow-md">
                                     <img
-                                        src={projectData.logo_image_id}  // Remove /storage/, use direct URL
+                                        src={projectData.logo_image_id} 
                                         alt={`${projectData.name} logo`}
                                         className="h-16 w-auto object-contain"
                                     />
@@ -171,7 +171,10 @@ const ProjectViewPage = ({ project }) => {
                                         <h3 className="text-sm font-medium text-gray-500">Type</h3>
                                         <p className="mt-1 text-gray-900">{projectData.type || 'Not specified'}</p>
                                     </div>
-
+                                <div>
+                                        <h3 className="text-sm font-medium text-gray-500">Phase</h3>
+                                        <p className="mt-1 text-gray-900">{projectData.phase || 'Not specified'}</p>
+                                    </div>
                                     <div>
                                         <h3 className="text-sm font-medium text-gray-500">Status</h3>
                                         <div className="mt-2">

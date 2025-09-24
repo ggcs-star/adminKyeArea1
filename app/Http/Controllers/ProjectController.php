@@ -7,17 +7,32 @@ use App\Models\Project;
 
 class ProjectController extends Controller
 {
-    public function index()
-    {
-        $projects = Project::paginate(5);
-        return Inertia::render('Projects/Index', [
-            'projects' => $projects
-        ]);
-    }
+   public function index()
+{
+    $projectsPaginated = Project::paginate(10);
+
+    $allProjects = Project::all()->map(function ($proj) {
+        return [
+            'id' => (string) $proj->_id,
+            'project' => $proj->project,
+            'status' => $proj->status ?? 'inactive',
+            'featured' => $proj->featured ?? false,
+            'emerging_property' => $proj->emerging_property ?? false,
+            'emerging_area' => $proj->emerging_area ?? false,
+        ];
+    });
+
+    return Inertia::render('Projects/Index', [
+        'projects' => $projectsPaginated,
+        'allProjects' => $allProjects,
+    ]);
+}
+
 
 
     public function store(Request $request)
     {
+        // dd($request);
         $validated = $request->validate([
             'project.name' => 'required|string',
             'project.slug' => 'required|string',
@@ -30,7 +45,9 @@ class ProjectController extends Controller
             'project.brochure' => 'nullable|url',
             'project.logo_image_id' => 'nullable|url',
             'project.status' => 'nullable',
+            'project.phase' => 'nullable',
         ]);
+
 
         $projectData = $validated['project'];
 
@@ -61,6 +78,7 @@ class ProjectController extends Controller
             'project.brochure' => 'nullable',
             'project.logo_image_id' => 'nullable|url',
             'project.status' => 'nullable',
+             'project.phase' => 'nullable',
         ]);
         // dd( $validated);
 
@@ -71,7 +89,7 @@ class ProjectController extends Controller
         $projectData['slug'] = $validated['project']['slug'];
         $projectData['type'] = $validated['project']['type'];
         $projectData['location'] = $validated['project']['location'];
-
+         $projectData['phase'] = $validated['project']['phase'];
         
         $projectData['reel'] = $validated['project']['reel'] ?? $projectData['reel'];
         $projectData['brochure'] = $validated['project']['brochure'] ?? $projectData['brochure'];
@@ -118,5 +136,6 @@ class ProjectController extends Controller
         return redirect()->route('projects.index')->with('success', 'Project deleted successfully along with its files.');
     }
 
+    
 
 }

@@ -4,13 +4,18 @@ import { usePage } from '@inertiajs/react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { route } from 'ziggy-js';
 import ProjectModal from '@/Components/ProjectModal';
+import ManageFlagModal from "@/Components/ManageFlagModal";
+
 const ProjectsIndex = () => {
-    const { projects } = usePage().props;
+    const { projects, allProjects } = usePage().props;
     const [showModal, setShowModal] = useState(false);
     const [isEdit, setIsEdit] = useState(false);
     const [currentProjectId, setCurrentProjectId] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
     const [sortConfig, setSortConfig] = useState({ key: null, direction: 'ascending' });
+    const [showFlagModal, setShowFlagModal] = useState(false);
+
+
 
     const [formData, setFormData] = useState({
         name: '',
@@ -20,6 +25,7 @@ const ProjectsIndex = () => {
         logo_image_id: '',
         type: '',
         status: 'active',
+        phase: '',
         visual_image_id: '',
         location: {
             address: '',
@@ -32,7 +38,6 @@ const ProjectsIndex = () => {
 
     const [formErrors, setFormErrors] = useState({});
 
-    // Filter projects based on search term
     const filteredProjects = projects?.data?.filter(project => {
         const searchLower = searchTerm.toLowerCase();
         return (
@@ -46,7 +51,6 @@ const ProjectsIndex = () => {
 
 
 
-    // Sort projects
     const sortedProjects = React.useMemo(() => {
         let sortableItems = [...filteredProjects];
         if (sortConfig.key !== null) {
@@ -112,6 +116,7 @@ const ProjectsIndex = () => {
             brochure: project.project.brochure || '',
             logo_image_id: project.project.logo_image_id || '',
             type: project.project.type || '',
+            phase: project.project.phase || '',
             status: project.project.status || 'active',
             visual_image_id: project.project.visual_image_id || '',
             location: {
@@ -153,6 +158,7 @@ const ProjectsIndex = () => {
         data.append('project[slug]', formData.slug);
         data.append('project[type]', formData.type);
         data.append('project[status]', formData.status);
+        data.append('project[phase]', formData.phase);
         data.append('project[visual_image_id]', formData.visual_image_id ?? '');
         data.append('project[location][address]', formData.location.address);
         data.append('project[location][city]', formData.location.city);
@@ -233,6 +239,7 @@ const ProjectsIndex = () => {
             logo_image_id: null,
             type: '',
             status: 'active',
+            phase: '',
             visual_image_id: null,
             location: {
                 address: '',
@@ -292,6 +299,13 @@ const ProjectsIndex = () => {
                 formErrors={formErrors}
                 isEdit={isEdit}
             />
+
+            <ManageFlagModal
+                showModal={showFlagModal}
+                closeModal={() => setShowFlagModal(false)}
+                projects={allProjects}
+            />
+
             <div className="min-h-screen bg-gray-50 py-8">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl">
@@ -302,19 +316,32 @@ const ProjectsIndex = () => {
                                     Manage all your projects in one place
                                 </p>
                             </div>
-                            <button
-                                onClick={() => {
-                                    resetForm();
-                                    setShowModal(true);
-                                }}
-                                className="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2.5 px-5 rounded-lg flex items-center transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
-                            >
-                                <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                                </svg>
-                                Add New Project
-                            </button>
+
+                            <div className="flex space-x-3">
+                                {/* Add New Project Button */}
+                                <button
+                                    onClick={() => {
+                                        resetForm();
+                                        setShowModal(true);
+                                    }}
+                                    className="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2.5 px-5 rounded-lg flex items-center transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
+                                >
+                                    <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                    </svg>
+                                    Add New Project
+                                </button>
+
+                                {/* Manage Flag Button */}
+                                <button
+                                    onClick={() => setShowFlagModal(true)}
+                                    className="bg-amber-600 hover:bg-amber-700 text-white font-medium py-2.5 px-5 rounded-lg flex items-center transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
+                                >
+                                    Manage Flag
+                                </button>
+                            </div>
                         </div>
+
 
                         <div className="px-6 py-4 bg-gray-50 border-b border-gray-200">
                             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-3 sm:space-y-0">
@@ -441,16 +468,6 @@ const ProjectsIndex = () => {
                                                 </td>
                                                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                                     <div className="flex items-center justify-end space-x-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-
-                                                        <button
-                                                            onClick={() => openEditModal(project)}
-                                                            className="text-indigo-600 hover:text-indigo-900 bg-indigo-50 hover:bg-indigo-100 p-2 rounded-lg transition-all duration-300 transform hover:scale-110"
-                                                            title="Edit project"
-                                                        >
-                                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                                                            </svg>
-                                                        </button>
                                                         <button
                                                             onClick={() => View(project)}
                                                             className="text-blue-600 hover:text-blue-900 bg-blue-50 hover:bg-blue-100 p-2 rounded-lg transition-all duration-300 transform hover:scale-110"
@@ -461,6 +478,16 @@ const ProjectsIndex = () => {
                                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
                                                             </svg>
                                                         </button>
+                                                        <button
+                                                            onClick={() => openEditModal(project)}
+                                                            className="text-indigo-600 hover:text-indigo-900 bg-indigo-50 hover:bg-indigo-100 p-2 rounded-lg transition-all duration-300 transform hover:scale-110"
+                                                            title="Edit project"
+                                                        >
+                                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                                            </svg>
+                                                        </button>
+
                                                         <button
                                                             onClick={() => handleDelete(project)}
                                                             className="text-red-600 hover:text-red-900 bg-red-50 hover:bg-red-100 p-2 rounded-lg transition-all duration-300 transform hover:scale-110"

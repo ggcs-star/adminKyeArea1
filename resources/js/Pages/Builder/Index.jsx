@@ -5,7 +5,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import BuilderForm from '@/Components/BuilderForm';
 
 const BuilderCreate = () => {
-    const { projects } = usePage().props;
+    const { projects, allProjects } = usePage().props;
 
     const [form, setForm] = useState({
         project_id: '',
@@ -116,8 +116,8 @@ const BuilderCreate = () => {
                         </button>
                     </div>
 
-                  
-                    
+
+
 
                     {/* Table */}
                     <div className="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100">
@@ -176,15 +176,6 @@ const BuilderCreate = () => {
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                                 <div className="flex justify-end space-x-2">
-                                                    <button
-                                                        onClick={() => openEditPopup(project)}
-                                                        className="text-indigo-600 hover:text-indigo-900 bg-indigo-50 hover:bg-indigo-100 px-3 py-1.5 rounded-md text-sm transition-colors flex items-center"
-                                                    >
-                                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                                        </svg>
-                                                        Edit
-                                                    </button>
                                                     <Link
                                                         href={`/builder/${project._id}`}
                                                         className="text-green-600 hover:text-green-900 bg-green-50 hover:bg-green-100 px-3 py-1.5 rounded-md text-sm transition-colors flex items-center"
@@ -195,6 +186,16 @@ const BuilderCreate = () => {
                                                         </svg>
                                                         View
                                                     </Link>
+                                                    <button
+                                                        onClick={() => openEditPopup(project)}
+                                                        className="text-indigo-600 hover:text-indigo-900 bg-indigo-50 hover:bg-indigo-100 px-3 py-1.5 rounded-md text-sm transition-colors flex items-center"
+                                                    >
+                                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                                        </svg>
+                                                        Edit
+                                                    </button>
+
                                                 </div>
                                             </td>
                                         </tr>
@@ -226,32 +227,32 @@ const BuilderCreate = () => {
 
             {/* Add/Edit Builder Popup */}
             {isPopupOpen && (
-    <div 
-        className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-        onClick={() => setIsPopupOpen(false)} 
-    >
-        <div 
-            className="bg-white rounded-2xl shadow-xl w-full max-w-2xl p-6 relative"
-            onClick={(e) => e.stopPropagation()}
-        >
-            <button 
-                onClick={() => setIsPopupOpen(false)} 
-                className="absolute top-4 right-4 text-xl font-bold"
-            >
-                &times;
-            </button>
-            <h2 className="text-xl font-semibold mb-4">Add / Edit Builder</h2>
+                <div
+                    className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+                    onClick={() => setIsPopupOpen(false)}
+                >
+                    <div
+                        className="bg-white rounded-2xl shadow-xl w-full max-w-2xl p-6 relative"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <button
+                            onClick={() => setIsPopupOpen(false)}
+                            className="absolute top-4 right-4 text-xl font-bold"
+                        >
+                            &times;
+                        </button>
+                        <h2 className="text-xl font-semibold mb-4">Add / Edit Builder</h2>
 
-            <BuilderForm
-                form={form}
-                projects={projects}
-                handleChange={handleChange}
-                handleSubmit={handleSubmit}
-                isEdit={isEdit}
-            />
-        </div>
-    </div>
-)}
+                        <BuilderForm
+                            form={form}
+                            projects={allProjects}
+                            handleChange={handleChange}
+                            handleSubmit={handleSubmit}
+                            isEdit={isEdit}
+                        />
+                    </div>
+                </div>
+            )}
 
         </AuthenticatedLayout>
     );

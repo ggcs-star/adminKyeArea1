@@ -5,14 +5,13 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Project;
 
-use Inertia\Inertia;class BuilderController extends Controller
+use Inertia\Inertia;
+class BuilderController extends Controller
 {
   
-    
-
 public function index()
 {
-    $projects = Project::paginate(10)->through(function ($proj) {
+    $projectsPaginated = Project::paginate(10)->through(function ($proj) {
         return [
             '_id' => (string) $proj->_id,
             'project' => $proj->project,
@@ -20,8 +19,16 @@ public function index()
         ];
     });
 
+    $allProjects = Project::all()->map(function ($proj) {
+        return [
+            '_id' => (string) $proj->_id,
+            'project' => $proj->project,
+        ];
+    });
+
     return Inertia::render('Builder/Index', [
-        'projects' => $projects
+        'projects' => $projectsPaginated,  
+        'allProjects' => $allProjects,  
     ]);
 }
 

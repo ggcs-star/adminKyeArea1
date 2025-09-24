@@ -19,7 +19,7 @@ class ProjectSeeder extends Seeder
                 "slug" => "/devkunj-80",
                 "reel" => "devkunj",
                 "brochure" => "https://drive.google.com/file/d/1XPw5haY73CG9ywdRRBC3d-pzlOfbFRp1/view",
-                "logo_image_id" => "https://images.keyarea1.com/Ahmedabad/Devkunj.png",
+                "logo_image_id" => asset($pathPrefix . "properties/devkunj/3.jpg"),
                 "type" => "Premium Condominiums, Luxury Homes",
                 "visual_image_id" => null,
                 "location" => [
@@ -28,7 +28,7 @@ class ProjectSeeder extends Seeder
                     "area" => "Gota",
                     "map_description" => "Key landmarks near Devkunj 80 include SG Highway, SP Ring Road, Bopal, Ghuma, ISKCON Temple, educational institutions, healthcare facilities, and major connecting roads indicated on the provided map"
                 ],
-                "status"=> "active",
+                "status"=>"active",
             ],
             "builder" => [
                 "name" => "Devkunj Corporation",
@@ -201,6 +201,8 @@ class ProjectSeeder extends Seeder
             "emerging_property" => false,
             "emerging_area" => true
         ]);
+
+
         
         Project::create([
 
@@ -209,7 +211,7 @@ class ProjectSeeder extends Seeder
                 "slug" => "/prayasam-green",
                 "reel" => null,
                 "brochure" => "https://myaidrive.com/BMTvp7AyVxA4PQ8YbhGHrZ/1.-PRAYASAM-.pdf",
-                "logo_image_id" => "https://images.keyarea1.com/Ahmedabad/PRAYASAM%20GREEN.png",
+                "logo_image_id" => null,
                 "type" => "Residential Apartments/Flats",
                 "visual_image_id" => null,
                 "location" => [
@@ -346,7 +348,7 @@ class ProjectSeeder extends Seeder
                 "slug" => "/atharva-posh-ville",
                 "reel" => null,
                 "brochure" => "https://example.com/atharva-posh-ville-brochure.pdf",
-                "logo_image_id" => "https://images.keyarea1.com/Ahmedabad/Atharva%20Posh%20Ville.png",
+                "logo_image_id" => null,
                 "type" => "Luxury Apartments",
                 "visual_image_id" => null,
                 "location" => [
@@ -483,7 +485,7 @@ class ProjectSeeder extends Seeder
                 "slug" => "/millennium-bungalows",
                 "reel" => null,
                 "brochure" => "https://example.com/millennium-bungalows-brochure.pdf",
-                "logo_image_id" => "https://images.keyarea1.com/Ahmedabad/MILLENNIUM%20BUNGLOWS.png",
+                "logo_image_id" => null,
                 "type" => "Residential Bungalows",
                 "visual_image_id" => null,
                 "location" => [
@@ -619,7 +621,7 @@ class ProjectSeeder extends Seeder
                 "slug" => "/aristo-aayam",
                 "reel" => null,
                 "brochure" => "https://example.com/aristo-aayam-brochure.pdf",
-                "logo_image_id" => "https://images.keyarea1.com/Ahmedabad/ARISTO%20AAYAM.png",
+                "logo_image_id" => null,
                 "type" => "4BHK + 22 Storey Living Spaces",
                 "visual_image_id" => null,
                 "location" => [
@@ -755,7 +757,7 @@ class ProjectSeeder extends Seeder
         "slug" => "/abhishree-one",
         "reel" => "abhishreeone",
         "brochure" => "https://drive.google.com/file/d/your_file_id/view", // update with actual link
-        "logo_image_id" => "https://images.keyarea1.com/Ahmedabad/AbhishreeOne.png", // placeholder, replace with actual asset reference
+        "logo_image_id" => "logo:1", // placeholder, replace with actual asset reference
         "type" => "3BHK Ultra Luxurious Apartment",
         "visual_image_id" => null,
         "location" => [
@@ -877,9 +879,9 @@ Project::create([
                 "slug" => "/ayodhyapuram",
                 "reel" => "ayodhyapuram",
                 "brochure" => null,
-                "logo_image_id" => "https://images.keyarea1.com/Ahmedabad/Ayodhyapuram.png",
+                "logo_image_id" => asset($pathPrefix . "properties/ayodhyapuram/logo.jpg"),
                 "type" => null,
-                "visual_image_id" => "https://images.keyarea1.com/Ahmedabad/Ayodhyapuram.png",
+                "visual_image_id" => null,
                 "location" => [
                     "address" => null,
                     "city" => "Ahmedabad",
@@ -1012,7 +1014,7 @@ Project::create([
                 "slug" => "/aarav-bungalows",
                 "reel" => "aarav",
                 "brochure" => null,
-                "logo_image_id" => "https://images.keyarea1.com/Ahmedabad/Aarav%20Bunglow.png",
+                "logo_image_id" => asset($pathPrefix . "properties/aarav/logo.jpg"),
                 "type" => "Premium Bungalows, Luxury Homes",
                 "visual_image_id" => null,
                 "location" => [
@@ -1146,7 +1148,7 @@ Project::create([
                 "slug" => "/haash-sparsh",
                 "reel" => "haashsparsh",
                 "brochure" => null,
-                "logo_image_id" =>"https://images.keyarea1.com/Ahmedabad/Haash%20Sparsh.png",
+                "logo_image_id" => asset($pathPrefix . "properties/haashsparsh/logo.jpg"),
                 "type" => null,
                 "visual_image_id" => null,
                 "location" => [
@@ -1271,7 +1273,7 @@ Project::create([
                 "slug" => "/rivera-apartment",
                 "reel" => "rivera",
                 "brochure" => null,
-                "logo_image_id" => "https://images.keyarea1.com/Ahmedabad/Rivera%20Apartment.png",
+                "logo_image_id" => asset($pathPrefix . "properties/rivera/logo.jpg"),
                 "type" => null,
                 "visual_image_id" => null,
                 "location" => [
@@ -1396,7 +1398,7 @@ Project::create([
                 "slug" => "/the-opus",
                 "reel" => "theopus",
                 "brochure" => null,
-                "logo_image_id" => "https://images.keyarea1.com/Ahmedabad/TheOpus.png",
+                "logo_image_id" => asset($pathPrefix . "properties/theopus/logo.jpg"),
                 "type" => null,
                 "visual_image_id" => null,
                 "location" => [
@@ -1530,7 +1532,7 @@ Project::create([
                 "slug" => "/madhu-malti",
                 "reel" => "madhumalti",
                 "brochure" => null,
-                "logo_image_id" => "https://images.keyarea1.com/Ahmedabad/Madhuram%20Aura.png",
+                "logo_image_id" => asset($pathPrefix . "properties/madhumalti/logo.jpg"),
                 "type" => null,
                 "visual_image_id" => null,
                 "location" => [
@@ -1655,7 +1657,7 @@ Project::create([
                 "slug" => "/parijat-bungalows",
                 "reel" => "parijat",
                 "brochure" => null,
-                "logo_image_id" => "https://images.keyarea1.com/Ahmedabad/PARIJAT.png",
+                "logo_image_id" => asset($pathPrefix . "properties/parijat/logo.jpg"),
                 "type" => null,
                 "visual_image_id" => null,
                 "location" => [
@@ -1780,7 +1782,7 @@ Project::create([
                 "slug" => "/atharva-parisar",
                 "reel" => "atharvaparisar",
                 "brochure" => null,
-                "logo_image_id" =>"https://images.keyarea1.com/Ahmedabad/ATHARVA_PARISAR.png",
+                "logo_image_id" => asset($pathPrefix . "properties/atharvaparisar/logo.jpg"),
                 "type" => null,
                 "visual_image_id" => null,
                 "location" => [
@@ -1906,7 +1908,7 @@ Project::create([
                 "slug" => "/shalin-prima",
                 "reel" => "shalinprima",
                 "brochure" => null,
-                "logo_image_id" => "https://images.keyarea1.com/Ahmedabad/SHALIN_PRIMA.png",
+                "logo_image_id" => asset($pathPrefix . "properties/shalinprima/logo.jpg"),
                 "type" => null,
                 "visual_image_id" => null,
                 "location" => [
@@ -2040,7 +2042,7 @@ Project::create([
                 "slug" => "/siddharth-green-valley",
                 "reel" => "siddharthgreenvalley",
                 "brochure" => null,
-                "logo_image_id" => "https://images.keyarea1.com/Ahmedabad/SIDDHARTH%20GREEN%20VALLEY.png",
+                "logo_image_id" => asset($pathPrefix . "properties/siddharthgreenvalley/logo.jpg"),
                 "type" => null,
                 "visual_image_id" => null,
                 "location" => [
@@ -2175,7 +2177,7 @@ Project::create([
                 "slug" => "/aahvan-greens",
                 "reel" => "aahvan-greens",
                 "brochure" => null,
-                "logo_image_id" => "https://images.keyarea1.com/Ahmedabad/AAHVAN%20GREENS.png",
+                "logo_image_id" => asset($pathPrefix . "properties/aahvan-greens/logo.jpg"),
                 "type" => null,
                 "visual_image_id" => null,
                 "location" => [
@@ -2309,7 +2311,7 @@ Project::create([
                 "slug" => "/aarambh",
                 "reel" => "aarambh",
                 "brochure" => null,
-                "logo_image_id" => "https://images.keyarea1.com/Ahmedabad/Aarambh.png",
+                "logo_image_id" => asset($pathPrefix . "properties/aarambh/logo.jpg"),
                 "type" => null,
                 "visual_image_id" => null,
                 "location" => [
@@ -2444,7 +2446,7 @@ Project::create([
                 "slug" => "/adarsh-ratna",
                 "reel" => "adarsh-ratna",
                 "brochure" => null,
-                "logo_image_id" => "https://images.keyarea1.com/Ahmedabad/Adarsh%20Ratna.png",
+                "logo_image_id" => asset($pathPrefix . "properties/adarsh-ratna/logo.jpg"),
                 "type" => null,
                 "visual_image_id" => null,
                 "location" => [
@@ -2572,129 +2574,15 @@ Project::create([
             "emerging_property" => false,
             "emerging_area" => false
         ]);
-      
-        Project::create([
-            "project" => [
-                "name" => "Aloka by Samruddh",
-                "slug" => "/aloka-by-samruddh",
-                "reel" => "aloka",
-                "brochure" => null,
-                "logo_image_id" => "https://images.keyarea1.com/Ahmedabad/ALOKA%20BY%20SAMRUDDH.png",
-                "type" => null,
-                "visual_image_id" => null,
-                "location" => [
-                    "address" => null,
-                    "city" => "Ahmedabad",
-                    "area" => null,
-                    "map_description" => null
-                ]
-            ],
-            "builder" => [
-                "name" => null,
-                "logo_image_id" => null,
-                "corporate_address" => null,
-                "contact" => [
-                    "website" => null,
-                    "sales_email" => null,
-                    "phone" => null
-                ]
-            ],
-            "configuration" => [
-                "Homes" => [],
-                "floorplan_image_id" => null,
-                "price" => null
-            ],
-            "specifications" => [
-                "structure" => null,
-                "flooring" => null,
-                "kitchen" => null,
-                "toilets" => null,
-                "utility" => null,
-                "electrical" => null,
-                "doors_windows" => null,
-                "internal_paint" => null
-            ],
-            "building" => [
-                "entry_direction" => null,
-                "common_lighting" => null,
-                "number_of_lifts" => null,
-                "direction_info" => null,
-                "security" => null
-            ],
-            "parking" => [
-                "ev_charging" => false,
-                "slot_info" => null,
-                "basement_ground" => null
-            ],
-            "amenities" => [
-                "clubhouse" => null,
-                "floating_fitness" => null,
-                "dedicated_guest_rooms" => null,
-                "work_from_home" => null,
-                "health_hub" => null,
-                "kids_area" => null,
-                "senior_sitouts" => null,
-                "community_living" => null,
-                "24_7_security" => false,
-                "visual_monitoring" => false,
-                "fire_resilience" => false,
-                "amenities_image_id" => null
-            ],
-            "modern_features" => [
-                "smart_home_automation" => null,
-                "solar_pv" => false,
-                "modular_kitchen" => null,
-                "designer_lighting" => null,
-                "security_monitoring" => null
-            ],
-            "lifestyle" => [
-                "family" => true,
-                "children" => true,
-                "elderly" => true,
-                "wellness" => true,
-                "community_events" => true,
-                "hospitality_lounge" => true
-            ],
-            "graphics" => [
-                "project_logo" => null,
-                "builder_logo" => null,
-                "elevation_visual" => null,
-                "floorplan" => null,
-                "amenities_map_icons" => null
-            ],
-            "localityData" => [
-                "name" => null,
-                "growth" => null,
-                "growthPeriod" => null,
-                "avgRate" => null
-            ],
-            "investmentNote" => null,
-            "buyProperties" => [
-                [
-                    "img" => null,
-                    "title" => null,
-                    "size" => null,
-                    "price" => null,
-                    "date" => null,
-                    "url" => null,
-                    "agency" => [
-                        "name" => null,
-                        "location" => null,
-                        "url" => null
-                    ]
-                ]
-            ],
-            "featured" => false,
-            "emerging_property" => false,
-            "emerging_area" => false
-        ]);
+
+    
         Project::create([
             "project" => [
                 "name" => "Anali Heights (Rang Milan)",
                 "slug" => "/anali-heights-rangmilan",
                 "reel" => "anali-heights",
                 "brochure" => null,
-                "logo_image_id" =>"https://images.keyarea1.com/Ahmedabad/ANALI%20HEIGHTS%20(RANG%20MILAN).png",
+                "logo_image_id" => asset($pathPrefix . "properties/anali-heights/logo.jpg"),
                 "type" => null,
                 "visual_image_id" => null,
                 "location" => [
@@ -2829,7 +2717,7 @@ Project::create([
                 "slug" => "/ananta-sky",
                 "reel" => "ananta-sky",
                 "brochure" => null,
-                "logo_image_id" => "https://images.keyarea1.com/Ahmedabad/Ananta%20Sky.png",
+                "logo_image_id" => asset($pathPrefix . "properties/ananta-sky/logo.jpg"),
                 "type" => null,
                 "visual_image_id" => null,
                 "location" => [
@@ -2964,7 +2852,7 @@ Project::create([
                 "slug" => "/anirdesh-apartment",
                 "reel" => "anirdesh-apartment",
                 "brochure" => null,
-                "logo_image_id" => "https://images.keyarea1.com/Ahmedabad/ANIRDESH%20APARTMENT.png",
+                "logo_image_id" => asset($pathPrefix . "properties/anirdesh-apartment/logo.jpg"),
                 "type" => null,
                 "visual_image_id" => null,
                 "location" => [
@@ -3098,7 +2986,7 @@ Project::create([
                 "slug" => "/apple-glory-2",
                 "reel" => "apple-glory-2",
                 "brochure" => null,
-                "logo_image_id" => "https://images.keyarea1.com/Ahmedabad/APPLE%20GLORY-2.png",
+                "logo_image_id" => asset($pathPrefix . "properties/apple-glory-2/logo.jpg"),
                 "type" => null,
                 "visual_image_id" => null,
                 "location" => [
@@ -3233,7 +3121,7 @@ Project::create([
                 "slug" => "/arati-apartment",
                 "reel" => "arati-apartment",
                 "brochure" => null,
-                "logo_image_id" => "https://images.keyarea1.com/Ahmedabad/ARATI%20APPARTMENT.png",
+                "logo_image_id" => asset($pathPrefix . "properties/arati-apartment/logo.jpg"),
                 "type" => null,
                 "visual_image_id" => null,
                 "location" => [
@@ -3386,7 +3274,7 @@ Project::create([
                 "slug" => "/arihant-elegance",
                 "reel" => "arihant-elegance",
                 "brochure" => null,
-                "logo_image_id" => "https://images.keyarea1.com/Ahmedabad/ARIHANT%20ELEGANCE.png",
+                "logo_image_id" => asset($pathPrefix . "properties/arihant-elegance/logo.jpg"),
                 "type" => null,
                 "visual_image_id" => null,
                 "location" => [
@@ -3539,7 +3427,7 @@ Project::create([
                 "slug" => "/asopalav-green",
                 "reel" => "asopalav-green",
                 "brochure" => null,
-                "logo_image_id" => "https://images.keyarea1.com/Ahmedabad/ASOPALAV%20GREEN.png",
+                "logo_image_id" => asset($pathPrefix . "properties/asopalav-green/logo.jpg"),
                 "type" => null,
                 "visual_image_id" => null,
                 "location" => [
@@ -3598,8 +3486,8 @@ Project::create([
                         "floorPlans" => [],
                         "galleryImages" => []
                     ],
-                    "floorplan_image_id" => "generated_image:5",
-                    "price" => "80 Lac - 90 Lac."
+                    "floorplan_image_id" => null,
+                    "price" => null
                 ],
             ],
             "specifications" => [
@@ -3692,7 +3580,7 @@ Project::create([
                 "slug" => "/orium-elements",
                 "reel" => "orium-elements",
                 "brochure" => null,
-                "logo_image_id" => "https://images.keyarea1.com/Ahmedabad/ORIUM%20ELEMENTS.png",
+                "logo_image_id" => asset($pathPrefix . "properties/orium-elements/logo.jpg"),
                 "type" => null,
                 "visual_image_id" => null,
                 "location" => [
@@ -3845,7 +3733,7 @@ Project::create([
                 "slug" => "/elinor-108",
                 "reel" => "elinor-108",
                 "brochure" => null,
-                "logo_image_id" =>"https://images.keyarea1.com/Ahmedabad/elinor%20108.png",
+                "logo_image_id" => asset($pathPrefix . "properties/elinor-108/logo.jpg"),
                 "type" => null,
                 "visual_image_id" => null,
                 "location" => [
@@ -3998,7 +3886,7 @@ Project::create([
                 "slug" => "/ayodhya-parisar",
                 "reel" => "ayodhya-parisar",
                 "brochure" => null,
-                "logo_image_id" =>"https://images.keyarea1.com/Ahmedabad/AYODHYA%20PARISAR.png",
+                "logo_image_id" => asset($pathPrefix . "properties/ayodhya-parisar/logo.jpg"),
                 "type" => null,
                 "visual_image_id" => null,
                 "location" => [
@@ -4152,7 +4040,7 @@ Project::create([
                 "slug" => "/brookstone",
                 "reel" => "brookstone",
                 "brochure" => null,
-                "logo_image_id" => "https://images.keyarea1.com/Ahmedabad/Brookstone.png",
+                "logo_image_id" => asset($pathPrefix . "properties/brookstone/logo.jpg"),
                 "type" => null,
                 "visual_image_id" => null,
                 "location" => [
@@ -4305,7 +4193,7 @@ Project::create([
                 "slug" => "/callisto-emerald",
                 "reel" => "callisto-emerald",
                 "brochure" => null,
-                "logo_image_id" => "https://images.keyarea1.com/Ahmedabad/CALLISTO%20EMERALD.png",
+                "logo_image_id" => asset($pathPrefix . "properties/callisto-emerald/logo.jpg"),
                 "type" => "3 BHK Apartments",
                 "visual_image_id" => null,
                 "location" => [
@@ -4440,7 +4328,7 @@ Project::create([
                 "slug" => "/crown-lake-view",
                 "reel" => "crown-lake-view",
                 "brochure" => null,
-                "logo_image_id" => "https://images.keyarea1.com/Ahmedabad/CALLISTO%20EMERALD.png",
+                "logo_image_id" => asset($pathPrefix . "properties/crown-lake-view/logo.jpg"),
                 "type" => null,
                 "visual_image_id" => null,
                 "location" => [
@@ -4593,7 +4481,7 @@ Project::create([
                 "slug" => "/eiffel-tower",
                 "reel" => "eiffel-tower",
                 "brochure" => null,
-                "logo_image_id" =>"https://images.keyarea1.com/Ahmedabad/Eiffel%20Tower.png",
+                "logo_image_id" => asset($pathPrefix . "properties/eiffel-tower/logo.jpg"),
                 "type" => "Residential Apartments",
                 "visual_image_id" => null,
                 "location" => [
@@ -4746,7 +4634,7 @@ Project::create([
                 "slug" => "/elysian",
                 "reel" => "elysian",
                 "brochure" => null,
-                "logo_image_id" => "https://images.keyarea1.com/Ahmedabad/Elysian.png",
+                "logo_image_id" => asset($pathPrefix . "properties/elysian/logo.jpg"),
                 "type" => "Luxury Apartments",
                 "visual_image_id" => null,
                 "location" => [
@@ -4901,7 +4789,7 @@ Project::create([
                 "slug" => "/elysium-novus",
                 "reel" => "elysium-novus",
                 "brochure" => null,
-                "logo_image_id" => "https://images.keyarea1.com/Ahmedabad/Elysium%20Novus.png",
+                "logo_image_id" => asset($pathPrefix . "properties/elysium-novus/logo.jpg"),
                 "type" => "Residential Apartments",
                 "visual_image_id" => null,
                 "location" => [
@@ -5057,7 +4945,7 @@ Project::create([
                 "slug" => "/empire-sky-epitome",
                 "reel" => "empire-sky-epitome",
                 "brochure" => null,
-                "logo_image_id" => "https://images.keyarea1.com/Ahmedabad/EMPIRE%20SKY%20EPITOME.png",
+                "logo_image_id" => asset($pathPrefix . "properties/empire-sky-epitome/logo.jpg"),
                 "type" => "Residential Apartments",
                 "visual_image_id" => null,
                 "location" => [
@@ -5212,7 +5100,7 @@ Project::create([
                 "slug" => "/shree-shanti-nivas",
                 "reel" => "shree-shanti-nivas",
                 "brochure" => null,
-                "logo_image_id" => "https://images.keyarea1.com/Ahmedabad/SHREE%20SHANTI%20NIVAS.png",
+                "logo_image_id" => asset($pathPrefix . "properties/shree-shanti-nivas/logo.jpg"),
                 "type" => "Residential Apartments",
                 "visual_image_id" => null,
                 "location" => [
@@ -5365,7 +5253,7 @@ Project::create([
                 "slug" => "/gokul-flora",
                 "reel" => "gokul-flora",
                 "brochure" => null,
-                "logo_image_id" => "https://images.keyarea1.com/Ahmedabad/GOKUL%20FLORA.png",
+                "logo_image_id" => asset($pathPrefix . "properties/gokul-flora/logo.jpg"),
                 "type" => "Residential Apartments",
                 "visual_image_id" => null,
                 "location" => [
@@ -5518,7 +5406,7 @@ Project::create([
                 "slug" => "/gravity-aarambh",
                 "reel" => "gravity-aarambh",
                 "brochure" => null,
-                "logo_image_id" =>"https://images.keyarea1.com/Ahmedabad/GRAVITY%20AARAMBH.png",
+                "logo_image_id" => asset($pathPrefix . "properties/gravity-aarambh/logo.jpg"),
                 "type" => "Residential Apartments",
                 "visual_image_id" => null,
                 "location" => [
@@ -5671,7 +5559,7 @@ Project::create([
                 "slug" => "/greenfield",
                 "reel" => "greenfield",
                 "brochure" => null,
-                "logo_image_id" => "https://images.keyarea1.com/Ahmedabad/Greenfield.png",
+                "logo_image_id" => asset($pathPrefix . "properties/greenfield/logo.jpg"),
                 "type" => "Residential Apartments",
                 "visual_image_id" => null,
                 "location" => [
@@ -5824,7 +5712,7 @@ Project::create([
                 "slug" => "/happy-aura",
                 "reel" => "happy-aura",
                 "brochure" => null,
-                "logo_image_id" => "https://images.keyarea1.com/Ahmedabad/HAPPY%20AURA.png",
+                "logo_image_id" => asset($pathPrefix . "properties/happy-aura/logo.jpg"),
                 "type" => "2 & 3 BHK Apartments",
                 "visual_image_id" => null,
                 "location" => [
@@ -5977,7 +5865,7 @@ Project::create([
                 "slug" => "/harivilla-harmony",
                 "reel" => "harivilla-harmony",
                 "brochure" => null,
-                "logo_image_id" =>"https://images.keyarea1.com/Ahmedabad/HARIVILLA%20HARMONY.png",
+                "logo_image_id" => asset($pathPrefix . "properties/harivilla-harmony/logo.jpg"),
                 "type" => "2 & 3 BHK Exclusive Bungalows",
                 "visual_image_id" => null,
                 "location" => [
@@ -6130,7 +6018,7 @@ Project::create([
                 "slug" => "/jaldeep-trident",
                 "reel" => "jaldeep-trident",
                 "brochure" => null,
-                "logo_image_id" => "https://images.keyarea1.com/Ahmedabad/JALDEEP%20TRIDENT.png",
+                "logo_image_id" => asset($pathPrefix . "properties/jaldeep-trident/logo.jpg"),
                 "type" => "Residential Apartments",
                 "visual_image_id" => null,
                 "location" => [
@@ -6283,7 +6171,7 @@ Project::create([
                 "slug" => "/kahan-villa",
                 "reel" => "kahan-villa",
                 "brochure" => null,
-                "logo_image_id" => "https://images.keyarea1.com/Ahmedabad/KAHAN%20VILLA.png",
+                "logo_image_id" => asset($pathPrefix . "properties/kahan-villa/logo.jpg"),
                 "type" => "Residential Villas",
                 "visual_image_id" => null,
                 "location" => [
@@ -6438,7 +6326,7 @@ Project::create([
                 "slug" => "/madhuram-aura",
                 "reel" => "madhuram-aura",
                 "brochure" => null,
-                "logo_image_id" => "https://images.keyarea1.com/Ahmedabad/Madhuram%20Aura.png",
+                "logo_image_id" => asset($pathPrefix . "properties/madhuram-aura/logo.jpg"),
                 "type" => "3 BHK Exclusive Living",
                 "visual_image_id" => null,
                 "location" => [
@@ -6573,7 +6461,7 @@ Project::create([
                 "slug" => "/kalptaru",
                 "reel" => "kalptaru",
                 "brochure" => null,
-                "logo_image_id" => "https://images.keyarea1.com/Ahmedabad/KALPTARU.png",
+                "logo_image_id" => asset($pathPrefix . "properties/kalptaru/logo.jpg"),
                 "type" => "Residential Apartments",
                 "visual_image_id" => null,
                 "location" => [
@@ -6726,7 +6614,7 @@ Project::create([
                 "slug" => "/kesar-orion",
                 "reel" => "kesar-orion",
                 "brochure" => null,
-                "logo_image_id" => "https://images.keyarea1.com/Ahmedabad/KESAR%20ORION.png",
+                "logo_image_id" => asset($pathPrefix . "properties/kesar-orion/logo.jpg"),
                 "type" => "Residential Apartments",
                 "visual_image_id" => null,
                 "location" => [
@@ -6879,7 +6767,7 @@ Project::create([
                 "slug" => "/krish-atulya-ii",
                 "reel" => "krish-atulya-ii",
                 "brochure" => null,
-                "logo_image_id" => "https://images.keyarea1.com/Ahmedabad/Krish%20Atulya%20-%20ll.png",
+                "logo_image_id" => asset($pathPrefix . "properties/krish-atulya-ii/logo.jpg"),
                 "type" => "Residential Apartments",
                 "visual_image_id" => null,
                 "location" => [
@@ -7032,7 +6920,7 @@ Project::create([
                 "slug" => "/link-in-heights",
                 "reel" => "link-in-heights",
                 "brochure" => null,
-                "logo_image_id" => "https://images.keyarea1.com/Ahmedabad/Link%20In%20Heights.png",
+                "logo_image_id" => asset($pathPrefix . "properties/link-in-heights/logo.jpg"),
                 "type" => "Residential Apartments",
                 "visual_image_id" => null,
                 "location" => [
@@ -7185,7 +7073,7 @@ Project::create([
                 "slug" => "/marjan-19",
                 "reel" => "marjan-19",
                 "brochure" => null,
-                "logo_image_id" =>"https://images.keyarea1.com/Ahmedabad/Marjan%2019.png",
+                "logo_image_id" => asset($pathPrefix . "properties/marjan-19/logo.jpg"),
                 "type" => "Residential Apartments",
                 "visual_image_id" => null,
                 "location" => [
@@ -7339,7 +7227,7 @@ Project::create([
                 "slug" => "/meet-bungalows",
                 "reel" => "meet-bungalows",
                 "brochure" => null,
-                "logo_image_id" => "https://images.keyarea1.com/Ahmedabad/MEET%20BUNGLOWS.png",
+                "logo_image_id" => asset($pathPrefix . "properties/meet-bungalows/logo.jpg"),
                 "type" => "Residential Bungalows",
                 "visual_image_id" => null,
                 "location" => [
@@ -7494,7 +7382,7 @@ Project::create([
                 "slug" => "/millennium-bungalows",
                 "reel" => "millennium-bungalows",
                 "brochure" => null,
-                "logo_image_id" => "https://images.keyarea1.com/Ahmedabad/MILLENNIUM%20BUNGLOWS.png",
+                "logo_image_id" => asset($pathPrefix . "properties/millennium-bungalows/logo.jpg"),
                 "type" => "Residential Bungalows",
                 "visual_image_id" => null,
                 "location" => [
@@ -7649,7 +7537,7 @@ Project::create([
                 "slug" => "/new-panchshil-apartment",
                 "reel" => "new-panchshil-apartment",
                 "brochure" => null,
-                "logo_image_id" => "https://images.keyarea1.com/Ahmedabad/NEW%20PANCHSHIL%20APARTMENT.png",
+                "logo_image_id" => asset($pathPrefix . "properties/new-panchshil-apartment/logo.jpg"),
                 "type" => "Residential Apartments",
                 "visual_image_id" => null,
                 "location" => [
@@ -7802,7 +7690,7 @@ Project::create([
                 "slug" => "/obsidian-towers",
                 "reel" => "obsidian-towers",
                 "brochure" => null,
-                "logo_image_id" => "https://images.keyarea1.com/Ahmedabad/OBSIDIAN%20TOWERS.png",
+                "logo_image_id" => asset($pathPrefix . "properties/obsidian-towers/logo.jpg"),
                 "type" => "Residential Apartments",
                 "visual_image_id" => null,
                 "location" => [
@@ -7955,7 +7843,7 @@ Project::create([
                 "slug" => "/orium-antaara",
                 "reel" => "orium-antaara",
                 "brochure" => null,
-                "logo_image_id" => "https://images.keyarea1.com/Ahmedabad/ORIUM%20ANTAARA.png",
+                "logo_image_id" => asset($pathPrefix . "properties/orium-antaara/logo.jpg"),
                 "type" => "Residential Apartments",
                 "visual_image_id" => null,
                 "location" => [
@@ -8108,7 +7996,7 @@ Project::create([
                 "slug" => "/oxipark",
                 "reel" => "oxipark",
                 "brochure" => null,
-                "logo_image_id" => "https://images.keyarea1.com/Ahmedabad/OXYPARK%20DP%208.png",
+                "logo_image_id" => asset($pathPrefix . "properties/oxipark/logo.jpg"),
                 "type" => "Residential Apartments",
                 "visual_image_id" => null,
                 "location" => [
@@ -8261,7 +8149,7 @@ Project::create([
                 "slug" => "/pratiti-anandam",
                 "reel" => "pratiti-anandam",
                 "brochure" => null,
-                "logo_image_id" => "https://images.keyarea1.com/Ahmedabad/PRATITI%20ANANDAM.png",
+                "logo_image_id" => asset($pathPrefix . "properties/pratiti-anandam/logo.jpg"),
                 "type" => "4 BHK Apartments",
                 "visual_image_id" => null,
                 "location" => [
@@ -8398,7 +8286,7 @@ Project::create([
                 "slug" => "/rajyash-gopinath",
                 "reel" => "rajyash-gopinath",
                 "brochure" => null,
-                "logo_image_id" => "https://images.keyarea1.com/Ahmedabad/Rajyash%20Gopinath.png",
+                "logo_image_id" => asset($pathPrefix . "properties/rajyash-gopinath/logo.jpg"),
                 "type" => "2 & 3 BHK Residential Apartments",
                 "visual_image_id" => null,
                 "location" => [
@@ -8546,13 +8434,168 @@ Project::create([
             "emerging_property" => false,
             "emerging_area" => true
         ]);
+        
         Project::create([
             "project" => [
                 "name" => "Rushabh Elegance",
                 "slug" => "/rushabh-elegance",
                 "reel" => "rushabh-elegance",
                 "brochure" => null,
-                "logo_image_id" =>"https://images.keyarea1.com/Ahmedabad/RUSHABH%20ELEGANCE.png",
+                "logo_image_id" => asset($pathPrefix . "properties/rushabh-elegance/logo.jpg"),
+                "type" => "2 & 3 BHK Residential Apartments",
+                "visual_image_id" => null,
+                "location" => [
+                    "address" => "Nr. Sola Bhagwat Vidyapith, S. G. Highway",
+                    "city" => "Ahmedabad",
+                    "area" => "Sola",
+                    "map_description" => null
+                ]
+            ],
+            "builder" => [
+                "name" => "Rushabh Developers",
+                "logo_image_id" => null,
+                "corporate_address" => "Sola, Ahmedabad, Gujarat",
+                "contact" => [
+                    "website" => null,
+                    "sales_email" => null,
+                    "phone" => null
+                ]
+            ],
+            "configuration" => [
+                "Homes" => [
+                    "2BHK" => [
+                        "rooms" => [
+                            "bedroom_1" => ["size" => null, "wardrobe_niche" => null],
+                            "bedroom_2" => ["size" => null, "wardrobe_niche" => null],
+                            "bath" => ["size" => null],
+                            "wc" => ["size" => null],
+                            "living_room" => ["size" => null],
+                            "kitchen" => ["size" => null, "type" => null, "dry_area" => null],
+                            "utility_area" => ["size" => null],
+                            "balcony" => ["size" => null]
+                        ],
+                        "imageslider" => [],
+                        "price" => null,
+                        "size" => null,
+                        "date" => null,
+                        "floorPlans" => [],
+                        "galleryImages" => []
+                    ],
+                    "3BHK" => [
+                        "rooms" => [
+                            "bedroom_1" => ["size" => null, "wardrobe_niche" => null],
+                            "bedroom_2" => ["size" => null, "wardrobe_niche" => null],
+                            "bedroom_3" => ["size" => null, "wardrobe_niche" => null],
+                            "bath" => ["size" => null],
+                            "wc" => ["size" => null],
+                            "living_room" => ["size" => null],
+                            "kitchen" => ["size" => null, "type" => null, "dry_area" => null],
+                            "utility_area" => ["size" => null],
+                            "balcony" => ["size" => null]
+                        ],
+                        "imageslider" => [],
+                        "price" => null,
+                        "size" => null,
+                        "date" => null,
+                        "floorPlans" => [],
+                        "galleryImages" => []
+                    ],
+                
+                "floorplan_image_id" => null,
+                "price" => null
+            ],
+            ],
+            "specifications" => [
+                "structure" => "RCC frame structure",
+                "flooring" => "Premium vitrified tiles",
+                "kitchen" => "Granite platform with SS sink, glazed tile dado",
+                "toilets" => "Designer wall tiles, branded CP fittings, sanitary ware",
+                "utility" => "Provision for washing machine",
+                "electrical" => "Concealed copper wiring, modular switches",
+                "doors_windows" => "Main decorative door, aluminium windows",
+                "internal_paint" => "Putty finished walls"
+            ],
+            "building" => [
+                "entry_direction" => null,
+                "common_lighting" => "Solar power for common areas",
+                "number_of_lifts" => "Automatic lifts",
+                "direction_info" => null,
+                "security" => "CCTV surveillance & intercom"
+            ],
+            "parking" => [
+                "ev_charging" => false,
+                "slot_info" => "Allotted parking",
+                "basement_ground" => "Available"
+            ],
+            "amenities" => [
+                "clubhouse" => "Multipurpose hall",
+                "floating_fitness" => "Well-equipped gymnasium",
+                "dedicated_guest_rooms" => null,
+                "work_from_home" => null,
+                "health_hub" => "Indoor games",
+                "kids_area" => "Children play area",
+                "senior_sitouts" => "Senior citizen sit-outs",
+                "community_living" => "Landscaped garden",
+                "24_7_security" => true,
+                "visual_monitoring" => true,
+                "fire_resilience" => true,
+                "amenities_image_id" => null
+            ],
+            "modern_features" => [
+                "smart_home_automation" => null,
+                "solar_pv" => true,
+                "modular_kitchen" => null,
+                "designer_lighting" => "LED in common areas",
+                "security_monitoring" => "CCTV monitoring"
+            ],
+            "lifestyle" => [
+                "family" => true,
+                "children" => true,
+                "elderly" => true,
+                "wellness" => true,
+                "community_events" => true,
+                "hospitality_lounge" => false
+            ],
+            "graphics" => [
+                "project_logo" => null,
+                "builder_logo" => null,
+                "elevation_visual" => null,
+                "floorplan" => null,
+                "amenities_map_icons" => null
+            ],
+            "localityData" => [
+                "name" => "Sola, SG Highway",
+                "growth" => null,
+                "growthPeriod" => null,
+                "avgRate" => null
+            ],
+            "investmentNote" => "Rushabh Elegance offers modern 2 & 3 BHK apartments at a prime SG Highway location with excellent connectivity.",
+            "buyProperties" => [
+                [
+                    "img" => null,
+                    "title" => "2 & 3 BHK Apartments",
+                    "size" => null,
+                    "price" => null,
+                    "date" => null,
+                    "url" => null,
+                    "agency" => [
+                        "name" => "Rushabh Developers",
+                        "location" => "Ahmedabad",
+                        "url" => null
+                    ]
+                ]
+            ],
+            "featured" => true,
+            "emerging_property" => false,
+            "emerging_area" => true
+        ]);
+        Project::create([
+            "project" => [
+                "name" => "Rushabh Elegance",
+                "slug" => "/rushabh-elegance",
+                "reel" => "rushabh-elegance",
+                "brochure" => null,
+                "logo_image_id" => asset($pathPrefix . "properties/rushabh-elegance/logo.jpg"),
                 "type" => "2 & 3 BHK Residential Apartments",
                 "visual_image_id" => null,
                 "location" => [
@@ -8706,7 +8749,7 @@ Project::create([
                 "slug" => "/sai-heaven",
                 "reel" => "sai-heaven",
                 "brochure" => null,
-                "logo_image_id" => "https://images.keyarea1.com/Ahmedabad/SAI%20HEAVEN.png",
+                "logo_image_id" => asset($pathPrefix . "properties/sai-heaven/logo.jpg"),
                 "type" => "Residential Apartments",
                 "visual_image_id" => null,
                 "location" => [
@@ -8860,7 +8903,7 @@ Project::create([
                 "slug" => "/rushabh-luxuria",
                 "reel" => "rushabh-luxuria",
                 "brochure" => null,
-                "logo_image_id" => "https://images.keyarea1.com/Ahmedabad/RUSHABH%20LUXURIA.png",
+                "logo_image_id" => asset($pathPrefix . "properties/rushabh-luxuria/logo.jpg"),
                 "type" => "Luxury 2 & 3 BHK Apartments",
                 "visual_image_id" => null,
                 "location" => [
@@ -8995,7 +9038,7 @@ Project::create([
                 "slug" => "/panorama-heights",
                 "reel" => "panorama-heights",
                 "brochure" => null,
-                "logo_image_id" => "https://images.keyarea1.com/Ahmedabad/PANORAMA%20HEIGHTS.png",
+                "logo_image_id" => asset($pathPrefix . "properties/panorama-heights/logo.jpg"),
                 "type" => "2 & 3 BHK Apartments",
                 "visual_image_id" => null,
                 "location" => [
@@ -9130,7 +9173,7 @@ Project::create([
                 "slug" => "/pearl-38",
                 "reel" => "pearl-38",
                 "brochure" => null,
-                "logo_image_id" => "https://images.keyarea1.com/Ahmedabad/PEARL-38.png",
+                "logo_image_id" => asset($pathPrefix . "properties/pearl-38/logo.jpg"),
                 "type" => "3 BHK Apartments",
                 "visual_image_id" => null,
                 "location" => [
@@ -9256,7 +9299,7 @@ Project::create([
                 "slug" => "/royal-heaven",
                 "reel" => "royal-heaven",
                 "brochure" => null,
-                "logo_image_id" => "https://images.keyarea1.com/Ahmedabad/Royal%20Heaven.png",
+                "logo_image_id" => asset($pathPrefix . "properties/royal-heaven/logo.jpg"),
                 "type" => "2 & 3 BHK Apartments",
                 "visual_image_id" => null,
                 "location" => [
@@ -9391,7 +9434,7 @@ Project::create([
                 "slug" => "/pratiti-anandam",
                 "reel" => "pratiti-anandam",
                 "brochure" => null,
-                "logo_image_id" => "https://images.keyarea1.com/Ahmedabad/PRATITI%20ANANDAM.png",
+                "logo_image_id" => asset($pathPrefix . "properties/pratiti-anandam/logo.jpg"),
                 "type" => "4 BHK Apartments",
                 "visual_image_id" => null,
                 "location" => [
@@ -9517,7 +9560,7 @@ Project::create([
                 "slug" => "/prarthna-florence",
                 "reel" => "prarthna-florence",
                 "brochure" => null,
-                "logo_image_id" => "https://images.keyarea1.com/Ahmedabad/Prarthna%20Florence.png",
+                "logo_image_id" => asset($pathPrefix . "properties/prarthna-florence/logo.jpg"),
                 "type" => null,
                 "visual_image_id" => null,
                 "location" => [
@@ -9670,7 +9713,7 @@ Project::create([
                 "slug" => "/samipya",
                 "reel" => "samipya",
                 "brochure" => null,
-                "logo_image_id" => "https://images.keyarea1.com/Ahmedabad/SAMIPYA.png",
+                "logo_image_id" => asset($pathPrefix . "properties/samipya/logo.jpg"),
                 "type" => "3 & 4 BHK Apartments",
                 "visual_image_id" => null,
                 "location" => [
@@ -9826,7 +9869,7 @@ Project::create([
                 "slug" => "/samruddham-nest",
                 "reel" => "samruddham-nest",
                 "brochure" => null,
-                "logo_image_id" => "https://images.keyarea1.com/Ahmedabad/Samruddham%20Nest.png",
+                "logo_image_id" => asset($pathPrefix . "properties/samruddham-nest/logo.jpg"),
                 "type" => "3 BHK Apartments",
                 "visual_image_id" => null,
                 "location" => [
@@ -9962,7 +10005,7 @@ Project::create([
                 "slug" => "/serenity-status",
                 "reel" => "serenity-status",
                 "brochure" => null,
-                "logo_image_id" => "https://images.keyarea1.com/Ahmedabad/Serenity_Status.png",
+                "logo_image_id" => asset($pathPrefix . "properties/serenity-status/logo.jpg"),
                 "type" => "2 & 3 BHK Apartments",
                 "visual_image_id" => null,
                 "location" => [
@@ -10097,7 +10140,7 @@ Project::create([
                 "slug" => "/shalin-abode",
                 "reel" => "shalin-abode",
                 "brochure" => null,
-                "logo_image_id" => "https://images.keyarea1.com/Ahmedabad/SHALIN%20ABODE.png",
+                "logo_image_id" => asset($pathPrefix . "properties/shalin-abode/logo.jpg"),
                 "type" => "3 BHK Apartments",
                 "visual_image_id" => null,
                 "location" => [
@@ -10223,7 +10266,7 @@ Project::create([
                 "slug" => "/seven-springs",
                 "reel" => "seven-springs",
                 "brochure" => null,
-                "logo_image_id" => "https://images.keyarea1.com/Ahmedabad/Seven%20Springs.png",
+                "logo_image_id" => asset($pathPrefix . "properties/seven-springs/logo.jpg"),
                 "type" => "4 BHK Premium Apartments",
                 "visual_image_id" => null,
                 "location" => [
@@ -10350,7 +10393,7 @@ Project::create([
                 "slug" => "/shantam-solitaire",
                 "reel" => "shantam-solitaire",
                 "brochure" => null,
-                "logo_image_id" =>"https://images.keyarea1.com/Ahmedabad/SHANTAM%20SOLITAIRE.png",
+                "logo_image_id" => asset($pathPrefix . "properties/shantam-solitaire/logo.jpg"),
                 "type" => null,
                 "visual_image_id" => null,
                 "location" => [
@@ -10504,7 +10547,7 @@ Project::create([
                 "slug" => "/shayona-sarvopari-2",
                 "reel" => "shayona-sarvopari-2",
                 "brochure" => null,
-                "logo_image_id" => "https://images.keyarea1.com/Ahmedabad/SHAYONA%20SARVOPARI-2.png",
+                "logo_image_id" => asset($pathPrefix . "properties/shayona-sarvopari-2/logo.jpg"),
                 "type" => null,
                 "visual_image_id" => null,
                 "location" => [
@@ -10657,7 +10700,7 @@ Project::create([
                 "slug" => "/shivansh-parmanand",
                 "reel" => "shivansh-parmanand",
                 "brochure" => null,
-                "logo_image_id" =>"https://images.keyarea1.com/Ahmedabad/SHIVANSH%20PARMANAND.png",
+                "logo_image_id" => asset($pathPrefix . "properties/shivansh-parmanand/logo.jpg"),
                 "type" => null,
                 "visual_image_id" => null,
                 "location" => [
@@ -10810,7 +10853,7 @@ Project::create([
         "slug" => "/svet-elevate",
         "reel" => "svet-elevate",
         "brochure" => null,
-        "logo_image_id" => "https://images.keyarea1.com/Ahmedabad/SVET%20ELEVATE.png",
+        "logo_image_id" => asset($pathPrefix . "properties/svet-elevate/logo.jpg"),
         "type" => "4 BHK Premium Apartments",
         "visual_image_id" => null,
         "location" => [
@@ -10945,7 +10988,7 @@ Project::create([
         "slug" => "/snehshilp-bliss",
         "reel" => "snehshilp-bliss",
         "brochure" => null,
-        "logo_image_id" => "https://images.keyarea1.com/Ahmedabad/Snehshilp%20Bliss.png",
+        "logo_image_id" => asset($pathPrefix . "properties/snehshilp-bliss/logo.jpg"),
         "type" => "2 & 3 BHK Apartments",
         "visual_image_id" => null,
         "location" => [
@@ -11100,7 +11143,7 @@ Project::create([
         "slug" => "/splendora-1",
         "reel" => "splendora-1",
         "brochure" => null,
-        "logo_image_id" => "https://images.keyarea1.com/Ahmedabad/Splendora%201.png",
+        "logo_image_id" => asset($pathPrefix . "properties/splendora-1/logo.jpg"),
         "type" => null,
         "visual_image_id" => null,
         "location" => [
@@ -11254,7 +11297,7 @@ Project::create([
         "slug" => "/sukrut-sarvam",
         "reel" => "sukrut-sarvam",
         "brochure" => null,
-        "logo_image_id" => "https://images.keyarea1.com/Ahmedabad/SUKRUT%20SARVAM.png",
+        "logo_image_id" => asset($pathPrefix . "properties/sukrut-sarvam/logo.jpg"),
         "type" => "3 BHK Apartments",
         "visual_image_id" => null,
         "location" => [
@@ -11390,7 +11433,7 @@ Project::create([
                 "slug" => "/suryakiran-villa",
                 "reel" => "suryakiran-villa",
                 "brochure" => null,
-                "logo_image_id" => "https://images.keyarea1.com/Ahmedabad/Suryakiran%20Villa.png",
+                "logo_image_id" => asset($pathPrefix . "properties/suryakiran-villa/logo.jpg"),
                 "type" => null,
                 "visual_image_id" => null,
                 "location" => [
@@ -11544,7 +11587,7 @@ Project::create([
                 "slug" => "/swara-rera",
                 "reel" => "swara-rera",
                 "brochure" => null,
-                "logo_image_id" => "https://images.keyarea1.com/Ahmedabad/Swara.png",
+                "logo_image_id" => asset($pathPrefix . "properties/swara-rera/logo.jpg"),
                 "type" => "3 BHK Apartments",
                 "visual_image_id" => null,
                 "location" => [
@@ -11681,7 +11724,7 @@ Project::create([
                 "slug" => "/swara-skypark",
                 "reel" => "swara-skypark",
                 "brochure" => null,
-                "logo_image_id" => "https://images.keyarea1.com/Ahmedabad/SWARA%20SKYPARK.png",
+                "logo_image_id" => asset($pathPrefix . "properties/swara-skypark/logo.jpg"),
                 "type" => null,
                 "visual_image_id" => null,
                 "location" => [
@@ -11835,7 +11878,7 @@ Project::create([
                 "slug" => "/the-fourfront-residency",
                 "reel" => "the-fourfront-residency",
                 "brochure" => null,
-                "logo_image_id" => "https://images.keyarea1.com/Ahmedabad/The%20Fourfront%20Residency.png",
+                "logo_image_id" => asset($pathPrefix . "properties/fourfront-residency/logo.jpg"),
                 "type" => null,
                 "visual_image_id" => null,
                 "location" => [
@@ -11895,8 +11938,8 @@ Project::create([
                         "galleryImages" => []
                     
                 ],
-                 "floorplan_image_id" => "generated_image:5",
-                    "price" => "80 Lac - 90 Lac."
+                "floorplan_image_id" => null,
+                "price" => null
             ],
         ],
             "specifications" => [
@@ -11989,7 +12032,7 @@ Project::create([
                 "slug" => "/the-landmark-luxuria",
                 "reel" => "the-landmark-luxuria",
                 "brochure" => null,
-                "logo_image_id" => "https://images.keyarea1.com/Ahmedabad/THE%20LANDMARK%20LUXURIA.png",
+                "logo_image_id" => asset($pathPrefix . "properties/landmark-luxuria/logo.jpg"),
                 "type" => null,
                 "visual_image_id" => null,
                 "location" => [
@@ -12049,8 +12092,8 @@ Project::create([
                         "galleryImages" => []
                     
                 ],
-                 "floorplan_image_id" => "generated_image:5",
-                    "price" => "80 Lac - 90 Lac."
+                "floorplan_image_id" => null,
+                "price" => null
             ],
         ],
             "specifications" => [
@@ -12144,7 +12187,7 @@ Project::create([
                 "slug" => "/the-residency",
                 "reel" => "the-residency",
                 "brochure" => null,
-                "logo_image_id" =>"https://images.keyarea1.com/Ahmedabad/THE%20RESIDENCY.png",
+                "logo_image_id" => asset($pathPrefix . "properties/the-residency/logo.jpg"),
                 "type" => null,
                 "visual_image_id" => null,
                 "location" => [
@@ -12204,8 +12247,8 @@ Project::create([
                         "galleryImages" => []
                    
                 ],
-             "floorplan_image_id" => "generated_image:5",
-                    "price" => "80 Lac - 90 Lac."
+                "floorplan_image_id" => null,
+                "price" => null
             ],
         ],
             "specifications" => [
@@ -12299,7 +12342,7 @@ Project::create([
                 "slug" => "/the-skyon",
                 "reel" => "the-skyon",
                 "brochure" => null,
-                "logo_image_id" => "https://images.keyarea1.com/Ahmedabad/THE%20SKYON.png",
+                "logo_image_id" => asset($pathPrefix . "properties/the-skyon/logo.jpg"),
                 "type" => "2 BHK Residential Apartments",
                 "visual_image_id" => null,
                 "location" => [
@@ -12340,8 +12383,8 @@ Project::create([
                         "galleryImages" => []
                     
                 ],
-            "floorplan_image_id" => "generated_image:5",
-                    "price" => "80 Lac - 90 Lac."
+                "floorplan_image_id" => null,
+                "price" => null
             ],
         ],
             "specifications" => [
@@ -12434,7 +12477,7 @@ Project::create([
                 "slug" => "/triveni-84",
                 "reel" => "triveni-84",
                 "brochure" => null,
-                "logo_image_id" => "https://images.keyarea1.com/Ahmedabad/Triveni%2084.png",
+                "logo_image_id" => asset($pathPrefix . "properties/triveni-84/logo.jpg"),
                 "type" => "4 BHK Premium Apartments",
                 "visual_image_id" => null,
                 "location" => [
@@ -12571,7 +12614,7 @@ Project::create([
                 "slug" => "/the-storeys-golf-coast",
                 "reel" => "the-storeys-golf-coast",
                 "brochure" => null,
-                "logo_image_id" => "https://images.keyarea1.com/Ahmedabad/THE%20STOREYS%20GOLF%20COAST.png",
+                "logo_image_id" => asset($pathPrefix . "properties/the-storeys-golf-coast/logo.jpg"),
                 "type" => "4 & 5 BHK Luxury Apartments",
                 "visual_image_id" => null,
                 "location" => [
@@ -12729,7 +12772,7 @@ Project::create([
                 "slug" => "/vatsal-green",
                 "reel" => "vatsal-green",
                 "brochure" => null,
-                "logo_image_id" => "https://images.keyarea1.com/Ahmedabad/VATSAL%20GREEN.png",
+                "logo_image_id" => asset($pathPrefix . "properties/vatsal-green/logo.jpg"),
                 "type" => "Residential Apartments",
                 "visual_image_id" => null,
                 "location" => [
@@ -12883,7 +12926,7 @@ Project::create([
                 "slug" => "/venus-glory",
                 "reel" => "venus-glory",
                 "brochure" => null,
-                "logo_image_id" => "https://images.keyarea1.com/Ahmedabad/VENUS%20GLORY.png",
+                "logo_image_id" => asset($pathPrefix . "properties/venus-glory/logo.jpg"),
                 "type" => null,
                 "visual_image_id" => null,
                 "location" => [
@@ -13037,7 +13080,7 @@ Project::create([
                 "slug" => "/vertical-vue",
                 "reel" => "vertical-vue",
                 "brochure" => null,
-                "logo_image_id" => "https://images.keyarea1.com/Ahmedabad/VERTICAL%20VUE.png",
+                "logo_image_id" => asset($pathPrefix . "properties/vertical-vue/logo.jpg"),
                 "type" => "Residential Apartments",
                 "visual_image_id" => null,
                 "location" => [
@@ -13193,7 +13236,7 @@ Project::create([
                 "slug" => "/elysian",
                 "reel" => "elysian",
                 "brochure" => null,
-                "logo_image_id" => "https://images.keyarea1.com/Ahmedabad/Elysian.png",
+                "logo_image_id" => asset($pathPrefix . "properties/elysian/logo.jpg"),
                 "type" => "Residential Apartments",
                 "visual_image_id" => null,
                 "location" => [
@@ -13329,7 +13372,7 @@ Project::create([
                 "slug" => "/the-sun",
                 "reel" => "the-sun",
                 "brochure" => null,
-                "logo_image_id" =>"https://images.keyarea1.com/Ahmedabad/THE%20SUN.png",
+                "logo_image_id" => asset($pathPrefix . "properties/the-sun/logo.jpg"),
                 "type" => "Luxury Residences",
                 "visual_image_id" => null,
                 "location" => [
@@ -13465,7 +13508,7 @@ Project::create([
                 "slug" => "/vrundavan-villa",
                 "reel" => "vrundavan-villa",
                 "brochure" => null,
-                "logo_image_id" => "https://images.keyarea1.com/Ahmedabad/Vrundavan%20Villa.png",
+                "logo_image_id" => asset($pathPrefix . "properties/vrundavan-villa/logo.jpg"),
                 "type" => "Luxury Villas",
                 "visual_image_id" => null,
                 "location" => [
@@ -13603,7 +13646,7 @@ Project::create([
                 "slug" => "/oxipark-dp-8",
                 "reel" => "oxipark-dp-8",
                 "brochure" => null,
-                "logo_image_id" =>"https://images.keyarea1.com/Ahmedabad/OXYPARK%20DP%208.png",
+                "logo_image_id" => asset($pathPrefix . "properties/oxipark-dp-8/logo.jpg"),
                 "type" => "Residential Project",
                 "visual_image_id" => null,
                 "location" => [
@@ -13751,6 +13794,144 @@ Project::create([
             "emerging_property" => false,
             "emerging_area" => false
         ]);
+        Project::create([
+    "project" => [
+        "name" => "Aloka by Samruddh",
+        "slug" => "/aloka-by-samruddh",
+        "reel" => "aloka",
+        "brochure" => "ALOKA BY SAMRUDDH.pdf",
+        "logo_image_id" => "https://images.keyarea1.com/Ahmedabad/ALOKA%20BY%20SAMRUDDH.png",
+        "type" => "Residential Project",
+        "visual_image_id" => null,
+        "location" => [
+            "address" => null,
+            "city" => "Ahmedabad",
+            "area" => null,
+            "map_description" => "Aloka by Samruddh offers premium residential living with modern planning and amenities."
+        ]
+    ],
+    "builder" => [
+        "name" => "Samruddh Group",
+        "logo_image_id" => null,
+        "corporate_address" => null,
+        "contact" => [
+            "website" => null,
+            "sales_email" => null,
+            "phone" => null
+        ]
+    ],
+    "configuration" => [
+        "Homes" => [
+            "3BHK" => [
+                "rooms" => [
+                    "bedroom_1" => ["size" => null, "wardrobe_niche" => null],
+                    "bedroom_2" => ["size" => null, "wardrobe_niche" => null],
+                    "bedroom_3" => ["size" => null, "wardrobe_niche" => null],
+                    "bath" => ["size" => null],
+                    "wc" => ["size" => null],
+                    "living_room" => ["size" => null],
+                    "dining_area" => ["size" => null],
+                    "kitchen" => ["size" => null],
+                    "balcony" => ["size" => null]
+                ],
+                "imageslider" => [],
+                "price" => null,
+                "size" => null,
+                "date" => null,
+                "floorPlans" => [],
+                "galleryImages" => []
+            ],
+            "floorplan_image_id" => null,
+            "price" => null
+        ],
+    ],
+    "specifications" => [
+        "structure" => null,
+        "flooring" => null,
+        "kitchen" => null,
+        "toilets" => null,
+        "utility" => null,
+        "electrical" => null,
+        "doors_windows" => null,
+        "internal_paint" => null
+    ],
+    "building" => [
+        "entry_direction" => null,
+        "common_lighting" => null,
+        "number_of_lifts" => null,
+        "direction_info" => null,
+        "security" => null
+    ],
+    "parking" => [
+        "ev_charging" => false,
+        "slot_info" => null,
+        "basement_ground" => null
+    ],
+    "amenities" => [
+        "clubhouse" => null,
+        "floating_fitness" => null,
+        "dedicated_guest_rooms" => null,
+        "work_from_home" => null,
+        "health_hub" => null,
+        "kids_area" => null,
+        "senior_sitouts" => null,
+        "community_living" => null,
+        "24_7_security" => null,
+        "visual_monitoring" => null,
+        "fire_resilience" => null,
+        "amenities_image_id" => null
+    ],
+    "modern_features" => [
+        "smart_home_automation" => null,
+        "solar_pv" => null,
+        "modular_kitchen" => null,
+        "designer_lighting" => null,
+        "security_monitoring" => null
+    ],
+    "lifestyle" => [
+        "family" => true,
+        "children" => true,
+        "elderly" => true,
+        "wellness" => true,
+        "community_events" => true,
+        "hospitality_lounge" => false
+    ],
+    "graphics" => [
+        "project_logo" => null,
+        "builder_logo" => null,
+        "elevation_visual" => null,
+        "floorplan" => null,
+        "amenities_map_icons" => null
+    ],
+    "localityData" => [
+        "name" => "Ahmedabad",
+        "growth" => "High",
+        "growthPeriod" => "5-7 years",
+        "avgRate" => null
+    ],
+    "investmentNote" => "Aloka by Samruddh offers spacious homes with lifestyle amenities in Ahmedabad.",
+    "buyProperties" => [
+        [
+            "img" => null,
+            "title" => "3 BHK Flats",
+            "size" => null,
+            "price" => null,
+            "date" => null,
+            "url" => null,
+            "agency" => [
+                "name" => null,
+                "location" => "Ahmedabad",
+                "url" => null
+            ]
+        ]
+    ],
+    "featured" => true,
+    "emerging_property" => true,
+    "emerging_area" => true
+]);
+
+      
+
     }
 }
 

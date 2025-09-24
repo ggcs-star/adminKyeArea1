@@ -1,53 +1,30 @@
 import ApplicationLogo from '@/Components/ApplicationLogo';
-import NavLink from '@/Components/NavLink';
 import { Link, usePage } from '@inertiajs/react';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from "framer-motion";
 
 // Lucide icons
 import {
     Home, Building2, Users, FileText, CreditCard, HelpCircle, BarChart,
-    ChevronDown, LogOut, User, Settings, Bell, Search, ChevronRight
+    LogOut, User, Settings, Bell, MapPin, Car, ListChecks, LayoutDashboard
 } from "lucide-react";
 
 export default function AuthenticatedLayout({ header, children }) {
     const user = usePage().props.auth.user;
-
     const currentRoute = route().current();
-    const isReportsRoute = currentRoute?.startsWith('reports.');
-    const [reportsDropdownOpen, setReportsDropdownOpen] = useState(isReportsRoute);
-    const [userDropdownOpen, setUserDropdownOpen] = useState(false);
-    const [sidebarOpen, setSidebarOpen] = useState(true);
     const [notificationsOpen, setNotificationsOpen] = useState(false);
-
-    useEffect(() => {
-        if (isReportsRoute) {
-            setReportsDropdownOpen(true);
-        }
-    }, [isReportsRoute]);
+    const [userDropdownOpen, setUserDropdownOpen] = useState(false);
 
     return (
         <div className="flex min-h-screen bg-gray-50 text-gray-900">
             {/* Sidebar */}
-            <aside className={`fixed inset-y-0 left-0 z-30 bg-gradient-to-b from-indigo-800 to-indigo-900 text-white flex flex-col shadow-xl transition-all duration-300 ${sidebarOpen ? 'w-64' : 'w-20'}`}>
+            <aside className="fixed inset-y-0 left-0 z-30 w-64 bg-gradient-to-b from-indigo-800 to-indigo-900 text-white flex flex-col shadow-xl">
                 {/* Logo */}
-                <div className="flex items-center justify-between h-16 border-b border-indigo-700 px-4">
-                    {sidebarOpen ? (
-                        <Link href="/" className="flex items-center gap-2">
-                            <ApplicationLogo className="h-10 w-auto text-white" />
-                            <span className="font-bold text-lg text-white">MyApp</span>
-                        </Link>
-                    ) : (
-                        <Link href="/" className="flex justify-center w-full">
-                            <ApplicationLogo className="h-8 w-auto text-white" />
-                        </Link>
-                    )}
-                    <button
-                        onClick={() => setSidebarOpen(!sidebarOpen)}
-                        className="p-1 rounded-md hover:bg-indigo-700 transition-colors"
-                    >
-                        <ChevronRight className={`h-4 w-4 transition-transform ${sidebarOpen ? 'rotate-180' : ''}`} />
-                    </button>
+                <div className="flex items-center justify-center h-16 border-b border-indigo-700 px-4">
+                    <Link href="/" className="flex items-center gap-2">
+                        <ApplicationLogo className="h-10 w-auto text-white" />
+                        <span className="font-bold text-lg text-white">MyApp</span>
+                    </Link>
                 </div>
 
                 {/* Navigation Links */}
@@ -56,32 +33,32 @@ export default function AuthenticatedLayout({ header, children }) {
                         href={route('dashboard')}
                         className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${route().current('dashboard') ? 'bg-indigo-700 shadow-md' : 'hover:bg-indigo-700'}`}
                     >
-                        <Home className="w-5 h-5" />
-                        {sidebarOpen && <span className="font-medium">Dashboard</span>}
+                        <LayoutDashboard className="w-5 h-5" />
+                        <span className="font-medium">Dashboard</span>
                     </Link>
 
-                     <Link
+                    <Link
                         href={route('projects.index')}
                         className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${route().current('projects.index') ? 'bg-indigo-700 shadow-md' : 'hover:bg-indigo-700'}`}
                     >
-                        <Users className="w-5 h-5" />
-                        {sidebarOpen && <span className="font-medium">projects</span>}
+                        <Building2 className="w-5 h-5" />
+                        <span className="font-medium">Projects</span>
                     </Link>
-         
+
                     <Link
                         href={route('builder.create')}
                         className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${route().current('builder.create') ? 'bg-indigo-700 shadow-md' : 'hover:bg-indigo-700'}`}
                     >
-                        <Building2 className="w-5 h-5" />
-                        {sidebarOpen && <span className="font-medium">Builder</span>}
+                        <Users className="w-5 h-5" />
+                        <span className="font-medium">Builder</span>
                     </Link>
 
                     <Link
                         href={route('configurations.index')}
                         className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${route().current('configurations.index') ? 'bg-indigo-700 shadow-md' : 'hover:bg-indigo-700'}`}
                     >
-                        <Users className="w-5 h-5" />
-                        {sidebarOpen && <span className="font-medium">Configurations</span>}
+                        <ListChecks className="w-5 h-5" />
+                        <span className="font-medium">Configurations</span>
                     </Link>
 
                     <Link
@@ -89,89 +66,71 @@ export default function AuthenticatedLayout({ header, children }) {
                         className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${route().current('leads.index') ? 'bg-indigo-700 shadow-md' : 'hover:bg-indigo-700'}`}
                     >
                         <FileText className="w-5 h-5" />
-                        {sidebarOpen && <span className="font-medium">Leads</span>}
-                    </Link>
-
-                    {/* <Link
-                        href={route('payments.index')}
-                        className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${route().current('payments.index') ? 'bg-indigo-700 shadow-md' : 'hover:bg-indigo-700'}`}
-                    >
-                        <CreditCard className="w-5 h-5" />
-                        {sidebarOpen && <span className="font-medium">Payments</span>}
+                        <span className="font-medium">Leads</span>
                     </Link>
 
                     <Link
-                        href={route('followups.index')}
-                        className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${route().current('followups.index') ? 'bg-indigo-700 shadow-md' : 'hover:bg-indigo-700'}`}
+                        href={route('specifications.index')}
+                        className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${route().current('specifications.index') ? 'bg-indigo-700 shadow-md' : 'hover:bg-indigo-700'}`}
                     >
-                        <FileText className="w-5 h-5" />
-                        {sidebarOpen && <span className="font-medium">Follow-Ups</span>}
-                    </Link> */}
+                        <CreditCard className="w-5 h-5" />
+                        <span className="font-medium">Specifications</span>
+                    </Link>
 
-                    {/* Reports Dropdown */}
-                    {/* {sidebarOpen && (
-                        <div className="relative">
-                            <button
-                                onClick={() => setReportsDropdownOpen(prev => !prev)}
-                                className={`flex items-center justify-between w-full px-4 py-3 rounded-xl transition-all duration-200 ${isReportsRoute ? 'bg-indigo-700 shadow-md' : 'hover:bg-indigo-700'}`}
-                            >
-                                <div className="flex items-center gap-3">
-                                    <BarChart className="w-5 h-5" />
-                                    <span className="font-medium">Reports</span>
-                                </div>
-                                <ChevronDown
-                                    className={`h-4 w-4 transition-transform ${reportsDropdownOpen ? "rotate-180" : ""}`}
-                                />
-                            </button>
+                    <Link
+                        href={route('building.index')}
+                        className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${route().current('building.index') ? 'bg-indigo-700 shadow-md' : 'hover:bg-indigo-700'}`}
+                    >
+                        <Building2 className="w-5 h-5" />
+                        <span className="font-medium">Building</span>
+                    </Link>
 
-                            <AnimatePresence>
-                                {reportsDropdownOpen && (
-                                    <motion.div
-                                        initial={{ opacity: 0, height: 0 }}
-                                        animate={{ opacity: 1, height: 'auto' }}
-                                        exit={{ opacity: 0, height: 0 }}
-                                        transition={{ duration: 0.2 }}
-                                        className="ml-6 mt-1 flex flex-col gap-1 overflow-hidden"
-                                    >
-                                        <Link
-                                            href={route('reports.clients')}
-                                            className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 ${route().current('reports.clients') ? 'bg-indigo-700 shadow-md' : 'hover:bg-indigo-700'}`}
-                                        >
-                                            <Users className="w-4 h-4" />
-                                            <span className="font-medium">Client Reports</span>
-                                        </Link>
-                                        <Link
-                                            href={route('reports.invoices')}
-                                            className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 ${route().current('reports.invoices') ? 'bg-indigo-700 shadow-md' : 'hover:bg-indigo-700'}`}
-                                        >
-                                            <FileText className="w-4 h-4" />
-                                            <span className="font-medium">Invoice Reports</span>
-                                        </Link>
-                                        <Link
-                                            href={route('reports.followups')}
-                                            className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 ${route().current('reports.followups') ? 'bg-indigo-700 shadow-md' : 'hover:bg-indigo-700'}`}
-                                        >
-                                            <FileText className="w-4 h-4" />
-                                            <span className="font-medium">Followups Reports</span>
-                                        </Link>
-                                    </motion.div>
-                                )}
-                            </AnimatePresence>
-                        </div>
-                    )} */}
+                    <Link
+                        href={route('parking.index')}
+                        className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${route().current('parking.index') ? 'bg-indigo-700 shadow-md' : 'hover:bg-indigo-700'}`}
+                    >
+                        <Car className="w-5 h-5" />
+                        <span className="font-medium">Parking</span>
+                    </Link>
+
+                    <Link
+                        href={route('amenities.index')}
+                        className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${route().current('amenities.index') ? 'bg-indigo-700 shadow-md' : 'hover:bg-indigo-700'}`}
+                    >
+                        <HelpCircle className="w-5 h-5" />
+                        <span className="font-medium">Amenities</span>
+                    </Link>
+
+                    <Link
+                        href={route('modern-features.index')}
+                        className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${route().current('modern-features.index') ? 'bg-indigo-700 shadow-md' : 'hover:bg-indigo-700'}`}
+                    >
+                        <BarChart className="w-5 h-5" />
+                        <span className="font-medium">Modern Features</span>
+                    </Link>
+
+                    <Link
+                        href={route('lifestyles.index')}
+                        className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${route().current('lifestyles.index') ? 'bg-indigo-700 shadow-md' : 'hover:bg-indigo-700'}`}
+                    >
+                        <Users className="w-5 h-5" />
+                        <span className="font-medium">Lifestyles</span>
+                    </Link>
+
+                    <Link
+                        href={route('localityData.index')}
+                        className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${route().current('localityData.index') ? 'bg-indigo-700 shadow-md' : 'hover:bg-indigo-700'}`}
+                    >
+                        <MapPin className="w-5 h-5" />
+                        <span className="font-medium">Locality Data</span>
+                    </Link>
                 </nav>
 
-                {/* Help Button */}
-                <div className="p-4 mt-auto">
-                    <button className="w-full bg-indigo-600 text-white px-4 py-3 rounded-xl shadow-md hover:bg-indigo-500 transition-all duration-300 flex items-center justify-center gap-2">
-                        <HelpCircle className="w-5 h-5" />
-                        {sidebarOpen && <span>Need Help?</span>}
-                    </button>
-                </div>
+               
             </aside>
 
             {/* Main content */}
-            <div className={`flex-1 flex flex-col min-h-screen transition-all duration-300 ${sidebarOpen ? 'ml-64' : 'ml-20'}`}>
+            <div className="flex-1 flex flex-col min-h-screen ml-64 transition-all duration-300">
                 {/* Header */}
                 <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-10">
                     <div className="flex justify-between items-center px-8 py-4">
@@ -180,8 +139,6 @@ export default function AuthenticatedLayout({ header, children }) {
                         </h1>
 
                         <div className="flex items-center gap-6">
-
-
                             {/* Notifications */}
                             <div className="relative">
                                 <button
@@ -238,9 +195,6 @@ export default function AuthenticatedLayout({ header, children }) {
                                         {user?.name?.charAt(0) || 'U'}
                                     </div>
                                     <span>{user.name}</span>
-                                    <ChevronDown
-                                        className={`h-4 w-4 transition-transform ${userDropdownOpen ? "rotate-180" : ""}`}
-                                    />
                                 </button>
 
                                 <AnimatePresence>

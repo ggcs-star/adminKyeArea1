@@ -80,13 +80,21 @@ export default function Index({ auth }) {
                                         {Object.entries(project.configurations).map(([type, config], i) => (
                                             <div key={i} className="flex gap-2 mb-2 last:mb-0">
                                                 <button
+                                                    className="px-3 py-1.5 bg-green-50 hover:bg-green-100 text-green-700 rounded-md transition text-sm font-medium flex items-center gap-1.5"
+                                                    onClick={() => Inertia.get(`/configurations/${project.project_id}/${type}`)}
+                                                >
+                                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                    </svg>
+                                                    View
+                                                </button>
+                                                <button
                                                     className="text-indigo-600 hover:text-indigo-900 bg-indigo-50 hover:bg-indigo-100 px-3 py-1.5 rounded-md text-sm transition-colors flex items-center"
                                                     onClick={() => {
                                                         setEditingConfig({
-                                                            id: config.id || null,
                                                             project_id: project.project_id,
                                                             typeKey: type,
-                                                            price: config.price,
+                                                            typeData: project.configurations[type], // <--- pass the type object including BHK keys
                                                         });
                                                         setShowForm(true);
                                                     }}
@@ -96,6 +104,7 @@ export default function Index({ auth }) {
                                                     </svg>
                                                     Edit
                                                 </button>
+
 
                                                 <button
                                                     className="px-3 py-1.5 bg-red-50 hover:bg-red-100 text-red-700 rounded-md transition text-sm font-medium flex items-center gap-1.5"
@@ -130,8 +139,8 @@ export default function Index({ auth }) {
                                     disabled={!configurations.prev_page_url}
                                     onClick={() => Inertia.get(configurations.prev_page_url)}
                                     className={`px-4 py-2 rounded-md font-medium transition flex items-center gap-1.5 ${!configurations.prev_page_url
-                                            ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                                            : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 shadow-sm'
+                                        ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                                        : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 shadow-sm'
                                         }`}
                                 >
                                     <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
@@ -143,8 +152,8 @@ export default function Index({ auth }) {
                                     disabled={!configurations.next_page_url}
                                     onClick={() => Inertia.get(configurations.next_page_url)}
                                     className={`px-4 py-2 rounded-md font-medium transition flex items-center gap-1.5 ${!configurations.next_page_url
-                                            ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                                            : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 shadow-sm'
+                                        ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                                        : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 shadow-sm'
                                         }`}
                                 >
                                     Next
@@ -181,45 +190,28 @@ export default function Index({ auth }) {
                 {showForm && (
                     <div
                         className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4"
-                        onClick={() => setShowForm(false)} 
+                        onClick={() => setShowForm(false)}
                     >
                         <div
-                            className="bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto"
-                            onClick={(e) => e.stopPropagation()}
+                            className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4"
+                            onClick={() => setShowForm(false)}
                         >
-                            <div className="flex items-center justify-between p-6 border-b border-gray-200">
-                                <h2 className="text-xl font-semibold text-gray-900">
-                                    {editingConfig ? "Edit Configuration" : "Create Configuration"}
-                                </h2>
-                                <button
-                                    className="text-gray-400 hover:text-gray-600 transition p-1 rounded-full hover:bg-gray-100"
-                                    onClick={() => setShowForm(false)}
-                                >
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        className="h-6 w-6"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        stroke="currentColor"
-                                    >
-                                        <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            strokeWidth={2}
-                                            d="M6 18L18 6M6 6l12 12"
-                                        />
-                                    </svg>
-                                </button>
-                            </div>
-                            <div className="p-6">
-                                <ConfigurationForm
-                                    closeModal={() => setShowForm(false)}
-                                    configData={editingConfig}
-                                />
+                            <div
+                                className="bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto"
+                                onClick={(e) => e.stopPropagation()}
+                            >
+                                <div className="p-6">
+                                    <ConfigurationForm
+                                        closeModal={() => setShowForm(false)}
+                                        configData={editingConfig}
+                                    />
+                                </div>
                             </div>
                         </div>
+
                     </div>
                 )}
+
 
             </div>
         </AuthenticatedLayout>

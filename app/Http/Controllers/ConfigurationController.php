@@ -46,30 +46,75 @@ class ConfigurationController extends Controller
         });
 
         return Inertia::render('Configurations/Index', [
-            'configurations' => $configurations, 
+            'configurations' => $configurations,
             'projects' => $projects,
         ]);
     }
-
-
-
     public function store(Request $request)
     {
         $validated = $request->validate([
             'project_id' => 'required|exists:projects,_id',
             'type' => 'required|string',
-            'price' => 'required|string',
+            'configuration' => 'required|array',
+            'configuration.*.rooms' => 'nullable|array',
+            'configuration.*.imageslider' => 'nullable|array',
+            'configuration.*.floorPlans' => 'nullable|array',
+            'configuration.*.galleryImages' => 'nullable|array',
+            'configuration.*.price' => 'nullable|string',
+            'configuration.*.size' => 'nullable|string',
+            'configuration.*.date' => 'nullable|string',
+            'type_price' => 'nullable|string',
         ]);
 
         $project = Project::findOrFail($validated['project_id']);
-
-    
         $config = $project->configuration ?? [];
 
-       
-        $config[$validated['type']] = [
-            'price' => $validated['price']
-        ];
+        if (!isset($config[$validated['type']])) {
+            $config[$validated['type']] = [];
+        }
+
+        $normalizeBhk = function ($name) {
+            $number = preg_replace('/[^0-9]/', '', $name);
+            if (!$number)
+                $number = 'Unknown';
+            return $number . 'BHK';
+        };
+
+        $normalizeRoom = function ($name) {
+            if (!$name)
+                return '';
+            $name = strtolower(trim($name));
+            $name = str_replace(' ', '_', $name);
+            $name = preg_replace('/[^a-z0-9_]/', '', $name);
+            return $name;
+        };
+
+
+        foreach ($validated['configuration'] as $bhkName => $bhkData) {
+            $bhkKey = $normalizeBhk($bhkName);
+
+            $rooms = [];
+            if (!empty($bhkData['rooms'])) {
+                foreach ($bhkData['rooms'] as $roomName => $roomData) {
+                    $roomKey = $normalizeRoom($roomName);
+                    $rooms[$roomKey] = $roomData;
+                }
+            }
+
+            $config[$validated['type']][$bhkKey] = [
+                'rooms' => $rooms,
+                'imageslider' => $bhkData['imageslider'] ?? [],
+                'floorPlans' => $bhkData['floorPlans'] ?? [],
+                'galleryImages' => $bhkData['galleryImages'] ?? [],
+                'price' => $bhkData['price'] ?? null,
+                'size' => $bhkData['size'] ?? null,
+                'date' => $bhkData['date'] ?? null,
+            ];
+        }
+
+        if (isset($validated['type_price'])) {
+            $config[$validated['type']]['price'] = $validated['type_price'];
+        }
 
         $project->configuration = $config;
         $project->save();
@@ -81,31 +126,94 @@ class ConfigurationController extends Controller
     {
         $validated = $request->validate([
             'type' => 'required|string',
-            'price' => 'required|string',
-            'old_type' => 'nullable|string', 
+            'type_price' => 'nullable|string',
+            'old_type' => 'nullable|string',
+            'configuration' => 'nullable|array',
+            'configuration.*.rooms' => 'nullable|array',
+            'configuration.*.imageslider' => 'nullable|array',
+            'configuration.*.floorPlans' => 'nullable|array',
+            'configuration.*.galleryImages' => 'nullable|array',
+            'configuration.*.price' => 'nullable|string',
+            'configuration.*.size' => 'nullable|string',
+            'configuration.*.date' => 'nullable|string',
         ]);
 
         $config = $project->configuration ?? [];
 
-       
         if (!empty($validated['old_type']) && $validated['old_type'] !== $validated['type']) {
             unset($config[$validated['old_type']]);
         }
 
-        $config[$validated['type']] = ['price' => $validated['price']];
+        $config[$validated['type']] = [];
+
+        $normalizeBhk = function ($name) {
+            $number = preg_replace('/[^0-9]/', '', $name); 
+            return $number ? $number . 'BHK' : ucfirst($name);
+        };
+
+        $normalizeRoom = function ($name) {
+            if (!$name)
+                return '';
+            $name = strtolower(trim($name));
+            $name = str_replace(' ', '_', $name);
+            $name = preg_replace('/[^a-z0-9_]/', '', $name);
+            return $name;
+        };
+
+        foreach ($validated['configuration'] ?? [] as $bhkName => $bhkData) {
+            $bhkKey = $normalizeBhk($bhkName);
+
+            $rooms = [];
+            foreach ($bhkData['rooms'] ?? [] as $roomName => $roomData) {
+                $roomKey = $normalizeRoom($roomName);
+                $rooms[$roomKey] = $roomData;
+            }
+
+            $config[$validated['type']][$bhkKey] = [
+                'rooms' => $rooms,
+                'imageslider' => $bhkData['imageslider'] ?? [],
+                'floorPlans' => $bhkData['floorPlans'] ?? [],
+                'galleryImages' => $bhkData['galleryImages'] ?? [],
+                'price' => $bhkData['price'] ?? null,
+                'size' => $bhkData['size'] ?? null,
+                'date' => $bhkData['date'] ?? null,
+            ];
+        }
+
+        if (isset($validated['type_price'])) {
+            $config[$validated['type']]['price'] = $validated['type_price'];
+        }
+
         $project->configuration = $config;
         $project->save();
 
-        return redirect()->back()->with('success', 'Configuration updated!');
+        return redirect()->back()->with('success', 'Configuration updated successfully!');
     }
 
+    public function show($id, $type)
+    {
+        $project = Project::findOrFail($id);
+
+        $configData = (array) $project->configuration;
+        $config = $configData[$type] ?? null;
+
+        if (!$config) {
+            abort(404, "Configuration type '$type' not found");
+        }
+
+        return Inertia::render('Configurations/Show', [
+            'project' => $project,
+            'type' => $type,
+            'config' => $config,
+        ]);
+    }
 
     public function destroy(Project $project, $type)
     {
         $config = $project->configuration ?? [];
 
         if (isset($config[$type])) {
-            unset($config[$type]); 
+            unset($config[$type]);
             $project->configuration = $config;
             $project->save();
         }
