@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Inertia } from '@inertiajs/inertia';
-import { usePage } from '@inertiajs/react';
+import { usePage,Head } from '@inertiajs/react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { route } from 'ziggy-js';
 import ProjectModal from '@/Components/ProjectModal';
@@ -290,6 +290,7 @@ const ProjectsIndex = () => {
 
     return (
         <AuthenticatedLayout title="Projects Management">
+            <Head title=" Projects" />
             <ProjectModal
                 showModal={showModal}
                 closeModal={closeModal}

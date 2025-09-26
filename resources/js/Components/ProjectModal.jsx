@@ -6,11 +6,11 @@ const ProjectModal = ({ showModal, closeModal, handleChange, handleSubmit, formD
     return (
         <div
             className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 p-4"
-            onClick={closeModal} 
+            onClick={closeModal}
         >
             <div
                 className="bg-white rounded-2xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto"
-                onClick={(e) => e.stopPropagation()}  
+                onClick={(e) => e.stopPropagation()}
             >
                 <div className="flex justify-between items-center px-6 py-4 border-b">
                     <h2 className="text-xl font-semibold text-gray-900">
@@ -59,59 +59,59 @@ const ProjectModal = ({ showModal, closeModal, handleChange, handleSubmit, formD
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-    <div>
-        <label htmlFor="type" className="block text-sm font-medium text-gray-700 mb-1">
-            Project Type
-        </label>
-        <input
-            type="text"
-            id="type"
-            name="type"
-            placeholder="e.g., Residential, Commercial"
-            value={formData.type}
-            onChange={handleChange}
-            className={`block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 ${formErrors.type ? 'border-red-500' : ''}`}
-        />
-        {formErrors.type && <p className="mt-1 text-sm text-red-600">{formErrors.type}</p>}
-    </div>
+                        <div>
+                            <label htmlFor="type" className="block text-sm font-medium text-gray-700 mb-1">
+                                Project Type
+                            </label>
+                            <input
+                                type="text"
+                                id="type"
+                                name="type"
+                                placeholder="e.g., Residential, Commercial"
+                                value={formData.type}
+                                onChange={handleChange}
+                                className={`block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 ${formErrors.type ? 'border-red-500' : ''}`}
+                            />
+                            {formErrors.type && <p className="mt-1 text-sm text-red-600">{formErrors.type}</p>}
+                        </div>
 
-    <div>
-        <label htmlFor="status" className="block text-sm font-medium text-gray-700 mb-1">
-            Status
-        </label>
-        <select
-            id="status"
-            name="status"
-            value={formData.status}
-            onChange={handleChange}
-            className={`block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 ${formErrors.status ? 'border-red-500' : ''}`}
-        >
-            <option value="active">Active</option>
-            <option value="inactive">Inactive</option>
-        </select>
-        {formErrors.status && <p className="mt-1 text-sm text-red-600">{formErrors.status}</p>}
-    </div>
+                        <div>
+                            <label htmlFor="status" className="block text-sm font-medium text-gray-700 mb-1">
+                                Status
+                            </label>
+                            <select
+                                id="status"
+                                name="status"
+                                value={formData.status}
+                                onChange={handleChange}
+                                className={`block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 ${formErrors.status ? 'border-red-500' : ''}`}
+                            >
+                                <option value="active">Active</option>
+                                <option value="inactive">Inactive</option>
+                            </select>
+                            {formErrors.status && <p className="mt-1 text-sm text-red-600">{formErrors.status}</p>}
+                        </div>
 
-    {/* ✅ New Phase Field */}
-    <div>
-        <label htmlFor="phase" className="block text-sm font-medium text-gray-700 mb-1">
-            Project Phase
-        </label>
-        <select
-            id="phase"
-            name="phase"
-            value={formData.phase}
-            onChange={handleChange}
-            className={`block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 ${formErrors.phase ? 'border-red-500' : ''}`}
-        >
-            <option value="">Select Phase</option>
-            <option value="upcoming">Upcoming</option>
-            <option value="ongoing">Ongoing</option>
-            <option value="completed">Completed</option>
-        </select>
-        {formErrors.phase && <p className="mt-1 text-sm text-red-600">{formErrors.phase}</p>}
-    </div>
-</div>
+                        {/* ✅ New Phase Field */}
+                        <div>
+                            <label htmlFor="phase" className="block text-sm font-medium text-gray-700 mb-1">
+                                Project Phase
+                            </label>
+                            <select
+                                id="phase"
+                                name="phase"
+                                value={formData.phase}
+                                onChange={handleChange}
+                                className={`block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 ${formErrors.phase ? 'border-red-500' : ''}`}
+                            >
+                                <option value="">Select Phase</option>
+                                <option value="upcoming">Upcoming</option>
+                                <option value="ongoing">Ongoing</option>
+                                <option value="completed">Completed</option>
+                            </select>
+                            {formErrors.phase && <p className="mt-1 text-sm text-red-600">{formErrors.phase}</p>}
+                        </div>
+                    </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div>

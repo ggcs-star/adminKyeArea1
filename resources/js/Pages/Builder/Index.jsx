@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Inertia } from '@inertiajs/inertia';
-import { usePage, Link } from '@inertiajs/react';
+import { usePage, Link,Head } from '@inertiajs/react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import BuilderForm from '@/Components/BuilderForm';
 
@@ -81,6 +81,7 @@ const BuilderCreate = () => {
 
     return (
         <AuthenticatedLayout title="Manage Builders">
+             <Head title=" Builder" />
             <div className="p-6 bg-gray-50 min-h-screen">
                 <div className="max-w-7xl mx-auto">
                     {/* Header */}

@@ -21,7 +21,7 @@ const AmenitiesPage = ({ auth, projects, allProjects }) => {
 
     return (
         <AuthenticatedLayout user={auth.user}>
-            <Head title="Project Amenities" />
+            <Head title=" Amenities" />
 
             <div className="min-h-screen bg-gradient-to-br from-gray-50 to-purple-50/30 py-8">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

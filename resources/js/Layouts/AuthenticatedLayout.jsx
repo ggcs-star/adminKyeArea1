@@ -3,7 +3,6 @@ import { Link, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 import { motion, AnimatePresence } from "framer-motion";
 
-// Lucide icons
 import {
     Home, Building2, Users, FileText, CreditCard, HelpCircle, BarChart,
     LogOut, User, Settings, Bell, MapPin, Car, ListChecks, LayoutDashboard
@@ -21,9 +20,8 @@ export default function AuthenticatedLayout({ header, children }) {
             <aside className="fixed inset-y-0 left-0 z-30 w-64 bg-gradient-to-b from-indigo-800 to-indigo-900 text-white flex flex-col shadow-xl">
                 {/* Logo */}
                 <div className="flex items-center justify-center h-16 border-b border-indigo-700 px-4">
-                    <Link href="/" className="flex items-center gap-2">
+                    <Link href="/dashboard" className="flex items-center gap-2">
                         <ApplicationLogo className="h-10 w-auto text-white" />
-                        <span className="font-bold text-lg text-white">MyApp</span>
                     </Link>
                 </div>
 
