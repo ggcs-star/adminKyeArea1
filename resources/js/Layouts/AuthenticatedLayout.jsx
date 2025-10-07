@@ -17,115 +17,120 @@ export default function AuthenticatedLayout({ header, children }) {
     return (
         <div className="flex min-h-screen bg-gray-50 text-gray-900">
             {/* Sidebar */}
-            <aside className="fixed inset-y-0 left-0 z-30 w-64 bg-gradient-to-b from-indigo-800 to-indigo-900 text-white flex flex-col shadow-xl">
-                {/* Logo */}
-                <div className="flex items-center justify-center h-16 border-b border-indigo-700 px-4">
-                    <Link href="/dashboard" className="flex items-center gap-2">
-                        <ApplicationLogo className="h-10 w-auto text-white" />
-                    </Link>
-                </div>
+<aside className="fixed inset-y-0 left-0 z-30 w-64 bg-gradient-to-b from-indigo-800 to-indigo-900 text-white flex flex-col shadow-xl">
+    {/* Logo */}
+    <div className="flex items-center justify-center h-16 border-b border-indigo-700 px-4">
+        <Link href="/dashboard" className="flex items-center gap-2">
+            <ApplicationLogo className="h-10 w-auto text-white" />
+        </Link>
+    </div>
 
-                {/* Navigation Links */}
-                <nav className="flex-1 flex flex-col overflow-y-auto mt-4 px-3 space-y-1">
-                    <Link
-                        href={route('dashboard')}
-                        className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${route().current('dashboard') ? 'bg-indigo-700 shadow-md' : 'hover:bg-indigo-700'}`}
-                    >
-                        <LayoutDashboard className="w-5 h-5" />
-                        <span className="font-medium">Dashboard</span>
-                    </Link>
+    {/* Navigation Links - Scrollable with hidden scrollbar */}
+    <nav className="flex-1 flex flex-col overflow-y-auto mt-4 px-3 space-y-1 scrollbar-hide">
+        <Link
+            href={route('admin.dashboard')}
+            className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${route().current('admin.dashboard') ? 'bg-indigo-700 shadow-md' : 'hover:bg-indigo-700'}`}
+        >
+            <LayoutDashboard className="w-5 h-5" />
+            <span className="font-medium">Dashboard</span>
+        </Link>
 
-                    <Link
-                        href={route('projects.index')}
-                        className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${route().current('projects.index') ? 'bg-indigo-700 shadow-md' : 'hover:bg-indigo-700'}`}
-                    >
-                        <Building2 className="w-5 h-5" />
-                        <span className="font-medium">Projects</span>
-                    </Link>
+        <Link
+            href={route('projects.index')}
+            className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${route().current('projects.index') ? 'bg-indigo-700 shadow-md' : 'hover:bg-indigo-700'}`}
+        >
+            <Building2 className="w-5 h-5" />
+            <span className="font-medium">Projects</span>
+        </Link>
 
-                    <Link
-                        href={route('builder.create')}
-                        className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${route().current('builder.create') ? 'bg-indigo-700 shadow-md' : 'hover:bg-indigo-700'}`}
-                    >
-                        <Users className="w-5 h-5" />
-                        <span className="font-medium">Builder</span>
-                    </Link>
+        <Link
+            href={route('builder.create')}
+            className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${route().current('builder.create') ? 'bg-indigo-700 shadow-md' : 'hover:bg-indigo-700'}`}
+        >
+            <Users className="w-5 h-5" />
+            <span className="font-medium">Builder</span>
+        </Link>
 
-                    <Link
-                        href={route('configurations.index')}
-                        className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${route().current('configurations.index') ? 'bg-indigo-700 shadow-md' : 'hover:bg-indigo-700'}`}
-                    >
-                        <ListChecks className="w-5 h-5" />
-                        <span className="font-medium">Configurations</span>
-                    </Link>
+        <Link
+            href={route('configurations.index')}
+            className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${route().current('configurations.index') ? 'bg-indigo-700 shadow-md' : 'hover:bg-indigo-700'}`}
+        >
+            <ListChecks className="w-5 h-5" />
+            <span className="font-medium">Configurations</span>
+        </Link>
 
-                    <Link
-                        href={route('leads.index')}
-                        className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${route().current('leads.index') ? 'bg-indigo-700 shadow-md' : 'hover:bg-indigo-700'}`}
-                    >
-                        <FileText className="w-5 h-5" />
-                        <span className="font-medium">Leads</span>
-                    </Link>
+        <Link
+            href={route('leads.index')}
+            className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${route().current('leads.index') ? 'bg-indigo-700 shadow-md' : 'hover:bg-indigo-700'}`}
+        >
+            <FileText className="w-5 h-5" />
+            <span className="font-medium">Leads</span>
+        </Link>
 
-                    <Link
-                        href={route('specifications.index')}
-                        className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${route().current('specifications.index') ? 'bg-indigo-700 shadow-md' : 'hover:bg-indigo-700'}`}
-                    >
-                        <CreditCard className="w-5 h-5" />
-                        <span className="font-medium">Specifications</span>
-                    </Link>
+        <Link
+            href={route('specifications.index')}
+            className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${route().current('specifications.index') ? 'bg-indigo-700 shadow-md' : 'hover:bg-indigo-700'}`}
+        >
+            <CreditCard className="w-5 h-5" />
+            <span className="font-medium">Specifications</span>
+        </Link>
 
-                    <Link
-                        href={route('building.index')}
-                        className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${route().current('building.index') ? 'bg-indigo-700 shadow-md' : 'hover:bg-indigo-700'}`}
-                    >
-                        <Building2 className="w-5 h-5" />
-                        <span className="font-medium">Building</span>
-                    </Link>
+        <Link
+            href={route('building.index')}
+            className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${route().current('building.index') ? 'bg-indigo-700 shadow-md' : 'hover:bg-indigo-700'}`}
+        >
+            <Building2 className="w-5 h-5" />
+            <span className="font-medium">Building</span>
+        </Link>
 
-                    <Link
-                        href={route('parking.index')}
-                        className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${route().current('parking.index') ? 'bg-indigo-700 shadow-md' : 'hover:bg-indigo-700'}`}
-                    >
-                        <Car className="w-5 h-5" />
-                        <span className="font-medium">Parking</span>
-                    </Link>
+        <Link
+            href={route('parking.index')}
+            className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${route().current('parking.index') ? 'bg-indigo-700 shadow-md' : 'hover:bg-indigo-700'}`}
+        >
+            <Car className="w-5 h-5" />
+            <span className="font-medium">Parking</span>
+        </Link>
 
-                    <Link
-                        href={route('amenities.index')}
-                        className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${route().current('amenities.index') ? 'bg-indigo-700 shadow-md' : 'hover:bg-indigo-700'}`}
-                    >
-                        <HelpCircle className="w-5 h-5" />
-                        <span className="font-medium">Amenities</span>
-                    </Link>
+        <Link
+            href={route('amenities.index')}
+            className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${route().current('amenities.index') ? 'bg-indigo-700 shadow-md' : 'hover:bg-indigo-700'}`}
+        >
+            <HelpCircle className="w-5 h-5" />
+            <span className="font-medium">Amenities</span>
+        </Link>
 
-                    <Link
-                        href={route('modern-features.index')}
-                        className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${route().current('modern-features.index') ? 'bg-indigo-700 shadow-md' : 'hover:bg-indigo-700'}`}
-                    >
-                        <BarChart className="w-5 h-5" />
-                        <span className="font-medium">Modern Features</span>
-                    </Link>
+        <Link
+            href={route('modern-features.index')}
+            className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${route().current('modern-features.index') ? 'bg-indigo-700 shadow-md' : 'hover:bg-indigo-700'}`}
+        >
+            <BarChart className="w-5 h-5" />
+            <span className="font-medium">Modern Features</span>
+        </Link>
 
-                    <Link
-                        href={route('lifestyles.index')}
-                        className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${route().current('lifestyles.index') ? 'bg-indigo-700 shadow-md' : 'hover:bg-indigo-700'}`}
-                    >
-                        <Users className="w-5 h-5" />
-                        <span className="font-medium">Lifestyles</span>
-                    </Link>
+        <Link
+            href={route('lifestyles.index')}
+            className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${route().current('lifestyles.index') ? 'bg-indigo-700 shadow-md' : 'hover:bg-indigo-700'}`}
+        >
+            <Users className="w-5 h-5" />
+            <span className="font-medium">Lifestyles</span>
+        </Link>
 
-                    <Link
-                        href={route('localityData.index')}
-                        className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${route().current('localityData.index') ? 'bg-indigo-700 shadow-md' : 'hover:bg-indigo-700'}`}
-                    >
-                        <MapPin className="w-5 h-5" />
-                        <span className="font-medium">Locality Data</span>
-                    </Link>
-                </nav>
-
-               
-            </aside>
+        <Link
+            href={route('localityData.index')}
+            className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${route().current('localityData.index') ? 'bg-indigo-700 shadow-md' : 'hover:bg-indigo-700'}`}
+        >
+            <MapPin className="w-5 h-5" />
+            <span className="font-medium">Locality Data</span>
+        </Link>
+        <Link
+            href={route('sliders.index')}
+            className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${route().current('sliders.index') ? 'bg-indigo-700 shadow-md' : 'hover:bg-indigo-700'}`}
+        >
+            <MapPin className="w-5 h-5" />
+            <span className="font-medium">Sliders</span>
+        </Link>
+    </nav>
+</aside>
 
             {/* Main content */}
             <div className="flex-1 flex flex-col min-h-screen ml-64 transition-all duration-300">

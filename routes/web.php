@@ -18,6 +18,10 @@ use App\Http\Controllers\AmenitiesController;
 use App\Http\Controllers\ModernFeaturesController;
 use App\Http\Controllers\LifestyleController;
 use App\Http\Controllers\LocalityDataController;
+use App\Http\Controllers\SliderController;
+use App\Http\Controllers\DashboardController;
+
+
 
 /*
 |--------------------------------------------------------------------------
@@ -144,6 +148,20 @@ Route::prefix("localityData")->group(function () {
     Route::delete("/{id}", [LocalityDataController::class, "destroy"])->name("localityData.destroy");
     Route::get('/{project}/view', [LocalityDataController::class, 'show'])->name('localityData.view');
 });
+
+Route::prefix("sliders")->group(function () {
+    Route::get("/", [SliderController::class, "index"])->name("sliders.index");
+    Route::post("/", [SliderController::class, "store"])->name("sliders.store");
+    Route::put("/{id}", [SliderController::class, "update"])->name("sliders.update");
+       Route::delete("/{id}", [SliderController::class, "destroy"])->name("sliders.destroy");
+});
+
+  Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
+    Route::get('/analytics', [DashboardController::class, 'analytics'])->name('admin.analytics');
+    
+    // Project Routes
+    Route::resource('projects', ProjectController::class);
+    Route::resource('builders', BuilderController::class);
 
 Route::get('/projects/search', function (Request $request) {
     $query = Project::query();

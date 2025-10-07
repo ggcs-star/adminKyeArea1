@@ -18,5 +18,9 @@ export default {
         },
     },
 
-    plugins: [forms],
+     plugins: [
+    require('@tailwindcss/forms'),   // jo already hai
+    require('tailwind-scrollbar-hide'), // naya plugin
+  ],
+    
 };
