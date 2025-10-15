@@ -9,16 +9,14 @@ class DashboardController extends Controller
 {
   public function index()
 {
-    // Key Metrics
     $metrics = [
         'total_projects'    => Project::count(),
         'active_projects'   => Project::where('project.status', 'active')->count(),
         'featured_projects' => Project::where('featured', true)->count(),
         'emerging_projects' => Project::where('emerging_area', true)->count(),
-        'total_builders'    => Project::distinct('builder.name')->count('builder.name'), // ✅ add builder count
+        'total_builders'    => Project::distinct('builder.name')->count('builder.name'), 
     ];
 
-    // Recent Projects (last 5)
     $recentProjects = Project::latest()->take(5)->get()->map(function ($p) {
         return [
             'id'         => $p->_id ?? $p->id,
@@ -28,11 +26,10 @@ class DashboardController extends Controller
             'featured'   => $p->featured ?? false,
             'builder'    => $p->builder['name'] ?? 'N/A',
             'created_at' => optional($p->created_at)->format('M d, Y'),
-            'edit_url'   => route('projects.edit', $p->id), // ✅ should be edit route, not index
+            'edit_url'   => route('projects.index', $p->id), 
         ];
     });
 
-    // Status Distribution
     $statusDistribution = Project::raw(function ($collection) {
         return $collection->aggregate([
             ['$group' => [
@@ -40,14 +37,13 @@ class DashboardController extends Controller
                 'count' => ['$sum' => 1],
             ]],
             ['$project' => [
-                'status' => '$_id', // ✅ rename _id → status
+                'status' => '$_id', 
                 'count' => 1,
                 '_id' => 0,
             ]]
         ]);
     });
 
-    // City Distribution (agar chart banana ho to same project step yahan bhi apply kar sakte ho)
     $cityDistribution = Project::raw(function ($collection) {
         return $collection->aggregate([
             ['$group' => [
@@ -55,14 +51,13 @@ class DashboardController extends Controller
                 'count' => ['$sum' => 1],
             ]],
             ['$project' => [
-                'city' => '$_id', // ✅ rename _id → city
+                'city' => '$_id', 
                 'count' => 1,
                 '_id' => 0,
             ]]
         ]);
     });
 
-    // Config Summary (sirf BHK count nikale, chahe Apartments, Villas ya Bunglows ho)
     $configSummary = Project::all()
         ->flatMap(function ($project) {
             $config = $project->configuration ?? [];
@@ -71,7 +66,7 @@ class DashboardController extends Controller
                 return collect($group)
                     ->keys()
                     ->filter(function ($key) {
-                        return preg_match('/BHK$/i', $key); // ✅ sirf BHK rakho
+                        return preg_match('/BHK$/i', $key);
                     });
             });
         })
@@ -96,7 +91,6 @@ class DashboardController extends Controller
 
     public function analytics()
     {
-        // Monthly project creation trend (last 12 months)
         $monthlyTrends = Project::where('created_at', '>=', now()->subMonths(12))
             ->get()
             ->groupBy(function ($project) {
@@ -117,7 +111,6 @@ class DashboardController extends Controller
             ->take(12)
             ->values();
 
-        // Builder-wise project count
         $builderStats = Project::all()
             ->groupBy(function ($project) {
                 return $project->builder['name'] ?? 'Unknown';

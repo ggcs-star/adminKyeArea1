@@ -1,13 +1,40 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
+import { debounce } from "lodash";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { Head, usePage } from "@inertiajs/react";
+import { Head, usePage, router } from "@inertiajs/react";
 import ConfigurationForm from "@/Components/ConfigurationForm";
-import { Inertia } from "@inertiajs/inertia";
 
 export default function Index({ auth }) {
-    const { configurations } = usePage().props;
     const [showForm, setShowForm] = useState(false);
     const [editingConfig, setEditingConfig] = useState(null);
+    const { configurations, filters } = usePage().props;
+    const [search, setSearch] = useState(filters.search || "");
+
+    const debouncedSearch = useCallback(
+        debounce((searchTerm) => {
+            router.get(route('configurations.index'), 
+                { search: searchTerm }, 
+                { 
+                    preserveState: true, 
+                    replace: true,
+                    only: ['configurations', 'filters']
+                }
+            );
+        }, 500), 
+        []
+    );
+
+    const handleSearchChange = (e) => {
+        const value = e.target.value;
+        setSearch(value);
+        debouncedSearch(value);
+    };
+
+    useEffect(() => {
+        return () => {
+            debouncedSearch.cancel();
+        };
+    }, [debouncedSearch]);
 
     return (
         <AuthenticatedLayout user={auth.user}>
@@ -20,21 +47,37 @@ export default function Index({ auth }) {
                         <h1 className="text-3xl font-bold text-gray-900">Configurations</h1>
                         <p className="text-gray-600 mt-1">Manage project configurations and pricing</p>
                     </div>
-                    <button
-                        onClick={() => {
-                            setEditingConfig(null);
-                            setShowForm(true);
-                        }}
-                        className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-5 py-2.5 rounded-lg shadow transition flex items-center gap-2"
-                    >
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                            <path fillRule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clipRule="evenodd" />
-                        </svg>
-                        Create Configuration
-                    </button>
+
+                    {/* Right section: search + button */}
+                    <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
+                        <div className="relative">
+                            <input
+                                type="text"
+                                value={search}
+                                onChange={handleSearchChange}
+                                placeholder="Search projects..."
+                                className="border border-gray-300 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 w-60 pr-10"
+                            />
+                            {/* Loading indicator */}
+                            {search && (
+                                <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
+                                </div>
+                            )}
+                        </div>
+                        <button
+                            onClick={() => {
+                                setEditingConfig(null);
+                                setShowForm(true);
+                            }}
+                            className="bg-green-600 hover:bg-green-700 text-white font-medium px-5 py-2.5 rounded-lg shadow transition flex items-center gap-2"
+                        >
+                            + Create
+                        </button>
+                    </div>
                 </div>
 
-                {/* Table */}
+                {/* Rest of your table and components remain the same */}
                 <div className="overflow-hidden bg-white rounded-xl shadow-md border border-gray-100">
                     <table className="min-w-full divide-y divide-gray-200">
                         <thead className="bg-gray-50">
@@ -81,7 +124,7 @@ export default function Index({ auth }) {
                                             <div key={i} className="flex gap-2 mb-2 last:mb-0">
                                                 <button
                                                     className="px-3 py-1.5 bg-green-50 hover:bg-green-100 text-green-700 rounded-md transition text-sm font-medium flex items-center gap-1.5"
-                                                    onClick={() => Inertia.get(`/configurations/${project.project_id}/${type}`)}
+                                                    onClick={() => router.get(`/configurations/${project.project_id}/${type}`)}
                                                 >
                                                     <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -94,7 +137,7 @@ export default function Index({ auth }) {
                                                         setEditingConfig({
                                                             project_id: project.project_id,
                                                             typeKey: type,
-                                                            typeData: project.configurations[type], // <--- pass the type object including BHK keys
+                                                            typeData: project.configurations[type],
                                                         });
                                                         setShowForm(true);
                                                     }}
@@ -104,13 +147,11 @@ export default function Index({ auth }) {
                                                     </svg>
                                                     Edit
                                                 </button>
-
-
                                                 <button
                                                     className="px-3 py-1.5 bg-red-50 hover:bg-red-100 text-red-700 rounded-md transition text-sm font-medium flex items-center gap-1.5"
                                                     onClick={() => {
                                                         if (confirm(`Are you sure you want to delete ${type}?`)) {
-                                                            Inertia.delete(`/configurations/${project.project_id}/${type}`);
+                                                            router.delete(`/configurations/${project.project_id}/${type}`);
                                                         }
                                                     }}
                                                 >
@@ -137,7 +178,7 @@ export default function Index({ auth }) {
                             <div className="flex gap-2">
                                 <button
                                     disabled={!configurations.prev_page_url}
-                                    onClick={() => Inertia.get(configurations.prev_page_url)}
+                                    onClick={() => router.get(configurations.prev_page_url)}
                                     className={`px-4 py-2 rounded-md font-medium transition flex items-center gap-1.5 ${!configurations.prev_page_url
                                         ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
                                         : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 shadow-sm'
@@ -150,7 +191,7 @@ export default function Index({ auth }) {
                                 </button>
                                 <button
                                     disabled={!configurations.next_page_url}
-                                    onClick={() => Inertia.get(configurations.next_page_url)}
+                                    onClick={() => router.get(configurations.next_page_url)}
                                     className={`px-4 py-2 rounded-md font-medium transition flex items-center gap-1.5 ${!configurations.next_page_url
                                         ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
                                         : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 shadow-sm'
@@ -172,17 +213,21 @@ export default function Index({ auth }) {
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mx-auto text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                         </svg>
-                        <h3 className="text-lg font-medium text-gray-900 mt-4">No configurations yet</h3>
-                        <p className="text-gray-500 mt-2">Get started by creating your first configuration.</p>
-                        <button
-                            onClick={() => {
-                                setEditingConfig(null);
-                                setShowForm(true);
-                            }}
-                            className="mt-6 bg-blue-600 hover:bg-blue-700 text-white font-medium px-5 py-2.5 rounded-lg shadow transition"
-                        >
-                            Create Configuration
-                        </button>
+                        <h3 className="text-lg font-medium text-gray-900 mt-4">No configurations found</h3>
+                        <p className="text-gray-500 mt-2">
+                            {search ? `No results found for "${search}"` : "Get started by creating your first configuration."}
+                        </p>
+                        {search && (
+                            <button
+                                onClick={() => {
+                                    setSearch("");
+                                    router.get(route('configurations.index'));
+                                }}
+                                className="mt-4 bg-gray-600 hover:bg-gray-700 text-white font-medium px-5 py-2.5 rounded-lg shadow transition"
+                            >
+                                Clear Search
+                            </button>
+                        )}
                     </div>
                 )}
 
@@ -193,26 +238,18 @@ export default function Index({ auth }) {
                         onClick={() => setShowForm(false)}
                     >
                         <div
-                            className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4"
-                            onClick={() => setShowForm(false)}
+                            className="bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto"
+                            onClick={(e) => e.stopPropagation()}
                         >
-                            <div
-                                className="bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto"
-                                onClick={(e) => e.stopPropagation()}
-                            >
-                                <div className="p-6">
-                                    <ConfigurationForm
-                                        closeModal={() => setShowForm(false)}
-                                        configData={editingConfig}
-                                    />
-                                </div>
+                            <div className="p-6">
+                                <ConfigurationForm
+                                    closeModal={() => setShowForm(false)}
+                                    configData={editingConfig}
+                                />
                             </div>
                         </div>
-
                     </div>
                 )}
-
-
             </div>
         </AuthenticatedLayout>
     );

@@ -2,20 +2,29 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Project;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
+
 class ConfigurationController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $projects = Project::select('id', 'project')->get()->map(fn($p) => [
+        $search = $request->input('search');
+
+        $projects = Project::select('id', 'project')->get()->map(fn ($p) => [
             'id' => $p->id,
             'name' => $p->project['name'] ?? null,
         ]);
 
+        $query = Project::query();
+
+        if ($search) {
+            $query->where('project->name', 'like', "%{$search}%");
+        }
+
         $perPage = 10;
-        $paginatedProjects = Project::paginate($perPage);
+        $paginatedProjects = $query->paginate($perPage)->withQueryString();
 
         $configurations = $paginatedProjects->through(function ($project) {
             $sizes = [];
@@ -33,8 +42,8 @@ class ConfigurationController extends Controller
                 }
             }
 
-            $sizeRange = !empty($sizes)
-                ? min($sizes) . ' - ' . max($sizes) . ' Sq. ft.'
+            $sizeRange = ! empty($sizes)
+                ? min($sizes).' - '.max($sizes).' Sq. ft.'
                 : null;
 
             return [
@@ -48,8 +57,12 @@ class ConfigurationController extends Controller
         return Inertia::render('Configurations/Index', [
             'configurations' => $configurations,
             'projects' => $projects,
+            'filters' => [
+                'search' => $search,
+            ],
         ]);
     }
+
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -69,32 +82,35 @@ class ConfigurationController extends Controller
         $project = Project::findOrFail($validated['project_id']);
         $config = $project->configuration ?? [];
 
-        if (!isset($config[$validated['type']])) {
+        if (! isset($config[$validated['type']])) {
             $config[$validated['type']] = [];
         }
 
         $normalizeBhk = function ($name) {
             $number = preg_replace('/[^0-9]/', '', $name);
-            if (!$number)
+            if (! $number) {
                 $number = 'Unknown';
-            return $number . 'BHK';
+            }
+
+            return $number.'BHK';
         };
 
         $normalizeRoom = function ($name) {
-            if (!$name)
+            if (! $name) {
                 return '';
+            }
             $name = strtolower(trim($name));
             $name = str_replace(' ', '_', $name);
             $name = preg_replace('/[^a-z0-9_]/', '', $name);
+
             return $name;
         };
-
 
         foreach ($validated['configuration'] as $bhkName => $bhkData) {
             $bhkKey = $normalizeBhk($bhkName);
 
             $rooms = [];
-            if (!empty($bhkData['rooms'])) {
+            if (! empty($bhkData['rooms'])) {
                 foreach ($bhkData['rooms'] as $roomName => $roomData) {
                     $roomKey = $normalizeRoom($roomName);
                     $rooms[$roomKey] = $roomData;
@@ -140,23 +156,26 @@ class ConfigurationController extends Controller
 
         $config = $project->configuration ?? [];
 
-        if (!empty($validated['old_type']) && $validated['old_type'] !== $validated['type']) {
+        if (! empty($validated['old_type']) && $validated['old_type'] !== $validated['type']) {
             unset($config[$validated['old_type']]);
         }
 
         $config[$validated['type']] = [];
 
         $normalizeBhk = function ($name) {
-            $number = preg_replace('/[^0-9]/', '', $name); 
-            return $number ? $number . 'BHK' : ucfirst($name);
+            $number = preg_replace('/[^0-9]/', '', $name);
+
+            return $number ? $number.'BHK' : ucfirst($name);
         };
 
         $normalizeRoom = function ($name) {
-            if (!$name)
+            if (! $name) {
                 return '';
+            }
             $name = strtolower(trim($name));
             $name = str_replace(' ', '_', $name);
             $name = preg_replace('/[^a-z0-9_]/', '', $name);
+
             return $name;
         };
 
@@ -197,7 +216,7 @@ class ConfigurationController extends Controller
         $configData = (array) $project->configuration;
         $config = $configData[$type] ?? null;
 
-        if (!$config) {
+        if (! $config) {
             abort(404, "Configuration type '$type' not found");
         }
 
@@ -220,5 +239,4 @@ class ConfigurationController extends Controller
 
         return redirect()->back()->with('success', 'Configuration deleted!');
     }
-
 }

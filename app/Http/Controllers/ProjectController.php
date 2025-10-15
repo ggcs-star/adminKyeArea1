@@ -137,5 +137,10 @@ class ProjectController extends Controller
     }
 
     
+public function allProjects()
+{
+    $projects = Project::select('project_id', 'project_name')->get();
 
+    return response()->json($projects);
+}
 }

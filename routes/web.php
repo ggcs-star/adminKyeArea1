@@ -52,7 +52,7 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
-
++
 require __DIR__.'/auth.php';
 
 
@@ -156,12 +156,10 @@ Route::prefix("sliders")->group(function () {
        Route::delete("/{id}", [SliderController::class, "destroy"])->name("sliders.destroy");
 });
 
-  Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
-    Route::get('/analytics', [DashboardController::class, 'analytics'])->name('admin.analytics');
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
+Route::get('/analytics', [DashboardController::class, 'analytics'])->name('admin.analytics');
     
-    // Project Routes
-    Route::resource('projects', ProjectController::class);
-    Route::resource('builders', BuilderController::class);
+Route::get('/projects/searchAll', [ProjectController::class, 'allProjects']);
 
 Route::get('/projects/search', function (Request $request) {
     $query = Project::query();
