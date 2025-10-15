@@ -1,21 +1,50 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { Inertia } from '@inertiajs/inertia';
-import { usePage, Head } from '@inertiajs/react';
+import { usePage, Head, router } from '@inertiajs/react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { route } from 'ziggy-js';
 import ProjectModal from '@/Components/ProjectModal';
 import ManageFlagModal from "@/Components/ManageFlagModal";
+import { debounce } from 'lodash';
+import { Listbox, Transition } from "@headlessui/react";
+import { ChevronUpDownIcon, CheckIcon } from "@heroicons/react/24/solid";
+
 
 const ProjectsIndex = () => {
-    const { projects, allProjects } = usePage().props;
+    const { projects, allProjects, filters: initialFilters = {}, filterOptions = {}, sort: initialSort = {} } = usePage().props;
+
+    // Safe defaults for props
+    const safeProjects = projects || { data: [], total: 0, current_page: 1, per_page: 10, links: [] };
+    const safeAllProjects = allProjects || [];
+    const safeFilterOptions = {
+        types: filterOptions.types || [],
+        cities: filterOptions.cities || [],
+        areas: filterOptions.areas || [],
+        statuses: filterOptions.statuses || ['active', 'inactive', 'draft'],
+    };
+
     const [showModal, setShowModal] = useState(false);
     const [isEdit, setIsEdit] = useState(false);
     const [currentProjectId, setCurrentProjectId] = useState(null);
-    const [searchTerm, setSearchTerm] = useState('');
-    const [sortConfig, setSortConfig] = useState({ key: null, direction: 'ascending' });
     const [showFlagModal, setShowFlagModal] = useState(false);
 
+    // Filters state
+    const [filters, setFilters] = useState({
+        search: initialFilters.search || '',
+        status: initialFilters.status || '',
+        type: initialFilters.type || '',
+        city: initialFilters.city || '',
+        area: initialFilters.area || '',
+    });
 
+    // Sort state
+    const [sortConfig, setSortConfig] = useState({
+        key: initialSort.field || 'created_at',
+        direction: initialSort.direction || 'descending'
+    });
+
+    // UI states
+    const [isFiltersOpen, setIsFiltersOpen] = useState(false);
 
     const [formData, setFormData] = useState({
         name: '',
@@ -35,61 +64,109 @@ const ProjectsIndex = () => {
         }
     });
 
-
     const [formErrors, setFormErrors] = useState({});
 
-    const filteredProjects = projects?.data?.filter(project => {
-        const searchLower = searchTerm.toLowerCase();
-        return (
-            project.project.name.toLowerCase().includes(searchLower) ||
-            project.project.slug.toLowerCase().includes(searchLower) ||
-            (project.project.type && project.project.type.toLowerCase().includes(searchLower)) ||
-            (project.project.location?.city && project.project.location.city.toLowerCase().includes(searchLower)) ||
-            (project.project.location?.area && project.project.location.area.toLowerCase().includes(searchLower))
-        );
-    }) || [];
+    // Debounced search
+    const debouncedSearch = useCallback(
+        debounce((searchValue) => {
+            updateFilters({ search: searchValue });
+        }, 500),
+        []
+    );
 
+    // Update filters and reload data
+    const updateFilters = (newFilters) => {
+        const updatedFilters = { ...filters, ...newFilters };
+        setFilters(updatedFilters);
 
+        const params = {
+            ...updatedFilters,
+            sort_field: sortConfig.key,
+            sort_direction: sortConfig.direction === 'ascending' ? 'asc' : 'desc'
+        };
 
-    const sortedProjects = React.useMemo(() => {
-        let sortableItems = [...filteredProjects];
-        if (sortConfig.key !== null) {
-            sortableItems.sort((a, b) => {
-                let aValue, bValue;
+        router.get(route('projects.index'), params, {
+            preserveState: true,
+            replace: true,
+        });
+    };
 
-                if (sortConfig.key.includes('.')) {
-                    const keys = sortConfig.key.split('.');
-                    aValue = keys.reduce((obj, key) => obj && obj[key], a.project);
-                    bValue = keys.reduce((obj, key) => obj && obj[key], b.project);
-                } else {
-                    aValue = a.project[sortConfig.key];
-                    bValue = b.project[sortConfig.key];
-                }
+    // Handle search input change
+    const handleSearchChange = (e) => {
+        const searchValue = e.target.value;
+        setFilters(prev => ({ ...prev, search: searchValue }));
+        debouncedSearch(searchValue);
+    };
 
-                if (aValue == null) aValue = '';
-                if (bValue == null) bValue = '';
+    // Handle filter changes
+    const handleFilterChange = (filterType, value) => {
+        const newFilters = { ...filters, [filterType]: value };
+        setFilters(newFilters);
 
-                if (aValue < bValue) {
-                    return sortConfig.direction === 'ascending' ? -1 : 1;
-                }
-                if (aValue > bValue) {
-                    return sortConfig.direction === 'ascending' ? 1 : -1;
-                }
-                return 0;
-            });
-        }
-        return sortableItems;
-    }, [filteredProjects, sortConfig]);
+        const params = {
+            ...newFilters,
+            sort_field: sortConfig.key,
+            sort_direction: sortConfig.direction === 'ascending' ? 'asc' : 'desc'
+        };
 
+        router.get(route('projects.index'), params, {
+            preserveState: true,
+            replace: true,
+        });
+    };
 
+    // Clear all filters
+    const clearFilters = () => {
+        const clearedFilters = {
+            search: '',
+            status: '',
+            type: '',
+            city: '',
+            area: '',
+        };
+        setFilters(clearedFilters);
+
+        const params = {
+            ...clearedFilters,
+            sort_field: sortConfig.key,
+            sort_direction: sortConfig.direction === 'ascending' ? 'asc' : 'desc'
+        };
+
+        router.get(route('projects.index'), params, {
+            preserveState: true,
+            replace: true,
+        });
+    };
+
+    // Handle sorting
     const requestSort = (key) => {
         let direction = 'ascending';
         if (sortConfig.key === key && sortConfig.direction === 'ascending') {
             direction = 'descending';
         }
-        setSortConfig({ key, direction });
+
+        const newSortConfig = { key, direction };
+        setSortConfig(newSortConfig);
+
+        router.get(route('projects.index'), {
+            ...filters,
+            sort_field: key,
+            sort_direction: direction === 'ascending' ? 'asc' : 'desc'
+        }, {
+            preserveState: true,
+            replace: true,
+        });
     };
 
+    const getSortIndicator = (key) => {
+        if (sortConfig.key !== key) return '↕';
+        return sortConfig.direction === 'ascending' ? '↑' : '↓';
+    };
+
+    // Check if any filter is active
+    const hasActiveFilters = Object.values(filters).some(value => value !== '');
+
+    // Rest of your existing functions remain the same...
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
         setFormErrors(prev => ({ ...prev, [name]: '' }));
@@ -107,11 +184,15 @@ const ProjectsIndex = () => {
         }
     };
 
-
     const openEditModal = (project) => {
+        if (!project || !project.project) {
+            console.error('Invalid project data:', project);
+            return;
+        }
+
         setFormData({
-            name: project.project.name,
-            slug: project.project.slug,
+            name: project.project.name || '',
+            slug: project.project.slug || '',
             reel: project.project.reel || '',
             brochure: project.project.brochure || '',
             logo_image_id: project.project.logo_image_id || '',
@@ -127,8 +208,7 @@ const ProjectsIndex = () => {
             }
         });
 
-
-        const id = project._id || project.id || (project.project && project.project.id);
+        const id = project._id || project.id || (project.project && (project.project.id || project.project._id));
         if (!id) {
             console.error('Project ID not found:', project);
             return;
@@ -214,22 +294,6 @@ const ProjectsIndex = () => {
         }
     };
 
-    const toggleStatus = (project) => {
-        const id = project._id || project.id || project.project.id;
-        if (!id) {
-            console.error('Project ID is missing:', project);
-            return;
-        }
-
-        const newStatus = project.project.status === 'active' ? 'inactive' : 'active';
-
-        if (confirm(`Are you sure you want to ${newStatus === 'active' ? 'activate' : 'deactivate'} this project?`)) {
-            Inertia.patch(route('projects.update-status', { id }), {
-                status: newStatus
-            });
-        }
-    };
-
     const resetForm = () => {
         setFormData({
             name: '',
@@ -258,23 +322,18 @@ const ProjectsIndex = () => {
         resetForm();
     };
 
-    const getSortIndicator = (key) => {
-        if (sortConfig.key !== key) return '↕';
-        return sortConfig.direction === 'ascending' ? '↑' : '↓';
-    };
-
     const getStatusBadge = (status) => {
         const statusConfig = {
             active: {
-                color: 'bg-green-100 text-green-800',
+                color: 'bg-emerald-100 text-emerald-800 border border-emerald-200',
                 text: 'Active'
             },
             inactive: {
-                color: 'bg-gray-100 text-gray-800',
+                color: 'bg-slate-100 text-slate-800 border border-slate-200',
                 text: 'Inactive'
             },
             draft: {
-                color: 'bg-yellow-100 text-yellow-800',
+                color: 'bg-amber-100 text-amber-800 border border-amber-200',
                 text: 'Draft'
             }
         };
@@ -282,15 +341,19 @@ const ProjectsIndex = () => {
         const config = statusConfig[status] || statusConfig.inactive;
 
         return (
-            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${config.color}`}>
+            <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${config.color}`}>
                 {config.text}
             </span>
         );
     };
 
+    // Safe project data access
+    const projectData = safeProjects.data || [];
+
     return (
         <AuthenticatedLayout title="Projects Management">
-            <Head title=" Projects" />
+            <Head title="Projects" />
+
             <ProjectModal
                 showModal={showModal}
                 closeModal={closeModal}
@@ -304,254 +367,573 @@ const ProjectsIndex = () => {
             <ManageFlagModal
                 showModal={showFlagModal}
                 closeModal={() => setShowFlagModal(false)}
-                projects={allProjects}
+                projects={safeAllProjects}
             />
 
-            <div className="min-h-screen bg-gray-50 py-8">
+            <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50/30 py-8">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl">
-                        <div className="px-6 py-5 border-b border-gray-200 flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
-                            <div>
-                                <h1 className="text-2xl font-bold text-gray-900">Projects Management</h1>
-                                <p className="mt-1 text-sm text-gray-500">
-                                    Manage all your projects in one place
+                    {/* Header Section */}
+                    <div className="mb-8">
+                        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
+                            <div className="mb-6 lg:mb-0">
+                                <h1 className="text-3xl font-bold text-slate-900 bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent">
+                                    Projects
+                                </h1>
+                                <p className="mt-2 text-slate-600 text-lg">
+                                    Manage and organize your project portfolio
                                 </p>
                             </div>
 
-                            <div className="flex space-x-3">
-                                {/* Add New Project Button */}
-                                <button
-                                    onClick={() => {
-                                        resetForm();
-                                        setShowModal(true);
-                                    }}
-                                    className="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2.5 px-5 rounded-lg flex items-center transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
-                                >
-                                    <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                                    </svg>
-                                    Add New Project
-                                </button>
-
-                                {/* Manage Flag Button */}
+                            <div className="flex flex-col sm:flex-row gap-3">
                                 <button
                                     onClick={() => setShowFlagModal(true)}
-                                    className="bg-amber-600 hover:bg-amber-700 text-white font-medium py-2.5 px-5 rounded-lg flex items-center transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
+                                    className="inline-flex items-center justify-center px-6 py-3.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-semibold rounded-2xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 border border-amber-400/20"
                                 >
-                                    Manage Flag
+                                    <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                                    </svg>
+                                    Manage Flags
+                                </button>
+
+                                <button
+                                    onClick={() => { resetForm(); setShowModal(true); }}
+                                    className="inline-flex items-center justify-center px-6 py-3.5 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-semibold rounded-2xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 border border-indigo-500/20"
+                                >
+                                    <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                                    </svg>
+                                    New Project
                                 </button>
                             </div>
                         </div>
+                    </div>
 
-
-                        <div className="px-6 py-4 bg-gray-50 border-b border-gray-200">
-                            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-3 sm:space-y-0">
-                                <div className="relative w-full sm:w-64">
-                                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                        <svg className="h-5 w-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                            <path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd"></path>
-                                        </svg>
+                    {/* Main Card */}
+                    <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl border border-white/20 overflow-hidden">
+                        {/* Search and Stats Bar */}
+                        <div className="p-6 border-b border-slate-200/60 bg-gradient-to-r from-white to-slate-50/50">
+                            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                                <div className="flex-1 max-w-2xl">
+                                    <div className="relative">
+                                        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                            <svg className="h-5 w-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                            </svg>
+                                        </div>
+                                        <input
+                                            type="text"
+                                            placeholder="Search projects by name, type, location..."
+                                            className="block w-full pl-12 pr-4 py-3.5 bg-white/80 border border-slate-300/50 rounded-2xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-slate-700 placeholder-slate-500 backdrop-blur-sm transition-all duration-300 shadow-sm hover:shadow-md"
+                                            value={filters.search}
+                                            onChange={handleSearchChange}
+                                        />
                                     </div>
-                                    <input
-                                        type="text"
-                                        placeholder="Search projects by name, type, or location..."
-                                        className="block w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white transition-all duration-300"
-                                        value={searchTerm}
-                                        onChange={(e) => setSearchTerm(e.target.value)}
-                                    />
                                 </div>
-                                <div className="flex items-center space-x-4">
-                                    <div className="text-sm text-gray-600 bg-gray-100 px-3 py-1 rounded-full">
-                                        {filteredProjects.length} {filteredProjects.length === 1 ? 'project' : 'projects'} found
+
+                                <div className="flex items-center gap-4">
+                                    <div className="flex items-center gap-3 bg-white/60 px-4 py-2.5 rounded-2xl border border-slate-300/30 shadow-sm">
+                                        <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
+                                        <span className="text-sm font-semibold text-slate-700">
+                                            {safeProjects.total} {safeProjects.total === 1 ? 'Project' : 'Projects'}
+                                        </span>
                                     </div>
+
                                     <button
-                                        className="text-gray-500 hover:text-gray-700 transition-colors duration-300"
-                                        title="Refresh projects"
-                                        onClick={() => window.location.reload()}
+                                        onClick={() => Inertia.reload()}
+                                        className="p-2.5 bg-white/60 hover:bg-white border border-slate-300/30 rounded-2xl text-slate-600 hover:text-slate-800 transition-all duration-300 shadow-sm hover:shadow-md transform hover:-translate-y-0.5"
+                                        title="Refresh"
                                     >
-                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                                         </svg>
                                     </button>
                                 </div>
                             </div>
                         </div>
 
-                        <div className="overflow-x-auto transition-opacity duration-300">
-                            <table className="min-w-full divide-y divide-gray-200">
-                                <thead className="bg-gray-50">
-                                    <tr>
-                                        <th
-                                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors duration-300"
-                                            onClick={() => requestSort('name')}
-                                        >
-                                            <div className="flex items-center">
-                                                Name {getSortIndicator('name')}
-                                            </div>
-                                        </th>
+                        {/* Filters Section */}
+                        <div className="p-6 border-b border-slate-200/60 bg-slate-50/30">
 
-                                        <th
-                                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors duration-300"
-                                            onClick={() => requestSort('type')}
-                                        >
-                                            <div className="flex items-center">
-                                                Type {getSortIndicator('type')}
-                                            </div>
-                                        </th>
+                            {/* Filter Controls */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+                                {/* Status Filter */}
+                                <div className="space-y-2">
+                                    <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider">
+                                        Status
+                                    </label>
 
-                                        <th
-                                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors duration-300"
-                                            onClick={() => requestSort('location.city')}
-                                        >
-                                            <div className="flex items-center">
-                                                Location {getSortIndicator('location.city')}
+
+                                    <Listbox value={filters.status} onChange={(value) => handleFilterChange('status', value)}>
+                                        {({ open }) => (
+                                            <div className="relative">
+                                                <Listbox.Button
+                                                    className="
+          w-full px-4 py-3 bg-white border border-slate-200 rounded-2xl
+          flex justify-between items-center
+          text-sm font-medium text-slate-700
+          shadow-sm hover:shadow-md focus:ring-2 focus:ring-indigo-500/20
+          transition-all duration-200
+        "
+                                                >
+                                                    <span>{filters.status || "All Status"}</span>
+                                                    <ChevronUpDownIcon className="h-5 w-5 text-slate-500" />
+                                                </Listbox.Button>
+
+                                                <Transition
+                                                    show={open}
+                                                    leave="transition ease-in duration-100"
+                                                    leaveFrom="opacity-100"
+                                                    leaveTo="opacity-0"
+                                                >
+                                                    <Listbox.Options
+                                                        className="
+                                                                absolute z-50 mt-2 w-full bg-white border border-slate-200 rounded-2xl shadow-xl
+                                                                max-h-60 overflow-auto ring-1 ring-black/5 focus:outline-none
+                                                            "
+                                                    >
+                                                        <Listbox.Option value="">
+                                                            {({ active }) => (
+                                                                <div
+                                                                    className={`cursor-pointer select-none px-4 py-2 ${active ? "bg-indigo-50 text-indigo-600" : "text-slate-700"
+                                                                        }`}
+                                                                >
+                                                                    All Status
+                                                                </div>
+                                                            )}
+                                                        </Listbox.Option>
+
+                                                        {safeFilterOptions.statuses.map((status) => (
+                                                            <Listbox.Option key={status} value={status}>
+                                                                {({ selected, active }) => (
+                                                                    <div
+                                                                        className={`cursor-pointer select-none flex justify-between items-center px-4 py-2 ${active ? "bg-indigo-50 text-indigo-600" : "text-slate-700"
+                                                                            }`}
+                                                                    >
+                                                                        <span>{status.charAt(0).toUpperCase() + status.slice(1)}</span>
+                                                                        {selected && <CheckIcon className="h-4 w-4 text-indigo-600" />}
+                                                                    </div>
+                                                                )}
+                                                            </Listbox.Option>
+                                                        ))}
+                                                    </Listbox.Options>
+                                                </Transition>
                                             </div>
-                                        </th>
-                                        <th
-                                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors duration-300"
-                                            onClick={() => requestSort('status')}
-                                        >
-                                            <div className="flex items-center">
-                                                Status {getSortIndicator('status')}
+                                        )}
+                                    </Listbox>
+
+                                </div>
+
+                                {/* Type Filter */}
+                                <div className="space-y-2">
+                                    <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider">
+                                        Type
+                                    </label>
+                                    <Listbox value={filters.type} onChange={(value) => handleFilterChange('type', value)}>
+                                        {({ open }) => (
+                                            <div className="relative">
+                                                <Listbox.Button
+                                                    className="
+          w-full px-4 py-3 bg-white border border-slate-200 rounded-2xl
+          flex justify-between items-center
+          text-sm font-medium text-slate-700
+          shadow-sm hover:shadow-md focus:ring-2 focus:ring-indigo-500/20
+          transition-all duration-200
+        "
+                                                >
+                                                    <span>{filters.type || "All Types"}</span>
+                                                    <ChevronUpDownIcon className="h-5 w-5 text-slate-500" />
+                                                </Listbox.Button>
+
+                                                <Transition
+                                                    show={open}
+                                                    leave="transition ease-in duration-100"
+                                                    leaveFrom="opacity-100"
+                                                    leaveTo="opacity-0"
+                                                >
+                                                    <Listbox.Options
+                                                        className="
+            absolute z-50 mt-2 w-full bg-white border border-slate-200 rounded-2xl shadow-xl
+            max-h-60 overflow-auto ring-1 ring-black/5 focus:outline-none
+          "
+                                                    >
+                                                        <Listbox.Option value="">
+                                                            {({ active }) => (
+                                                                <div
+                                                                    className={`cursor-pointer select-none px-4 py-2 ${active ? "bg-indigo-50 text-indigo-600" : "text-slate-700"
+                                                                        }`}
+                                                                >
+                                                                    All Types
+                                                                </div>
+                                                            )}
+                                                        </Listbox.Option>
+
+                                                        {safeFilterOptions.types.map((type) => (
+                                                            <Listbox.Option key={type} value={type}>
+                                                                {({ selected, active }) => (
+                                                                    <div
+                                                                        className={`cursor-pointer select-none flex justify-between items-center px-4 py-2 ${active ? "bg-indigo-50 text-indigo-600" : "text-slate-700"
+                                                                            }`}
+                                                                    >
+                                                                        <span>{type}</span>
+                                                                        {selected && <CheckIcon className="h-4 w-4 text-indigo-600" />}
+                                                                    </div>
+                                                                )}
+                                                            </Listbox.Option>
+                                                        ))}
+                                                    </Listbox.Options>
+                                                </Transition>
                                             </div>
-                                        </th>
-                                        <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Actions
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody className="bg-white divide-y divide-gray-200">
-                                    {sortedProjects.length > 0 ? (
-                                        sortedProjects.map((project) => (
-                                            <tr key={project._id} className="hover:bg-gray-50 transition-all duration-300 group">
-                                                <td className="px-6 py-4 whitespace-nowrap">
-                                                    <div className="flex items-center">
-                                                        <div className="flex-shrink-0 h-10 w-10 bg-indigo-100 rounded-lg flex items-center justify-center mr-3 group-hover:bg-indigo-200 transition-colors duration-300">
-                                                            <svg className="h-6 w-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
-                                                            </svg>
-                                                        </div>
-                                                        <div>
-                                                            <div className="text-sm font-medium text-gray-900">{project.project.name}</div>
-                                                            <div className="text-xs text-gray-500">
-                                                                Created {new Date(project.createdAt).toLocaleDateString()}
+                                        )}
+                                    </Listbox>
+
+                                </div>
+
+                                {/* City Filter */}
+                                <div className="space-y-2">
+                                    <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider">
+                                        City
+                                    </label>
+                                    <Listbox value={filters.city} onChange={(value) => handleFilterChange('city', value)}>
+                                        {({ open }) => (
+                                            <div className="relative">
+                                                <Listbox.Button
+                                                    className="
+          w-full px-4 py-3 bg-white border border-slate-200 rounded-2xl
+          flex justify-between items-center
+          text-sm font-medium text-slate-700
+          shadow-sm hover:shadow-md focus:ring-2 focus:ring-indigo-500/20
+          transition-all duration-200
+        "
+                                                >
+                                                    <span>{filters.city || "All Cities"}</span>
+                                                    <ChevronUpDownIcon className="h-5 w-5 text-slate-500" />
+                                                </Listbox.Button>
+
+                                                <Transition
+                                                    show={open}
+                                                    leave="transition ease-in duration-100"
+                                                    leaveFrom="opacity-100"
+                                                    leaveTo="opacity-0"
+                                                >
+                                                    <Listbox.Options
+                                                        className="
+            absolute z-50 mt-2 w-full bg-white border border-slate-200 rounded-2xl shadow-xl
+            max-h-60 overflow-auto ring-1 ring-black/5 focus:outline-none
+          "
+                                                    >
+                                                        <Listbox.Option value="">
+                                                            {({ active }) => (
+                                                                <div
+                                                                    className={`cursor-pointer select-none px-4 py-2 ${active ? "bg-indigo-50 text-indigo-600" : "text-slate-700"
+                                                                        }`}
+                                                                >
+                                                                    All Cities
+                                                                </div>
+                                                            )}
+                                                        </Listbox.Option>
+
+                                                        {safeFilterOptions.cities.map((city) => (
+                                                            <Listbox.Option key={city} value={city}>
+                                                                {({ selected, active }) => (
+                                                                    <div
+                                                                        className={`cursor-pointer select-none flex justify-between items-center px-4 py-2 ${active ? "bg-indigo-50 text-indigo-600" : "text-slate-700"
+                                                                            }`}
+                                                                    >
+                                                                        <span>{city}</span>
+                                                                        {selected && <CheckIcon className="h-4 w-4 text-indigo-600" />}
+                                                                    </div>
+                                                                )}
+                                                            </Listbox.Option>
+                                                        ))}
+                                                    </Listbox.Options>
+                                                </Transition>
+                                            </div>
+                                        )}
+                                    </Listbox>
+
+
+
+                                </div>
+
+                                {/* Area Filter */}
+                                <div className="space-y-2">
+                                    <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider">
+                                        Area
+                                    </label>
+                                    <Listbox value={filters.area} onChange={(value) => handleFilterChange('area', value)}>
+                                        {({ open }) => (
+                                            <div className="relative">
+                                                <Listbox.Button
+                                                    className="
+          w-full px-4 py-3 bg-white border border-slate-200 rounded-2xl
+          flex justify-between items-center
+          text-sm font-medium text-slate-700
+          shadow-sm hover:shadow-md focus:ring-2 focus:ring-indigo-500/20
+          transition-all duration-200
+        "
+                                                >
+                                                    <span>{filters.area || "All Areas"}</span>
+                                                    <ChevronUpDownIcon className="h-5 w-5 text-slate-500" />
+                                                </Listbox.Button>
+
+                                                <Transition
+                                                    show={open}
+                                                    leave="transition ease-in duration-100"
+                                                    leaveFrom="opacity-100"
+                                                    leaveTo="opacity-0"
+                                                >
+                                                    <Listbox.Options
+                                                        className="
+            absolute z-50 mt-2 w-full bg-white border border-slate-200 rounded-2xl shadow-xl
+            max-h-60 overflow-auto ring-1 ring-black/5 focus:outline-none
+          "
+                                                    >
+                                                        <Listbox.Option value="">
+                                                            {({ active }) => (
+                                                                <div
+                                                                    className={`cursor-pointer select-none px-4 py-2 ${active ? "bg-indigo-50 text-indigo-600" : "text-slate-700"
+                                                                        }`}
+                                                                >
+                                                                    All Areas
+                                                                </div>
+                                                            )}
+                                                        </Listbox.Option>
+
+                                                        {safeFilterOptions.areas.map((area) => (
+                                                            <Listbox.Option key={area} value={area}>
+                                                                {({ selected, active }) => (
+                                                                    <div
+                                                                        className={`cursor-pointer select-none flex justify-between items-center px-4 py-2 ${active ? "bg-indigo-50 text-indigo-600" : "text-slate-700"
+                                                                            }`}
+                                                                    >
+                                                                        <span>{area}</span>
+                                                                        {selected && <CheckIcon className="h-4 w-4 text-indigo-600" />}
+                                                                    </div>
+                                                                )}
+                                                            </Listbox.Option>
+                                                        ))}
+                                                    </Listbox.Options>
+                                                </Transition>
+                                            </div>
+                                        )}
+                                    </Listbox>
+
+                                </div>
+
+                                {/* Quick Actions */}
+                                <div className="flex items-end space-x-3">
+                                    {hasActiveFilters && (
+                                        <button
+                                            onClick={clearFilters}
+                                            className="flex-1 px-4 py-3 bg-gradient-to-r from-rose-500 to-rose-600 hover:from-rose-600 hover:to-rose-700 text-white font-semibold rounded-2xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 text-sm"
+                                        >
+                                            Clear Filters
+                                        </button>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Table Section */}
+                        <div className="overflow-hidden">
+                            <div className="overflow-x-auto">
+                                <table className="w-full">
+                                    <thead className="bg-slate-50/50 border-b border-slate-200/60">
+                                        <tr>
+                                            {[
+                                                { key: 'name', label: 'Project' },
+                                                { key: 'type', label: 'Type' },
+                                                { key: 'location.city', label: 'Location' },
+                                                { key: 'status', label: 'Status' },
+                                                { key: 'actions', label: 'Actions' }
+                                            ].map(({ key, label }) => (
+                                                <th
+                                                    key={key}
+                                                    className={`px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider ${key !== 'actions' ? 'cursor-pointer hover:bg-slate-100/50 transition-colors duration-200' : ''}`}
+                                                    onClick={key !== 'actions' ? () => requestSort(key) : undefined}
+                                                >
+                                                    <div className="flex items-center gap-2">
+                                                        {label}
+                                                        {key !== 'actions' && (
+                                                            <span className="text-slate-400">{getSortIndicator(key)}</span>
+                                                        )}
+                                                    </div>
+                                                </th>
+                                            ))}
+                                        </tr>
+                                    </thead>
+                                    <tbody className="divide-y divide-slate-200/30">
+                                        {projectData.length > 0 ? (
+                                            projectData.map((project) => (
+                                                <tr
+                                                    key={project._id}
+                                                    className="hover:bg-slate-50/30 transition-all duration-300 group"
+                                                >
+                                                    <td className="px-6 py-4">
+                                                        <div className="flex items-center gap-4">
+                                                            <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-2xl flex items-center justify-center group-hover:from-indigo-200 group-hover:to-purple-200 transition-all duration-300 shadow-sm">
+                                                                <svg className="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                                                                </svg>
+                                                            </div>
+                                                            <div>
+                                                                <div className="font-semibold text-slate-900 group-hover:text-indigo-700 transition-colors">
+                                                                    {project.project?.name || 'Unnamed Project'}
+                                                                </div>
+                                                                <div className="text-sm text-slate-500 mt-1">
+                                                                    {(() => {
+                                                                        const rawDate = project.createdAt || project.created_at || project.createdOn;
+                                                                        if (!rawDate) return 'Unknown date';
+                                                                        const parsedDate = new Date(rawDate?.$date || rawDate);
+                                                                        return isNaN(parsedDate) ? 'Invalid date' : parsedDate.toLocaleDateString('en-US', {
+                                                                            year: 'numeric',
+                                                                            month: 'short',
+                                                                            day: 'numeric',
+                                                                        });
+                                                                    })()}
+                                                                </div>
+
                                                             </div>
                                                         </div>
-                                                    </div>
-                                                </td>
+                                                    </td>
 
-                                                <td className="px-6 py-4 whitespace-nowrap">
-                                                    <div className="text-sm text-gray-600 bg-gray-100 px-2 py-1 rounded-md inline-block">
-                                                        {project.project.type || (
-                                                            <span className="text-gray-400 italic">Not set</span>
+                                                    <td className="px-6 py-4">
+                                                        <div className="inline-flex items-center px-3 py-1.5 bg-slate-100 text-slate-700 rounded-full text-sm font-medium border border-slate-300/50">
+                                                            {project.project?.type || (
+                                                                <span className="text-slate-400">Not set</span>
+                                                            )}
+                                                        </div>
+                                                    </td>
+
+                                                    <td className="px-6 py-4">
+                                                        <div className="flex items-center gap-2 text-slate-700">
+                                                            <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                            </svg>
+                                                            <span className="text-sm">
+                                                                {project.project?.location?.city && project.project?.location?.area ?
+                                                                    `${project.project.location.area}, ${project.project.location.city}` :
+                                                                    (project.project?.location?.area || project.project?.location?.city || (
+                                                                        <span className="text-slate-400">Not set</span>
+                                                                    ))
+                                                                }
+                                                            </span>
+                                                        </div>
+                                                    </td>
+
+                                                    <td className="px-6 py-4">
+                                                        {getStatusBadge(project.project?.status || 'active')}
+                                                    </td>
+
+                                                    <td className="px-6 py-4">
+                                                        <div className="flex items-center justify-end gap-2">
+                                                            <button
+                                                                onClick={() => View(project)}
+                                                                className="p-2.5 text-slate-600 hover:text-blue-600 bg-white hover:bg-blue-50 rounded-2xl border border-slate-300/50 hover:border-blue-300 transition-all duration-300 shadow-sm hover:shadow-md transform hover:-translate-y-0.5"
+                                                                title="View project"
+                                                            >
+                                                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                                                </svg>
+                                                            </button>
+
+                                                            <button
+                                                                onClick={() => openEditModal(project)}
+                                                                className="p-2.5 text-slate-600 hover:text-indigo-600 bg-white hover:bg-indigo-50 rounded-2xl border border-slate-300/50 hover:border-indigo-300 transition-all duration-300 shadow-sm hover:shadow-md transform hover:-translate-y-0.5"
+                                                                title="Edit project"
+                                                            >
+                                                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                                                </svg>
+                                                            </button>
+
+                                                            <button
+                                                                onClick={() => handleDelete(project)}
+                                                                className="p-2.5 text-slate-600 hover:text-rose-600 bg-white hover:bg-rose-50 rounded-2xl border border-slate-300/50 hover:border-rose-300 transition-all duration-300 shadow-sm hover:shadow-md transform hover:-translate-y-0.5"
+                                                                title="Delete project"
+                                                            >
+                                                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                                </svg>
+                                                            </button>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            ))
+                                        ) : (
+                                            <tr>
+                                                <td colSpan="5" className="px-6 py-16 text-center">
+                                                    <div className="max-w-md mx-auto">
+                                                        <div className="w-24 h-24 mx-auto mb-6 bg-slate-100 rounded-3xl flex items-center justify-center">
+                                                            <svg className="w-12 h-12 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                            </svg>
+                                                        </div>
+                                                        <h3 className="text-xl font-semibold text-slate-900 mb-2">
+                                                            {hasActiveFilters ? 'No projects found' : 'No projects yet'}
+                                                        </h3>
+                                                        <p className="text-slate-600 mb-6">
+                                                            {hasActiveFilters
+                                                                ? 'Try adjusting your search criteria or filters to find what you\'re looking for.'
+                                                                : 'Get started by creating your first project to build your portfolio.'
+                                                            }
+                                                        </p>
+                                                        {hasActiveFilters ? (
+                                                            <button
+                                                                onClick={clearFilters}
+                                                                className="inline-flex items-center justify-center px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-semibold rounded-2xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                                                            >
+                                                                Clear Filters
+                                                            </button>
+                                                        ) : (
+                                                            <button
+                                                                onClick={() => setShowModal(true)}
+                                                                className="inline-flex items-center justify-center px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-semibold rounded-2xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                                                            >
+                                                                <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                                                                </svg>
+                                                                Create First Project
+                                                            </button>
                                                         )}
                                                     </div>
                                                 </td>
-
-                                                <td className="px-6 py-4 whitespace-nowrap">
-                                                    <div className="flex items-center">
-                                                        <svg className="h-4 w-4 text-gray-400 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                                        </svg>
-                                                        <div className="text-sm text-gray-600">
-                                                            {project.project.location?.city && project.project.location?.area ?
-                                                                `${project.project.location.area}, ${project.project.location.city}` :
-                                                                (project.project.location?.area || project.project.location?.city || (
-                                                                    <span className="text-gray-400 italic">Not set</span>
-                                                                ))
-                                                            }
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                                <td className="px-6 py-4 whitespace-nowrap">
-                                                    {getStatusBadge(project.project.status || 'active')}
-                                                </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                                    <div className="flex items-center justify-end space-x-2 transition-opacity duration-300">
-                                                        <button
-                                                            onClick={() => View(project)}
-                                                            className="text-blue-600 hover:text-blue-900 bg-blue-50 hover:bg-blue-100 p-2 rounded-lg transition-all duration-300 transform hover:scale-110"
-                                                            title="View project"
-                                                        >
-                                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                                            </svg>
-                                                        </button>
-
-                                                        <button
-                                                            onClick={() => openEditModal(project)}
-                                                            className="text-indigo-600 hover:text-indigo-900 bg-indigo-50 hover:bg-indigo-100 p-2 rounded-lg transition-all duration-300 transform hover:scale-110"
-                                                            title="Edit project"
-                                                        >
-                                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                                            </svg>
-                                                        </button>
-
-                                                        <button
-                                                            onClick={() => handleDelete(project)}
-                                                            className="text-red-600 hover:text-red-900 bg-red-50 hover:bg-red-100 p-2 rounded-lg transition-all duration-300 transform hover:scale-110"
-                                                            title="Delete project"
-                                                        >
-                                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                                            </svg>
-                                                        </button>
-                                                    </div>
-                                                </td>
-
                                             </tr>
-                                        ))
-                                    ) : (
-                                        <tr>
-                                            <td colSpan="6" className="px-6 py-12 text-center">
-                                                <svg className="mx-auto h-16 w-16 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                                </svg>
-                                                <h3 className="mt-4 text-lg font-medium text-gray-700">No projects found</h3>
-                                                <p className="mt-2 text-sm text-gray-500 max-w-md mx-auto">
-                                                    {searchTerm ? `No results found for "${searchTerm}". Try adjusting your search term` : 'Get started by creating your first project'}
-                                                </p>
-                                                {!searchTerm && (
-                                                    <div className="mt-6">
-                                                        <button
-                                                            onClick={() => setShowModal(true)}
-                                                            className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-300 transform hover:-translate-y-0.5"
-                                                        >
-                                                            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                                                            </svg>
-                                                            Add New Project
-                                                        </button>
-                                                    </div>
-                                                )}
-                                            </td>
-                                        </tr>
-                                    )}
-                                </tbody>
-                            </table>
-                            <div className="px-6 py-4 bg-gray-50 border-t border-gray-200 flex items-center justify-between">
-                                <div className="text-sm text-gray-600">
-                                    Showing <span className="font-medium">{(projects.current_page - 1) * projects.per_page + 1}</span> to <span className="font-medium">
-                                        {Math.min(projects.current_page * projects.per_page, projects.total)}
-                                    </span> of <span className="font-medium">{projects.total}</span> results
-                                </div>
-                                <div className="flex space-x-2">
-                                    {(projects.links || []).map((link, index) => (
-                                        <button
-                                            key={index}
-                                            className={`px-3 py-1.5 border rounded-md text-sm font-medium transition-all duration-300 ${link.active
-                                                ? 'bg-indigo-600 border-indigo-600 text-white shadow-md'
-                                                : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-50'}`}
-                                            disabled={!link.url}
-                                            onClick={() => link.url && Inertia.get(link.url)}
-                                            dangerouslySetInnerHTML={{ __html: link.label }}
-                                        />
-                                    ))}
-                                </div>
+                                        )}
+                                    </tbody>
+                                </table>
                             </div>
+
+                            {/* Pagination */}
+                            {projectData.length > 0 && safeProjects.links && safeProjects.links.length > 1 && (
+                                <div className="px-6 py-4 bg-slate-50/30 border-t border-slate-200/60">
+                                    <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+                                        <div className="text-sm text-slate-600">
+                                            Showing <span className="font-semibold text-slate-900">{(safeProjects.current_page - 1) * safeProjects.per_page + 1}</span> to{' '}
+                                            <span className="font-semibold text-slate-900">
+                                                {Math.min(safeProjects.current_page * safeProjects.per_page, safeProjects.total)}
+                                            </span> of{' '}
+                                            <span className="font-semibold text-slate-900">{safeProjects.total}</span> results
+                                        </div>
+                                        <div className="flex flex-wrap gap-2">
+                                            {safeProjects.links.map((link, index) => (
+                                                <button
+                                                    key={index}
+                                                    onClick={() => link.url && Inertia.get(link.url)}
+                                                    disabled={!link.url}
+                                                    className={`px-3.5 py-2 rounded-2xl text-sm font-medium transition-all duration-300 ${link.active
+                                                        ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg'
+                                                        : 'bg-white text-slate-700 hover:bg-slate-50 border border-slate-300/50 hover:border-slate-400 shadow-sm hover:shadow-md'
+                                                        } ${!link.url ? 'opacity-50 cursor-not-allowed' : 'hover:-translate-y-0.5'}`}
+                                                    dangerouslySetInnerHTML={{ __html: link.label }}
+                                                />
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
