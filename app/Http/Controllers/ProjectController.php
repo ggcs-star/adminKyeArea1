@@ -8,84 +8,88 @@ use Inertia\Inertia;
 
 class ProjectController extends Controller
 {
-    public function index(Request $request)
-    {
-        $query = Project::query();
+   public function index(Request $request)
+{
+    $query = Project::query();
 
-        if ($request->has('search') && ! empty($request->search)) {
-            $searchTerm = $request->search;
-            $query->where(function ($q) use ($searchTerm) {
-                $q->where('project.name', 'like', "%{$searchTerm}%")
-                    ->orWhere('project.slug', 'like', "%{$searchTerm}%")
-                    ->orWhere('project.type', 'like', "%{$searchTerm}%")
-                    ->orWhere('project.location.city', 'like', "%{$searchTerm}%")
-                    ->orWhere('project.location.area', 'like', "%{$searchTerm}%");
-            });
-        }
-
-        if ($request->has('status') && ! empty($request->status)) {
-            $query->where('project.status', $request->status);
-        }
-
-        if ($request->has('type') && ! empty($request->type)) {
-            $query->where('project.type', $request->type);
-        }
-
-        if ($request->has('city') && ! empty($request->city)) {
-            $query->where('project.location.city', 'like', "%{$request->city}%");
-        }
-
-        if ($request->has('area') && ! empty($request->area)) {
-            $query->where('project.location.area', 'like', "%{$request->area}%");
-        }
-
-        $sortField = $request->get('sort_field', 'created_at');
-        $sortDirection = $request->get('sort_direction', 'desc');
-
-        if ($sortField === 'location.city') {
-            $query->orderBy('project.location.city', $sortDirection);
-        } elseif ($sortField === 'location.area') {
-            $query->orderBy('project.location.area', $sortDirection);
-        } else {
-            $query->orderBy("project.{$sortField}", $sortDirection);
-        }
-
-        $projectsPaginated = $query->paginate(10);
-
-        $allProjects = Project::all()->map(function ($proj) {
-            return [
-                'id' => (string) $proj->_id,
-                'project' => $proj->project,
-                'status' => $proj->status ?? 'inactive',
-                'featured' => $proj->featured ?? false,
-                'emerging_property' => $proj->emerging_property ?? false,
-                'emerging_area' => $proj->emerging_area ?? false,
-            ];
+    if ($request->has('search') && ! empty($request->search)) {
+        $searchTerm = $request->search;
+        $query->where(function ($q) use ($searchTerm) {
+            $q->where('project.name', 'like', "%{$searchTerm}%")
+                ->orWhere('project.slug', 'like', "%{$searchTerm}%")
+                ->orWhere('project.type', 'like', "%{$searchTerm}%")
+                ->orWhere('project.location.city', 'like', "%{$searchTerm}%")
+                ->orWhere('project.location.area', 'like', "%{$searchTerm}%")
+                ->orWhere('builder.name', 'like', "%{$searchTerm}%");
         });
-
-        $filterOptions = [
-            'types' => Project::raw(function ($collection) {
-                return $collection->distinct('project.type');
-            }),
-            'cities' => Project::raw(function ($collection) {
-                return $collection->distinct('project.location.city');
-            }),
-            'areas' => Project::raw(function ($collection) {
-                return $collection->distinct('project.location.area');
-            }),
-            'statuses' => ['active', 'inactive', 'draft'],
-        ];
-
-        // dd($filterOptions['types']);
-
-        return Inertia::render('Projects/Index', [
-            'projects' => $projectsPaginated,
-            'allProjects' => $allProjects,
-            'filters' => $request->only(['search', 'status', 'type', 'city', 'area']),
-            'filterOptions' => $filterOptions,
-            'sort' => ['field' => $sortField, 'direction' => $sortDirection],
-        ]);
     }
+
+    if ($request->has('status') && ! empty($request->status)) {
+        $query->where('status', $request->status);
+    }
+
+    if ($request->has('type') && ! empty($request->type)) {
+        $query->where('project.type', $request->type);
+    }
+
+    if ($request->has('city') && ! empty($request->city)) {
+        $query->where('project.location.city', 'like', "%{$request->city}%");
+    }
+
+    if ($request->has('area') && ! empty($request->area)) {
+        $query->where('project.location.area', 'like', "%{$request->area}%");
+    }
+
+    // ✅ NEW: Builder filter
+    if ($request->has('builder') && ! empty($request->builder)) {
+        $query->where('builder.name', 'like', "%{$request->builder}%");
+    }
+
+    // Sorting
+    $sortField = $request->get('sort_field', 'created_at');
+    $sortDirection = $request->get('sort_direction', 'desc');
+
+    if ($sortField === 'location.city') {
+        $query->orderBy('project.location.city', $sortDirection);
+    } elseif ($sortField === 'location.area') {
+        $query->orderBy('project.location.area', $sortDirection);
+    } elseif ($sortField === 'builder.name') {
+        $query->orderBy('builder.name', $sortDirection);
+    } else {
+        $query->orderBy($sortField, $sortDirection);
+    }
+
+    $projectsPaginated = $query->paginate(10);
+
+    $allProjects = Project::all()->map(function ($proj) {
+        return [
+            'id' => (string) $proj->_id,
+            'project' => $proj->project,
+            'builder' => $proj->builder, 
+            'status' => $proj->status ?? 'inactive',
+            'featured' => $proj->featured ?? false,
+            'emerging_property' => $proj->emerging_property ?? false,
+            'emerging_area' => $proj->emerging_area ?? false,
+        ];
+    });
+
+    $filterOptions = [
+        'types' => Project::raw(fn($collection) => $collection->distinct('project.type')),
+        'cities' => Project::raw(fn($collection) => $collection->distinct('project.location.city')),
+        'areas' => Project::raw(fn($collection) => $collection->distinct('project.location.area')),
+        'builders' => Project::raw(fn($collection) => $collection->distinct('builder.name')), // ✅ NEW: Builders filter
+        'statuses' => ['active', 'inactive', 'draft'],
+    ];
+
+    return Inertia::render('Projects/Index', [
+        'projects' => $projectsPaginated,
+        'allProjects' => $allProjects,
+        'filters' => $request->only(['search', 'status', 'type', 'city', 'area', 'builder']), // ✅ Added builder
+        'filterOptions' => $filterOptions,
+        'sort' => ['field' => $sortField, 'direction' => $sortDirection],
+    ]);
+}
+
 
     public function store(Request $request)
     {

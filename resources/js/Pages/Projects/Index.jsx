@@ -9,8 +9,8 @@ import { debounce } from 'lodash';
 import { Listbox, Transition } from "@headlessui/react";
 import { ChevronUpDownIcon, CheckIcon } from "@heroicons/react/24/solid";
 
-
 const ProjectsIndex = () => {
+    const [selectedProjectForFlags, setSelectedProjectForFlags] = useState(null);
     const { projects, allProjects, filters: initialFilters = {}, filterOptions = {}, sort: initialSort = {} } = usePage().props;
 
     // Safe defaults for props
@@ -20,6 +20,7 @@ const ProjectsIndex = () => {
         types: filterOptions.types || [],
         cities: filterOptions.cities || [],
         areas: filterOptions.areas || [],
+        builders: filterOptions.builders || [], // ✅ NEW: Builders filter options
         statuses: filterOptions.statuses || ['active', 'inactive', 'draft'],
     };
 
@@ -28,13 +29,14 @@ const ProjectsIndex = () => {
     const [currentProjectId, setCurrentProjectId] = useState(null);
     const [showFlagModal, setShowFlagModal] = useState(false);
 
-    // Filters state
+    // Filters state - ✅ Added builder filter
     const [filters, setFilters] = useState({
         search: initialFilters.search || '',
         status: initialFilters.status || '',
         type: initialFilters.type || '',
         city: initialFilters.city || '',
         area: initialFilters.area || '',
+        builder: initialFilters.builder || '', // ✅ NEW: Builder filter
     });
 
     // Sort state
@@ -115,7 +117,7 @@ const ProjectsIndex = () => {
         });
     };
 
-    // Clear all filters
+    // Clear all filters - ✅ Added builder filter
     const clearFilters = () => {
         const clearedFilters = {
             search: '',
@@ -123,6 +125,7 @@ const ProjectsIndex = () => {
             type: '',
             city: '',
             area: '',
+            builder: '', // ✅ NEW: Clear builder filter
         };
         setFilters(clearedFilters);
 
@@ -163,10 +166,22 @@ const ProjectsIndex = () => {
         return sortConfig.direction === 'ascending' ? '↑' : '↓';
     };
 
-    // Check if any filter is active
+    // Check if any filter is active - ✅ Added builder filter
     const hasActiveFilters = Object.values(filters).some(value => value !== '');
 
-    // Rest of your existing functions remain the same...
+    // Open flag modal for a specific project
+    const openFlagModal = (project) => {
+        setSelectedProjectForFlags(project);
+        setShowFlagModal(true);
+    };
+
+    // Close flag modal
+    const closeFlagModal = () => {
+        setShowFlagModal(false);
+        setSelectedProjectForFlags(null);
+    };
+
+    // Rest of your existing functions (handleChange, openEditModal, handleSubmit, View, handleDelete, resetForm, closeModal, getStatusBadge) remain the same...
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
         setFormErrors(prev => ({ ...prev, [name]: '' }));
@@ -366,7 +381,8 @@ const ProjectsIndex = () => {
 
             <ManageFlagModal
                 showModal={showFlagModal}
-                closeModal={() => setShowFlagModal(false)}
+                closeModal={closeFlagModal}
+                project={selectedProjectForFlags}
                 projects={safeAllProjects}
             />
 
@@ -385,7 +401,7 @@ const ProjectsIndex = () => {
                             </div>
 
                             <div className="flex flex-col sm:flex-row gap-3">
-                                <button
+                                {/* <button
                                     onClick={() => setShowFlagModal(true)}
                                     className="inline-flex items-center justify-center px-6 py-3.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-semibold rounded-2xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 border border-amber-400/20"
                                 >
@@ -393,7 +409,7 @@ const ProjectsIndex = () => {
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                                     </svg>
                                     Manage Flags
-                                </button>
+                                </button> */}
 
                                 <button
                                     onClick={() => { resetForm(); setShowModal(true); }}
@@ -422,7 +438,7 @@ const ProjectsIndex = () => {
                                         </div>
                                         <input
                                             type="text"
-                                            placeholder="Search projects by name, type, location..."
+                                            placeholder="Search projects by name, type, location, builder..."
                                             className="block w-full pl-12 pr-4 py-3.5 bg-white/80 border border-slate-300/50 rounded-2xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-slate-700 placeholder-slate-500 backdrop-blur-sm transition-all duration-300 shadow-sm hover:shadow-md"
                                             value={filters.search}
                                             onChange={handleSearchChange}
@@ -453,7 +469,6 @@ const ProjectsIndex = () => {
 
                         {/* Filters Section */}
                         <div className="p-6 border-b border-slate-200/60 bg-slate-50/30">
-
                             {/* Filter Controls */}
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4">
                                 {/* Status Filter */}
@@ -461,19 +476,17 @@ const ProjectsIndex = () => {
                                     <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider">
                                         Status
                                     </label>
-
-
                                     <Listbox value={filters.status} onChange={(value) => handleFilterChange('status', value)}>
                                         {({ open }) => (
                                             <div className="relative">
                                                 <Listbox.Button
                                                     className="
-          w-full px-4 py-3 bg-white border border-slate-200 rounded-2xl
-          flex justify-between items-center
-          text-sm font-medium text-slate-700
-          shadow-sm hover:shadow-md focus:ring-2 focus:ring-indigo-500/20
-          transition-all duration-200
-        "
+                                                        w-full px-4 py-3 bg-white border border-slate-200 rounded-2xl
+                                                        flex justify-between items-center
+                                                        text-sm font-medium text-slate-700
+                                                        shadow-sm hover:shadow-md focus:ring-2 focus:ring-indigo-500/20
+                                                        transition-all duration-200
+                                                    "
                                                 >
                                                     <span>{filters.status || "All Status"}</span>
                                                     <ChevronUpDownIcon className="h-5 w-5 text-slate-500" />
@@ -487,9 +500,9 @@ const ProjectsIndex = () => {
                                                 >
                                                     <Listbox.Options
                                                         className="
-                                                                absolute z-50 mt-2 w-full bg-white border border-slate-200 rounded-2xl shadow-xl
-                                                                max-h-60 overflow-auto ring-1 ring-black/5 focus:outline-none
-                                                            "
+                                                            absolute z-50 mt-2 w-full bg-white border border-slate-200 rounded-2xl shadow-xl
+                                                            max-h-60 overflow-auto ring-1 ring-black/5 focus:outline-none
+                                                        "
                                                     >
                                                         <Listbox.Option value="">
                                                             {({ active }) => (
@@ -520,7 +533,6 @@ const ProjectsIndex = () => {
                                             </div>
                                         )}
                                     </Listbox>
-
                                 </div>
 
                                 {/* Type Filter */}
@@ -533,12 +545,12 @@ const ProjectsIndex = () => {
                                             <div className="relative">
                                                 <Listbox.Button
                                                     className="
-          w-full px-4 py-3 bg-white border border-slate-200 rounded-2xl
-          flex justify-between items-center
-          text-sm font-medium text-slate-700
-          shadow-sm hover:shadow-md focus:ring-2 focus:ring-indigo-500/20
-          transition-all duration-200
-        "
+                                                        w-full px-4 py-3 bg-white border border-slate-200 rounded-2xl
+                                                        flex justify-between items-center
+                                                        text-sm font-medium text-slate-700
+                                                        shadow-sm hover:shadow-md focus:ring-2 focus:ring-indigo-500/20
+                                                        transition-all duration-200
+                                                    "
                                                 >
                                                     <span>{filters.type || "All Types"}</span>
                                                     <ChevronUpDownIcon className="h-5 w-5 text-slate-500" />
@@ -552,9 +564,9 @@ const ProjectsIndex = () => {
                                                 >
                                                     <Listbox.Options
                                                         className="
-            absolute z-50 mt-2 w-full bg-white border border-slate-200 rounded-2xl shadow-xl
-            max-h-60 overflow-auto ring-1 ring-black/5 focus:outline-none
-          "
+                                                            absolute z-50 mt-2 w-full bg-white border border-slate-200 rounded-2xl shadow-xl
+                                                            max-h-60 overflow-auto ring-1 ring-black/5 focus:outline-none
+                                                        "
                                                     >
                                                         <Listbox.Option value="">
                                                             {({ active }) => (
@@ -585,7 +597,6 @@ const ProjectsIndex = () => {
                                             </div>
                                         )}
                                     </Listbox>
-
                                 </div>
 
                                 {/* City Filter */}
@@ -598,12 +609,12 @@ const ProjectsIndex = () => {
                                             <div className="relative">
                                                 <Listbox.Button
                                                     className="
-          w-full px-4 py-3 bg-white border border-slate-200 rounded-2xl
-          flex justify-between items-center
-          text-sm font-medium text-slate-700
-          shadow-sm hover:shadow-md focus:ring-2 focus:ring-indigo-500/20
-          transition-all duration-200
-        "
+                                                        w-full px-4 py-3 bg-white border border-slate-200 rounded-2xl
+                                                        flex justify-between items-center
+                                                        text-sm font-medium text-slate-700
+                                                        shadow-sm hover:shadow-md focus:ring-2 focus:ring-indigo-500/20
+                                                        transition-all duration-200
+                                                    "
                                                 >
                                                     <span>{filters.city || "All Cities"}</span>
                                                     <ChevronUpDownIcon className="h-5 w-5 text-slate-500" />
@@ -617,9 +628,9 @@ const ProjectsIndex = () => {
                                                 >
                                                     <Listbox.Options
                                                         className="
-            absolute z-50 mt-2 w-full bg-white border border-slate-200 rounded-2xl shadow-xl
-            max-h-60 overflow-auto ring-1 ring-black/5 focus:outline-none
-          "
+                                                            absolute z-50 mt-2 w-full bg-white border border-slate-200 rounded-2xl shadow-xl
+                                                            max-h-60 overflow-auto ring-1 ring-black/5 focus:outline-none
+                                                        "
                                                     >
                                                         <Listbox.Option value="">
                                                             {({ active }) => (
@@ -650,9 +661,6 @@ const ProjectsIndex = () => {
                                             </div>
                                         )}
                                     </Listbox>
-
-
-
                                 </div>
 
                                 {/* Area Filter */}
@@ -665,12 +673,12 @@ const ProjectsIndex = () => {
                                             <div className="relative">
                                                 <Listbox.Button
                                                     className="
-          w-full px-4 py-3 bg-white border border-slate-200 rounded-2xl
-          flex justify-between items-center
-          text-sm font-medium text-slate-700
-          shadow-sm hover:shadow-md focus:ring-2 focus:ring-indigo-500/20
-          transition-all duration-200
-        "
+                                                        w-full px-4 py-3 bg-white border border-slate-200 rounded-2xl
+                                                        flex justify-between items-center
+                                                        text-sm font-medium text-slate-700
+                                                        shadow-sm hover:shadow-md focus:ring-2 focus:ring-indigo-500/20
+                                                        transition-all duration-200
+                                                    "
                                                 >
                                                     <span>{filters.area || "All Areas"}</span>
                                                     <ChevronUpDownIcon className="h-5 w-5 text-slate-500" />
@@ -684,9 +692,9 @@ const ProjectsIndex = () => {
                                                 >
                                                     <Listbox.Options
                                                         className="
-            absolute z-50 mt-2 w-full bg-white border border-slate-200 rounded-2xl shadow-xl
-            max-h-60 overflow-auto ring-1 ring-black/5 focus:outline-none
-          "
+                                                            absolute z-50 mt-2 w-full bg-white border border-slate-200 rounded-2xl shadow-xl
+                                                            max-h-60 overflow-auto ring-1 ring-black/5 focus:outline-none
+                                                        "
                                                     >
                                                         <Listbox.Option value="">
                                                             {({ active }) => (
@@ -717,7 +725,70 @@ const ProjectsIndex = () => {
                                             </div>
                                         )}
                                     </Listbox>
+                                </div>
 
+                                {/* ✅ NEW: Builder Filter */}
+                                <div className="space-y-2">
+                                    <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider">
+                                        Builder
+                                    </label>
+                                    <Listbox value={filters.builder} onChange={(value) => handleFilterChange('builder', value)}>
+                                        {({ open }) => (
+                                            <div className="relative">
+                                                <Listbox.Button
+                                                    className="
+                                                        w-full px-4 py-3 bg-white border border-slate-200 rounded-2xl
+                                                        flex justify-between items-center
+                                                        text-sm font-medium text-slate-700
+                                                        shadow-sm hover:shadow-md focus:ring-2 focus:ring-indigo-500/20
+                                                        transition-all duration-200
+                                                    "
+                                                >
+                                                    <span>{filters.builder || "All Builders"}</span>
+                                                    <ChevronUpDownIcon className="h-5 w-5 text-slate-500" />
+                                                </Listbox.Button>
+
+                                                <Transition
+                                                    show={open}
+                                                    leave="transition ease-in duration-100"
+                                                    leaveFrom="opacity-100"
+                                                    leaveTo="opacity-0"
+                                                >
+                                                    <Listbox.Options
+                                                        className="
+                                                            absolute z-50 mt-2 w-full bg-white border border-slate-200 rounded-2xl shadow-xl
+                                                            max-h-60 overflow-auto ring-1 ring-black/5 focus:outline-none
+                                                        "
+                                                    >
+                                                        <Listbox.Option value="">
+                                                            {({ active }) => (
+                                                                <div
+                                                                    className={`cursor-pointer select-none px-4 py-2 ${active ? "bg-indigo-50 text-indigo-600" : "text-slate-700"
+                                                                        }`}
+                                                                >
+                                                                    All Builders
+                                                                </div>
+                                                            )}
+                                                        </Listbox.Option>
+
+                                                        {safeFilterOptions.builders.map((builder) => (
+                                                            <Listbox.Option key={builder} value={builder}>
+                                                                {({ selected, active }) => (
+                                                                    <div
+                                                                        className={`cursor-pointer select-none flex justify-between items-center px-4 py-2 ${active ? "bg-indigo-50 text-indigo-600" : "text-slate-700"
+                                                                            }`}
+                                                                    >
+                                                                        <span>{builder}</span>
+                                                                        {selected && <CheckIcon className="h-4 w-4 text-indigo-600" />}
+                                                                    </div>
+                                                                )}
+                                                            </Listbox.Option>
+                                                        ))}
+                                                    </Listbox.Options>
+                                                </Transition>
+                                            </div>
+                                        )}
+                                    </Listbox>
                                 </div>
 
                                 {/* Quick Actions */}
@@ -742,6 +813,7 @@ const ProjectsIndex = () => {
                                         <tr>
                                             {[
                                                 { key: 'name', label: 'Project' },
+                                                { key: 'builder.name', label: 'Builder' },
                                                 { key: 'type', label: 'Type' },
                                                 { key: 'location.city', label: 'Location' },
                                                 { key: 'status', label: 'Status' },
@@ -769,6 +841,7 @@ const ProjectsIndex = () => {
                                                     key={project._id}
                                                     className="hover:bg-slate-50/30 transition-all duration-300 group"
                                                 >
+                                                    {/* Project Name Column */}
                                                     <td className="px-6 py-4">
                                                         <div className="flex items-center gap-4">
                                                             <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-2xl flex items-center justify-center group-hover:from-indigo-200 group-hover:to-purple-200 transition-all duration-300 shadow-sm">
@@ -792,11 +865,51 @@ const ProjectsIndex = () => {
                                                                         });
                                                                     })()}
                                                                 </div>
-
                                                             </div>
                                                         </div>
                                                     </td>
 
+                                                    {/* Builder Column */}
+                                                    <td className="px-6 py-4">
+                                                        {project.builder ? (
+                                                            <div className="space-y-2">
+                                                                <div className="flex items-center gap-3">
+                                                                    <div>
+                                                                        <div className="font-medium text-slate-900 text-sm">
+                                                                            {project.builder.name}
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                {project.builder.corporate_address && (
+                                                                    <div className="text-xs text-slate-600 flex items-start gap-1">
+                                                                        <svg
+                                                                            className="w-3 h-3 text-slate-400 mt-0.5 flex-shrink-0"
+                                                                            fill="none"
+                                                                            stroke="currentColor"
+                                                                            viewBox="0 0 24 24"
+                                                                        >
+                                                                            <path
+                                                                                strokeLinecap="round"
+                                                                                strokeLinejoin="round"
+                                                                                strokeWidth="2"
+                                                                                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                                                                            />
+                                                                        </svg>
+                                                                        <span className="line-clamp-2">
+                                                                            {project.builder.corporate_address}
+                                                                        </span>
+                                                                    </div>
+                                                                )}
+                                                            </div>
+                                                        ) : (
+                                                            <div className="text-slate-400 text-sm italic">
+                                                                No builder info
+                                                            </div>
+                                                        )}
+                                                    </td>
+
+                                                    {/* Type Column */}
                                                     <td className="px-6 py-4">
                                                         <div className="inline-flex items-center px-3 py-1.5 bg-slate-100 text-slate-700 rounded-full text-sm font-medium border border-slate-300/50">
                                                             {project.project?.type || (
@@ -805,6 +918,7 @@ const ProjectsIndex = () => {
                                                         </div>
                                                     </td>
 
+                                                    {/* Location Column */}
                                                     <td className="px-6 py-4">
                                                         <div className="flex items-center gap-2 text-slate-700">
                                                             <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -822,12 +936,26 @@ const ProjectsIndex = () => {
                                                         </div>
                                                     </td>
 
+                                                    {/* Status Column */}
                                                     <td className="px-6 py-4">
                                                         {getStatusBadge(project.project?.status || 'active')}
                                                     </td>
 
+                                                    {/* Actions Column */}
                                                     <td className="px-6 py-4">
                                                         <div className="flex items-center justify-end gap-2">
+                                                            {/* Manage Flags Button */}
+                                                            <button
+                                                                onClick={() => openFlagModal(project)}
+                                                                className="p-2.5 text-slate-600 hover:text-amber-600 bg-white hover:bg-amber-50 rounded-2xl border border-slate-300/50 hover:border-amber-300 transition-all duration-300 shadow-sm hover:shadow-md transform hover:-translate-y-0.5"
+                                                                title="Manage flags"
+                                                            >
+                                                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                                                                </svg>
+                                                            </button>
+
+                                                            {/* View Button */}
                                                             <button
                                                                 onClick={() => View(project)}
                                                                 className="p-2.5 text-slate-600 hover:text-blue-600 bg-white hover:bg-blue-50 rounded-2xl border border-slate-300/50 hover:border-blue-300 transition-all duration-300 shadow-sm hover:shadow-md transform hover:-translate-y-0.5"
@@ -839,6 +967,7 @@ const ProjectsIndex = () => {
                                                                 </svg>
                                                             </button>
 
+                                                            {/* Edit Button */}
                                                             <button
                                                                 onClick={() => openEditModal(project)}
                                                                 className="p-2.5 text-slate-600 hover:text-indigo-600 bg-white hover:bg-indigo-50 rounded-2xl border border-slate-300/50 hover:border-indigo-300 transition-all duration-300 shadow-sm hover:shadow-md transform hover:-translate-y-0.5"
@@ -849,6 +978,7 @@ const ProjectsIndex = () => {
                                                                 </svg>
                                                             </button>
 
+                                                            {/* Delete Button */}
                                                             <button
                                                                 onClick={() => handleDelete(project)}
                                                                 className="p-2.5 text-slate-600 hover:text-rose-600 bg-white hover:bg-rose-50 rounded-2xl border border-slate-300/50 hover:border-rose-300 transition-all duration-300 shadow-sm hover:shadow-md transform hover:-translate-y-0.5"
@@ -864,7 +994,7 @@ const ProjectsIndex = () => {
                                             ))
                                         ) : (
                                             <tr>
-                                                <td colSpan="5" className="px-6 py-16 text-center">
+                                                <td colSpan="6" className="px-6 py-16 text-center">
                                                     <div className="max-w-md mx-auto">
                                                         <div className="w-24 h-24 mx-auto mb-6 bg-slate-100 rounded-3xl flex items-center justify-center">
                                                             <svg className="w-12 h-12 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
