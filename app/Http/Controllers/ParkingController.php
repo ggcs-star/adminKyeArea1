@@ -51,7 +51,8 @@ class ParkingController extends Controller
         $project->update(['parking' => $validated['parking']]);
 
         // dd( $project);
-        return redirect()->route('parking.index')->with('success', 'Parking info created successfully!');
+        // return redirect()->route('parking.index')->with('success', 'Parking info created successfully!');
+        return redirect()->back()->with('success', 'Parking info created successfully!');
     }
 
     public function update(Request $request, Project $project)
@@ -62,7 +63,8 @@ class ParkingController extends Controller
     public function destroy(Project $project)
     {
         $project->update(['parking' => null]);
-        return redirect()->route('parking.index')->with('success', 'Parking info deleted!');
+        // return redirect()->route('parking.index')->with('success', 'Parking info deleted!');
+        return redirect()->back()->with('success', 'Parking info deleted!');
     }
 
     public function show(Project $project)

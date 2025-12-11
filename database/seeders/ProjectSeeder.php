@@ -8,11 +8,11 @@ use App\Models\Project;
 
 class ProjectSeeder extends Seeder
 {
-
     public function run()
     {
         $pathPrefix = 'storage/assets/';
 
+        
         Project::create([
             "project" => [
                 "name" => "Devkunj 80",
@@ -26,6 +26,8 @@ class ProjectSeeder extends Seeder
                     "address" => "B/H H.P PETROL PUMP NEAR MADHURAM VILLA , MOTERA",
                     "city" => "Ahmedabad",
                     "area" => "Gota",
+                    "latitude"=>"23.140745235306994",
+                    "longitude"=>"72.55703332989502",
                     "map_description" => "Key landmarks near Devkunj 80 include SG Highway, SP Ring Road, Bopal, Ghuma, ISKCON Temple, educational institutions, healthcare facilities, and major connecting roads indicated on the provided map"
                 ],
                 "status"=>"active",
@@ -54,27 +56,20 @@ class ProjectSeeder extends Seeder
                             "balcony" => ["size" => "5'6\" x 6'3\""],
                         ],
                         "imageslider" => [
-                            ["image" => asset($pathPrefix . "properties/devkunj/13.png")],
-                            ["image" => asset($pathPrefix . "properties/devkunj/14.png")],
-                            ["image" => asset($pathPrefix . "properties/devkunj/15.png")],
-                            ["image" => asset($pathPrefix . "properties/devkunj/16.png")],
-                            ["image" => asset($pathPrefix . "properties/devkunj/17.png")],
+                            ["image" => "https://images.keyarea1.com/Ahmedabad_Property/03_Brochure-Vedant_Vilasa/2.jpg"],
+                            ["image" => "https://images.keyarea1.com/Ahmedabad_Property/03_Brochure-Vedant_Vilasa/2.jpg"],
+                          
                         ],
                         "price" => "50 Lac",
                         "size" => "2430 Sq. ft.",
                         "date" => "Dec 2026",
                         "floorPlans" => [
-                            ["imgThumb" => asset($pathPrefix . "properties/devkunj/6.jpg"), "imgFull" => asset($pathPrefix . "properties/devkunj/6.jpg"), "title" => "Layout Plan"],
-                            ["imgThumb" => asset($pathPrefix . "properties/devkunj/7.jpg"), "imgFull" => asset($pathPrefix . "properties/devkunj/7.jpg"), "title" => "Parking Layout Plan"],
-                            ["imgThumb" => asset($pathPrefix . "properties/devkunj/8.jpg"), "imgFull" => asset($pathPrefix . "properties/devkunj/8.jpg"), "title" => "Floorwise Plan"],
-                            ["imgThumb" => asset($pathPrefix . "properties/devkunj/9.jpg"), "imgFull" => asset($pathPrefix . "properties/devkunj/9.jpg"), "title" => "Ground Floor Plan & Terrace Plan"],
+                            [
+                             "imgFull" =>"https://images.keyarea1.com/Ahmedabad_Property/03_Brochure-Vedant_Vilasa/2.jpg",
                         ],
                         "galleryImages" => [
-                            ["full" => asset($pathPrefix . "properties/devkunj/13.png"), "thumb" => asset($pathPrefix . "properties/devkunj/13.png"), "alt" => "Exterior View", "height" => 196],
-                            ["full" => asset($pathPrefix . "properties/devkunj/14.png"), "thumb" => asset($pathPrefix . "properties/devkunj/14.png"), "alt" => "Interior View", "height" => 193],
-                            ["full" => asset($pathPrefix . "properties/devkunj/15.png"), "thumb" => asset($pathPrefix . "properties/devkunj/15.png"), "alt" => "Amenities", "height" => 189],
-                            ["full" => asset($pathPrefix . "properties/devkunj/16.png"), "thumb" => asset($pathPrefix . "properties/devkunj/16.png"), "alt" => "Layout", "height" => 194],
-                            ["full" => asset($pathPrefix . "properties/devkunj/17.png"), "thumb" => asset($pathPrefix . "properties/devkunj/17.png"), "alt" => "Layout", "height" => 194],
+                            ["full" => "https://images.keyarea1.com/Ahmedabad_Property/03_Brochure-Vedant_Vilasa/2.jpg",
+                
                         ]
                     ],
                     "2.5BHK" => [
@@ -91,10 +86,7 @@ class ProjectSeeder extends Seeder
                         ],
                         "imageslider" => [
                             ["image" => asset($pathPrefix . "properties/devkunj/13.png")],
-                            ["image" => asset($pathPrefix . "properties/devkunj/14.png")],
-                            ["image" => asset($pathPrefix . "properties/devkunj/15.png")],
-                            ["image" => asset($pathPrefix . "properties/devkunj/16.png")],
-                            ["image" => asset($pathPrefix . "properties/devkunj/17.png")],
+                          
                         ],
                         "price" => "1 cr",
                         "size" => "2630 Sq. ft.",
@@ -200,6 +192,8 @@ class ProjectSeeder extends Seeder
             "featured" => true,
             "emerging_property" => false,
             "emerging_area" => true
+        ],
+    ],
         ]);
 
 

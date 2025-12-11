@@ -21,7 +21,7 @@ const ProjectsIndex = () => {
         cities: filterOptions.cities || [],
         areas: filterOptions.areas || [],
         builders: filterOptions.builders || [], // ✅ NEW: Builders filter options
-        statuses: filterOptions.statuses || ['active', 'inactive', 'draft'],
+        statuses: filterOptions.statuses || ['active', 'inactive'],
     };
 
     const [showModal, setShowModal] = useState(false);
@@ -63,6 +63,8 @@ const ProjectsIndex = () => {
             city: '',
             area: '',
             map_description: '',
+            latitude: '',
+            longitude: '',
         }
     });
 
@@ -220,6 +222,8 @@ const ProjectsIndex = () => {
                 city: project.project.location?.city || '',
                 area: project.project.location?.area || '',
                 map_description: project.project.location?.map_description || '',
+                latitude: project.project.location?.latitude || '',
+                longitude: project.project.location?.longitude || '',
             }
         });
 
@@ -259,6 +263,8 @@ const ProjectsIndex = () => {
         data.append('project[location][city]', formData.location.city);
         data.append('project[location][area]', formData.location.area);
         data.append('project[location][map_description]', formData.location.map_description);
+         data.append('project[location][latitude]', formData.location.latitude);
+          data.append('project[location][longitude]', formData.location.longitude);
         data.append('project[reel]', formData.reel || '');
         data.append('project[brochure]', formData.brochure || '');
         data.append('project[logo_image_id]', formData.logo_image_id || '');
@@ -325,6 +331,8 @@ const ProjectsIndex = () => {
                 city: '',
                 area: '',
                 map_description: '',
+                latitude: '',
+                longitude: '',
             }
         });
         setFormErrors({});

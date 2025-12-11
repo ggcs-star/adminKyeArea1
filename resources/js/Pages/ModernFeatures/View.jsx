@@ -29,15 +29,15 @@ const View = ({ auth, project }) => {
                         </div>
                         
                         <div className="flex space-x-3">
-                            <Link
-                                href={route("modern-features.index")}
-                                className="flex items-center px-4 py-2 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-all duration-200 font-medium"
+                          <button
+                                onClick={() => window.history.back()}
+                                 className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 border border-transparent rounded-xl font-semibold text-sm text-white uppercase tracking-wider hover:from-blue-700 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 shadow-lg hover:shadow-xl"
                             >
                                 <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                                 </svg>
-                                Back to List
-                            </Link>
+                               Back to List 
+                            </button>
                           
                         </div>
                     </div>

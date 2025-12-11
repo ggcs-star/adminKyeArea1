@@ -25,7 +25,7 @@ class ProjectController extends Controller
     }
 
     if ($request->has('status') && ! empty($request->status)) {
-        $query->where('status', $request->status);
+        $query->where('project.status', $request->status);
     }
 
     if ($request->has('type') && ! empty($request->type)) {
@@ -102,6 +102,8 @@ class ProjectController extends Controller
             'project.location.city' => 'nullable|string',
             'project.location.area' => 'nullable|string',
             'project.location.map_description' => 'nullable|string',
+            'project.location.latitude'=>'nullable|numeric',
+            'project.location.longitude'=>'nullable|numeric',
             'project.reel' => 'nullable|url',
             'project.brochure' => 'nullable|url',
             'project.logo_image_id' => 'nullable|url',
@@ -115,8 +117,9 @@ class ProjectController extends Controller
             'project' => $projectData,
         ]);
 
-        return redirect()->route('projects.index')
-            ->with('success', 'Project created successfully.');
+        // return redirect()->route('projects.index')
+            // ->with('success', 'Project created successfully.');
+            return redirect()->back()->with('success', 'Project created successfully');
     }
 
     public function update(Request $request, $id)
@@ -132,6 +135,8 @@ class ProjectController extends Controller
             'project.location.city' => 'nullable|string',
             'project.location.area' => 'nullable|string',
             'project.location.map_description' => 'nullable|string',
+            'project.location.latitude'=>'nullable|numeric',
+            'project.location.longitude'=>'nullable|numeric',
             'project.reel' => 'nullable',
             'project.brochure' => 'nullable',
             'project.logo_image_id' => 'nullable|url',
@@ -148,7 +153,6 @@ class ProjectController extends Controller
         $projectData['type'] = $validated['project']['type'];
         $projectData['location'] = $validated['project']['location'];
         $projectData['phase'] = $validated['project']['phase'];
-
         $projectData['reel'] = $validated['project']['reel'] ?? $projectData['reel'];
         $projectData['brochure'] = $validated['project']['brochure'] ?? $projectData['brochure'];
         $projectData['logo_image_id'] = $validated['project']['logo_image_id'] ?? $projectData['logo_image_id'];
@@ -157,8 +161,9 @@ class ProjectController extends Controller
             'project' => $projectData,
         ]);
 
-        return redirect()->route('projects.index')
-            ->with('success', 'Project updated successfully.');
+        // return redirect()->route('projects.index')
+        //     ->with('success', 'Project updated successfully.');
+        return redirect()->back()->with('success', 'Project updated successfully');
     }
 
     public function view($id)
@@ -190,7 +195,8 @@ class ProjectController extends Controller
 
         $project->delete();
 
-        return redirect()->route('projects.index')->with('success', 'Project deleted successfully along with its files.');
+        // return redirect()->route('projects.index')->with('success', 'Project deleted successfully along with its files.');
+        return redirect()->back()->with('success', 'Project deleted successfully');
     }
 
     public function allProjects()

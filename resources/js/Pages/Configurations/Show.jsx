@@ -7,19 +7,26 @@ export default function Show({ auth, project, type, config }) {
         <AuthenticatedLayout user={auth.user}>
             <Head title="Configuration Detail" />
 
-            <div className="p-6 max-w-6xl mx-auto">
+            <div className="p-6 max-w-6xl mx-auto ">
                 {/* Header Section */}
-                <div className="mb-8">
-                    <h1 className="text-3xl font-bold text-gray-900 mb-2">
-                        Configuration Details
-                    </h1>
-                    <div className="flex items-center gap-4 text-sm text-gray-600">
-                        <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-xs font-medium">
-                            {type}
-                        </span>
-                        <span>Project: {project?.project.name}</span>
-                    </div>
-                </div>
+               <div className="mb-8 ">
+   
+
+    <h1 className="text-3xl font-bold text-gray-900 mb-2 ">
+        Configuration Details
+    </h1>
+
+    <div className="flex items-center gap-4 text-sm text-gray-600">
+        <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-xs font-medium">
+            {type}
+        </span>
+        <span>Project: {project?.project.name}</span>
+    </div>
+     <button onClick={() => window.history.back()} className="text-sm text-blue-600">
+        ← Back
+    </button>
+</div>
+
 
                 {/* Summary Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -160,7 +167,7 @@ export default function Show({ auth, project, type, config }) {
                                                         <div key={idx} className="text-center group">
                                                             <div className="relative overflow-hidden rounded-lg bg-gray-100 p-2">
                                                                 <img
-                                                                    src={plan.imgThumb}
+                                                                    src={plan.imgFull}
                                                                     alt={plan.title}
                                                                     className="w-full h-24 object-contain transition-transform group-hover:scale-105"
                                                                 />

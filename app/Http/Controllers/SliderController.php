@@ -55,7 +55,8 @@ public function store(Request $request)
         'image_path' => $path,
     ]);
 
-    return redirect()->route('sliders.index')->with('success', 'Slider added.');
+    // return redirect()->route('sliders.index')->with('success', 'Slider added.');
+    return redirect()->back()->with('success', 'Slider added.');
 }
 
 
@@ -91,7 +92,8 @@ public function store(Request $request)
     $slider->fill($data);
     $slider->save(); 
 
-    return redirect()->route('sliders.index')->with('success', 'Slider updated.');
+    // return redirect()->route('sliders.index')->with('success', 'Slider updated.');
+     return redirect()->back()->with('success', 'Slider updated.');
 }
 
 
@@ -105,6 +107,7 @@ public function destroy($id)
 
     $slider->delete();
 
-    return redirect()->route('sliders.index')->with('success', 'Slider deleted.');
+    // return redirect()->route('sliders.index')->with('success', 'Slider deleted.');
+    return redirect()->back()->with('success', 'Slider deleted.');
 }
 }

@@ -98,6 +98,7 @@ const ManageFlagModal = ({ showModal, closeModal, project, projects }) => {
         
         Inertia.post(route("projects.flags.update", projectId), flags, {
             preserveState: true,
+            preserveScroll: true,
             onSuccess: () => {
                 closeModal();
             },
@@ -184,7 +185,6 @@ const ManageFlagModal = ({ showModal, closeModal, project, projects }) => {
                                 >
                                     <option value="active">Active</option>
                                     <option value="inactive">Inactive</option>
-                                    <option value="draft">Draft</option>
                                 </select>
                             </div>
 

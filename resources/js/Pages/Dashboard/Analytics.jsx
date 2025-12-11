@@ -186,15 +186,16 @@ export default function Analytics({ monthlyTrends, builderStats }) {
                                     </span>
                                 </div>
                             </div>
-                            <Link
-                                href={route('admin.dashboard')}
-                                className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 border border-transparent rounded-xl font-semibold text-sm text-white uppercase tracking-wider hover:from-blue-700 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 shadow-lg hover:shadow-xl"
+                            <button
+                                onClick={() => window.history.back()}
+                                 className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 border border-transparent rounded-xl font-semibold text-sm text-white uppercase tracking-wider hover:from-blue-700 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 shadow-lg hover:shadow-xl"
                             >
                                 <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                                 </svg>
-                                Dashboard
-                            </Link>
+                                Back to Dashboard
+                            </button>
+
                         </div>
                     </div>
 
@@ -289,7 +290,7 @@ export default function Analytics({ monthlyTrends, builderStats }) {
                             </div>
                             <div className="h-80">
                                 {monthlyTrends && monthlyTrends.length > 0 ? (
-                                    <Line 
+                                    <Line
                                         data={monthlyData}
                                         options={chartOptions}
                                     />
@@ -317,7 +318,7 @@ export default function Analytics({ monthlyTrends, builderStats }) {
                             </div>
                             <div className="h-80">
                                 {builderStats && builderStats.length > 0 ? (
-                                    <Bar 
+                                    <Bar
                                         data={builderData}
                                         options={builderChartOptions}
                                     />
@@ -374,27 +375,27 @@ export default function Analytics({ monthlyTrends, builderStats }) {
                                                     return b._id.month - a._id.month;
                                                 })
                                                 .map((trend) => (
-                                                <tr key={getMonthlyTrendKey(trend)} className="hover:bg-gray-50 transition-colors duration-150">
-                                                    <td className="px-6 py-4 whitespace-nowrap">
-                                                        <div className="text-sm font-semibold text-gray-900">
-                                                            {new Date(trend._id.year, trend._id.month - 1).toLocaleString('default', { month: 'long' })}
-                                                        </div>
-                                                    </td>
-                                                    <td className="px-6 py-4 whitespace-nowrap">
-                                                        <div className="text-sm text-gray-600 bg-gray-100 px-2 py-1 rounded-full text-center inline-block min-w-12">
-                                                            {trend._id.year}
-                                                        </div>
-                                                    </td>
-                                                    <td className="px-6 py-4 whitespace-nowrap">
-                                                        <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
-                                                            <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                                                            </svg>
-                                                            {trend.count} properties
-                                                        </span>
-                                                    </td>
-                                                </tr>
-                                            ))
+                                                    <tr key={getMonthlyTrendKey(trend)} className="hover:bg-gray-50 transition-colors duration-150">
+                                                        <td className="px-6 py-4 whitespace-nowrap">
+                                                            <div className="text-sm font-semibold text-gray-900">
+                                                                {new Date(trend._id.year, trend._id.month - 1).toLocaleString('default', { month: 'long' })}
+                                                            </div>
+                                                        </td>
+                                                        <td className="px-6 py-4 whitespace-nowrap">
+                                                            <div className="text-sm text-gray-600 bg-gray-100 px-2 py-1 rounded-full text-center inline-block min-w-12">
+                                                                {trend._id.year}
+                                                            </div>
+                                                        </td>
+                                                        <td className="px-6 py-4 whitespace-nowrap">
+                                                            <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
+                                                                <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                                                                </svg>
+                                                                {trend.count} properties
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                ))
                                         ) : (
                                             <tr>
                                                 <td colSpan="3" className="px-6 py-8 text-center">
@@ -446,15 +447,14 @@ export default function Analytics({ monthlyTrends, builderStats }) {
                                             builderStats.map((builder, index) => (
                                                 <tr key={getBuilderKey(builder, index)} className="hover:bg-gray-50 transition-colors duration-150">
                                                     <td className="px-6 py-4 whitespace-nowrap">
-                                                        <span className={`inline-flex items-center justify-center w-8 h-8 rounded-full text-sm font-bold ${
-                                                            index === 0 
+                                                        <span className={`inline-flex items-center justify-center w-8 h-8 rounded-full text-sm font-bold ${index === 0
                                                                 ? 'bg-yellow-100 text-yellow-800 border border-yellow-200'
                                                                 : index === 1
-                                                                ? 'bg-gray-100 text-gray-800 border border-gray-200'
-                                                                : index === 2
-                                                                ? 'bg-orange-100 text-orange-800 border border-orange-200'
-                                                                : 'bg-blue-100 text-blue-800 border border-blue-200'
-                                                        }`}>
+                                                                    ? 'bg-gray-100 text-gray-800 border border-gray-200'
+                                                                    : index === 2
+                                                                        ? 'bg-orange-100 text-orange-800 border border-orange-200'
+                                                                        : 'bg-blue-100 text-blue-800 border border-blue-200'
+                                                            }`}>
                                                             #{index + 1}
                                                         </span>
                                                     </td>

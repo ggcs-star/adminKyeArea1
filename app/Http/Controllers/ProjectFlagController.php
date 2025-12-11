@@ -50,7 +50,6 @@ class ProjectFlagController extends Controller
     $data['status'] = $validated['status']; 
     $project->project = $data; 
 
-   
     $project->featured = $validated['featured'];
     $project->emerging_property = $validated['emerging_property'];
     $project->emerging_area = $validated['emerging_area'];

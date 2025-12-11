@@ -60,8 +60,8 @@ const ProjectViewPage = ({ project }) => {
                                         </span>
                                     )}
                                     <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${projectData.status === 'active'
-                                            ? 'bg-green-100 text-green-800'
-                                            : 'bg-gray-100 text-gray-800'
+                                        ? 'bg-green-100 text-green-800'
+                                        : 'bg-gray-100 text-gray-800'
                                         }`}>
                                         {projectData.status === 'active' ? 'Active' : 'Inactive'}
                                     </span>
@@ -70,15 +70,16 @@ const ProjectViewPage = ({ project }) => {
 
                         </div>
                         <div className="mt-4 md:mt-0 flex items-center space-x-3">
-                            <Link
-                                href={route('projects.index')}
+                            <button
+                                onClick={() => window.history.back()}
                                 className="inline-flex items-center px-4 py-2.5 bg-white text-slate-700 font-medium rounded-2xl border border-slate-300/50 hover:border-slate-400 transition-all duration-300 shadow-sm hover:shadow-md"
                             >
                                 <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                                 </svg>
-                                Back to Projects
-                            </Link>
+                                Back to Projects List
+                            </button>
+
                         </div>
                     </div>
                 </div>
@@ -93,8 +94,8 @@ const ProjectViewPage = ({ project }) => {
                                 key={tab.id}
                                 onClick={() => setActiveTab(tab.id)}
                                 className={`flex items-center px-6 py-4 border-b-2 text-sm font-medium whitespace-nowrap ${activeTab === tab.id
-                                        ? 'border-indigo-500 text-indigo-600'
-                                        : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                                    ? 'border-indigo-500 text-indigo-600'
+                                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                                     }`}
                             >
                                 <span className="mr-2">{tab.icon}</span>

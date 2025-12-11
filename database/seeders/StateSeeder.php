@@ -23,95 +23,111 @@ class StateSeeder extends Seeder
                         "name" => "Ahmedabad",
                         "areas" => [
                             [
+                                "name" => "AshramRoad",
+                                "img" =>"https://images.keyarea1.com/findproperty/AshramRoad.png"
+                            ],
+                            [
                                 "name" => "Satellite",
-                                "img" => asset($pathPrefix . "home/preferredCities/Satellite.png")
+                                "img" => "https://images.keyarea1.com/findproperty/Satellite.png"
                             ],
                             [
                                 "name" => "Maninagar",
-                                "img" => asset($pathPrefix . "home/preferredCities/Mani Nagar.png")
+                                "img" => "https://images.keyarea1.com/findproperty/Gota.png"
                             ],
                             [
                                 "name" => "Bopal",
-                                "img" => asset($pathPrefix . "home/preferredCities/Bopal.png")
+                                "img" => "https://images.keyarea1.com/findproperty/Bopal.png"
                             ],
                             [
                                 "name" => "Vastrapur",
-                                "img" => asset($pathPrefix . "home/preferredCities/Vastrapur.png")
+                                 "img" => "  https://images.keyarea1.com/findproperty/Sarkhej.png"
                             ],
                             [
                                 "name" => "Paldi",
-                                "img" => asset($pathPrefix . "home/preferredCities/Paldi.png")
+                                "img" => "https://images.keyarea1.com/findproperty/PrahladNagar.png"
+                            ],
+                             [
+                                "name" => "PrahladNagar",
+                                "img" => "https://images.keyarea1.com/findproperty/PrahladNagar.png"
                             ],
                             [
                                 "name" => "Navrangpura",
-                                "img" => asset($pathPrefix . "home/preferredCities/Navrangpura.png")
-                            ],
+                                 "img" => "https://images.keyarea1.com/findproperty/Bopal.png"
+                           ],
                             [
                                 "name" => "Vejalpur",
-                                "img" => asset($pathPrefix . "home/preferredCities/Vejalpur.png")
+                              "img" =>"https://images.keyarea1.com/findproperty/ManiNagar.png"
                             ],
                             [
                                 "name" => "Nikol",
-                                "img" => asset($pathPrefix . "home/preferredCities/Nikol.png")
+                               "img" =>"https://images.keyarea1.com/findproperty/AshramRoad.png"
                             ],
                             [
                                 "name" => "Gota",
-                                "img" => asset($pathPrefix . "home/preferredCities/Gota.png")
+                                "img" => "https://images.keyarea1.com/findproperty/Gota.png"
                             ],
                             [
                                 "name" => "Ellisbridge",
-                                "img" => asset($pathPrefix . "home/preferredCities/Ellisbridge.png")
+                                "img" => "  https://images.keyarea1.com/findproperty/Shilaj.png"
                             ],
                             [
                                 "name" => "Ambawadi",
-                                "img" => asset($pathPrefix . "home/preferredCities/Ambawadi.png")
+                                 "img" => "https://images.keyarea1.com/findproperty/Bopal.png"
                             ],
                             [
                                 "name" => "Naranpura",
-                                "img" => asset($pathPrefix . "home/preferredCities/Naranpura.png")
+                                "img" => "https://images.keyarea1.com/findproperty/Naranpura.png"
                             ],
                             [
                                 "name" => "SG Highway",
-                                "img" => asset($pathPrefix . "home/preferredCities/SG Highway.png")
+                               "img" =>"https://images.keyarea1.com/findproperty/AshramRoad.png"
                             ],
                             [
                                 "name" => "Thaltej",
-                                "img" => asset($pathPrefix . "home/preferredCities/Thaltej.png")
+                                "img" => "https://images.keyarea1.com/findproperty/Thaltej.png"
                             ],
                            
                             [
                                 "name" => "Sabarmati",
-                                "img" => asset($pathPrefix . "home/preferredCities/Sabarmati.png")
+                                "img" =>"https://images.keyarea1.com/findproperty/ManiNagar.png"
                             ],
 
                             [
                                 "name" => "Chandkheda",
-                                "img" => asset($pathPrefix . "home/preferredCities/Chandkheda.png")
+                                "img" => "https://images.keyarea1.com/findproperty/Gota.png"
                             ],
                           
                             [
                                 "name" => "Memnagar",
-                                "img" => asset($pathPrefix . "home/preferredCities/Memnagar.png")
+                                "img" =>"https://images.keyarea1.com/findproperty/ManiNagar.png"
                             ],
 
                             [
                                 "name" => "Dholka",
-                                "img" => asset($pathPrefix . "home/preferredCities/Dholka.png")
+                                 "img" => "  https://images.keyarea1.com/findproperty/Shilaj.png"
                             ],
                             [
                                 "name" => "Odhav",
-                                "img" => asset($pathPrefix . "home/preferredCities/Odhav.png")
+                                "img" => "https://images.keyarea1.com/findproperty/Bopal.png"
                             ],
                             [
                                 "name" => "Naroda",
-                                "img" => asset($pathPrefix . "home/preferredCities/Naroda.png")
+                                "img" =>"https://images.keyarea1.com/findproperty/ManiNagar.png"
                             ],
                               [
                                 "name" => "Motera",
-                                "img" => asset($pathPrefix . "home/preferredCities/Motera.png")
+                               "img" =>"https://images.keyarea1.com/findproperty/AshramRoad.png"
+                            ],
+                               [
+                                "name" => "Motera",
+                                "img" => "  https://images.keyarea1.com/findproperty/Sarkhej.png"
+                            ],
+                               [
+                                "name" => "Shilaj",
+                                "img" => "  https://images.keyarea1.com/findproperty/Shilaj.png"
                             ],
                            
-                            
+                          
                         ]
 
                     ],

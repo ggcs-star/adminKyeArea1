@@ -63,7 +63,8 @@ public function index()
 
         $project->save();
 
-        return redirect()->route('builder.create')->with('success', 'Builder added to project successfully.');
+        // return redirect()->route('builder.create')->with('success', 'Builder added to project successfully');
+        return redirect()->back()->with('success', 'Builder added to project successfully');
     }
     public function show($id)
 {

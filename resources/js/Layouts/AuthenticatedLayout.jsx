@@ -99,21 +99,21 @@ export default function AuthenticatedLayout({ header, children }) {
             <span className="font-medium">Amenities</span>
         </Link>
 
-        <Link
+        {/* <Link
             href={route('modern-features.index')}
             className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${route().current('modern-features.index') ? 'bg-indigo-700 shadow-md' : 'hover:bg-indigo-700'}`}
         >
             <BarChart className="w-5 h-5" />
             <span className="font-medium">Modern Features</span>
-        </Link>
+        </Link> */}
 
-        <Link
+        {/* <Link
             href={route('lifestyles.index')}
             className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${route().current('lifestyles.index') ? 'bg-indigo-700 shadow-md' : 'hover:bg-indigo-700'}`}
         >
             <Users className="w-5 h-5" />
             <span className="font-medium">Lifestyles</span>
-        </Link>
+        </Link> */}
 
         <Link
             href={route('localityData.index')}

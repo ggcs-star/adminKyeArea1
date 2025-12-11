@@ -161,69 +161,106 @@ const ProjectModal = ({ showModal, closeModal, handleChange, handleSubmit, formD
                     </div>
 
                     <div className="border-t border-gray-200 pt-6">
-                        <h3 className="text-lg font-medium text-gray-900 mb-4">Location Details</h3>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
-                                <label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-1">
-                                    Street Address
-                                </label>
-                                <input
-                                    type="text"
-                                    id="address"
-                                    name="location.address"
-                                    placeholder="e.g., 123 Main Street"
-                                    value={formData.location.address}
-                                    onChange={handleChange}
-                                    className="block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                                />
-                            </div>
+    <h3 className="text-lg font-medium text-gray-900 mb-4">Location Details</h3>
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        
+        <div>
+            <label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-1">
+                Street Address
+            </label>
+            <input
+                type="text"
+                id="address"
+                name="location.address"
+                placeholder="e.g., 123 Main Street"
+                value={formData.location.address}
+                onChange={handleChange}
+                className="block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+            />
+        </div>
 
-                            <div>
-                                <label htmlFor="city" className="block text-sm font-medium text-gray-700 mb-1">
-                                    City
-                                </label>
-                                <input
-                                    type="text"
-                                    id="city"
-                                    name="location.city"
-                                    placeholder="e.g., New York"
-                                    value={formData.location.city}
-                                    onChange={handleChange}
-                                    className="block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                                />
-                            </div>
+        <div>
+            <label htmlFor="city" className="block text-sm font-medium text-gray-700 mb-1">
+                City
+            </label>
+            <input
+                type="text"
+                id="city"
+                name="location.city"
+                placeholder="e.g., New York"
+                value={formData.location.city}
+                onChange={handleChange}
+                className="block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+            />
+        </div>
 
-                            <div>
-                                <label htmlFor="area" className="block text-sm font-medium text-gray-700 mb-1">
-                                    Area/Region
-                                </label>
-                                <input
-                                    type="text"
-                                    id="area"
-                                    name="location.area"
-                                    placeholder="e.g., Manhattan"
-                                    value={formData.location.area}
-                                    onChange={handleChange}
-                                    className="block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                                />
-                            </div>
+        <div>
+            <label htmlFor="area" className="block text-sm font-medium text-gray-700 mb-1">
+                Area/Region
+            </label>
+            <input
+                type="text"
+                id="area"
+                name="location.area"
+                placeholder="e.g., Manhattan"
+                value={formData.location.area}
+                onChange={handleChange}
+                className="block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+            />
+        </div>
 
-                            <div>
-                                <label htmlFor="map_description" className="block text-sm font-medium text-gray-700 mb-1">
-                                    Map Description
-                                </label>
-                                <textarea
-                                    id="map_description"
-                                    name="location.map_description"
-                                    placeholder="Description for map integration"
-                                    value={formData.location.map_description}
-                                    onChange={handleChange}
-                                    rows={3}
-                                    className="block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                                />
-                            </div>
-                        </div>
-                    </div>
+        <div>
+            <label htmlFor="map_description" className="block text-sm font-medium text-gray-700 mb-1">
+                Map Description
+            </label>
+            <textarea
+                id="map_description"
+                name="location.map_description"
+                placeholder="Description for map integration"
+                value={formData.location.map_description}
+                onChange={handleChange}
+                rows={3}
+                className="block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+            />
+        </div>
+
+        {/* Latitude */}
+        <div>
+            <label htmlFor="latitude" className="block text-sm font-medium text-gray-700 mb-1">
+                Latitude
+            </label>
+            <input
+                type="number"
+                step="any"
+                id="latitude"
+                name="location.latitude"
+                placeholder="e.g., 40.7128"
+                value={formData.location.latitude}
+                onChange={handleChange}
+                className="block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+            />
+        </div>
+
+        {/* Longitude */}
+        <div>
+            <label htmlFor="longitude" className="block text-sm font-medium text-gray-700 mb-1">
+                Longitude
+            </label>
+            <input
+                type="number"
+                step="any"
+                id="longitude"
+                name="location.longitude"
+                placeholder="e.g., -74.0060"
+                value={formData.location.longitude}
+                onChange={handleChange}
+                className="block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+            />
+        </div>
+
+    </div>
+</div>
+
 
                     <div className="flex justify-end space-x-3 pt-4 border-t border-gray-200">
                         <button

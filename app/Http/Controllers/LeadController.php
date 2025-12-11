@@ -32,7 +32,8 @@ public function destroy($id)
     $lead = Lead::findOrFail($id);
     $lead->delete();
 
-    return redirect()->route('leads.index')->with('success', 'Lead deleted successfully.');
+    // return redirect()->route('leads.index')->with('success', 'Lead deleted successfully.');
+    return redirect()->back()->with('success', 'Lead deleted successfully');
 }
 
 }
